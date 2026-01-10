@@ -1,0 +1,75 @@
+const express = require("express");
+const app = express();
+require("dotenv").config();
+
+// Connect to DB
+const connectDB = require("./Databases/DbConnect/DbConnect");
+connectDB();
+
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
+const http = require("http");
+const socketIO = require("socket.io");
+const server = http.createServer(app); // Attach Express to HTTP server
+
+// Routes
+const authRoutes = require("./Routes/authRoutes");
+const menuRoutes = require("./Routes/menuRoutes");
+const userRoutes = require("./Routes/userRoutes");
+const orderRoutes = require("./Routes/orderRoutes");
+const placeRoutes = require("./Routes/placeroutes");
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://think-n-order.vercel.app"],
+    credentials: true,
+  })
+);
+
+// Initialize Socket.IO
+const io = socketIO(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+// Attach Socket.IO to app so it can be accessed in controllers
+app.set("io", io);
+
+// Socket.IO connection
+io.on("connection", (socket) => {
+  console.log("New client connected", socket.id);
+
+  // Join room for a specific restaurant (called from frontend on login)
+  socket.on("joinRestaurantRoom", (restaurantId) => {
+    const roomName = `restaurant:${restaurantId}`;
+    socket.join(roomName);
+    console.log(`Socket ${socket.id} joined room ${roomName}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected", socket.id);
+  });
+});
+
+// Routes
+app.get("/", (req, res) => {
+  res.send("Server is Alive!");
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/menu", menuRoutes);
+app.use("/api/order", orderRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/place", placeRoutes);
+
+// Start server (ONLY this)
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
