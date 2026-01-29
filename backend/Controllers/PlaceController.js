@@ -1,4 +1,5 @@
 const Restaurant = require("../Databases/Models/restaurantSchema");
+const OrderSession = require("../Databases/Models/orderSessionSchema");
 
 exports.addPlace = async (req, res) => {
   try {
@@ -33,6 +34,18 @@ exports.getPlaces = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getRunningTables = async (req, res) => {
+  const restaurantId = req.admin.restaurantId;
+
+  const sessions = await OrderSession.find({
+    restaurantId,
+    isClosed: false,
+  }).select("placeId startedAt");
+
+  res.json(sessions);
+};
+
 
 // exports.updatePlace = async (req, res) => {
 //   try {

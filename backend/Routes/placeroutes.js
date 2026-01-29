@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addPlace,getPlaces,updatePlace,deletePlace} = require("../Controllers/PlaceController");
+const {addPlace,getPlaces,updatePlace, getRunningTables, deletePlace} = require("../Controllers/PlaceController");
 const { authenticateToken } = require("../utils/tokenUtils");
 
 // Add a place
@@ -14,5 +14,7 @@ router.get("/", authenticateToken, getPlaces);
 
 // // Delete a place
 router.delete("/:placeId", authenticateToken, deletePlace);
+
+router.get("/running-tables", authenticateToken, getRunningTables);
 
 module.exports = router;
