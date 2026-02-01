@@ -14,13 +14,16 @@ export default function Navbar() {
           </span>
         </div>
         <div className="hidden md:flex gap-10 text-sm font-semibold uppercase tracking-widest text-slate-400">
-          <a href="#product" className="hover:text-orange-400 transition">
+          <a href="/about" className="hover:text-orange-400 transition">
+            About
+          </a>
+          <a href="/product" className="hover:text-orange-400 transition">
             The Product
           </a>
-          <a href="#features" className="hover:text-orange-400 transition">
+          <a href="/features" className="hover:text-orange-400 transition">
             Features
           </a>
-          <a href="#workflow" className="hover:text-orange-400 transition">
+          <a href="/workflow" className="hover:text-orange-400 transition">
             Workflow
           </a>
         </div>
