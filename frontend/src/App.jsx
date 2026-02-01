@@ -13,7 +13,7 @@ import MenuManager from './components/MenuManager';
 import Orders from './components/Orders';
 import UserPage from './components/UserPage';
 import KitchenOrders from './components/KitechenOrders';
-import Test from './components/Test';
+// import Test from './components/Test';
 import PlaceManagement from './components/PlaceManagement';
 import AdminTableManagement from './components/AdminTableManagement';
 
@@ -23,7 +23,7 @@ function App() {
         <Routes>
           {/* Public Routes - These do not have the admin header */}
           <Route path="/:restaurantId/:placeId/:floor/:table" element={<UserPage />} />
-          <Route path="/test" element={<Test />} />
+          {/* <Route path="/test" element={<Test />} /> */}
 
           {/* Admin Auth Routes - These do not have the admin header */}
           <Route path="/login" element={<Login />} />
