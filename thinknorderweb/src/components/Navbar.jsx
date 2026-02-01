@@ -3,7 +3,7 @@ import { QrCode } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <nav className="fixed w-full z-50 border-b border-white/5 bg-black/60 backdrop-blur-xl">
+    <nav className="fixed w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
@@ -13,7 +13,10 @@ export default function Navbar() {
             THINK<span className="text-orange-500">N</span>ORDER
           </span>
         </div>
-        <div className="hidden md:flex gap-10 text-sm font-semibold uppercase tracking-widest text-slate-400">
+        <div className="hidden md:flex gap-10 text-sm font-semibold uppercase tracking-widest text-white">
+          <a href="/" className="hover:text-orange-400 transition">
+            Home
+          </a>
           <a href="/about" className="hover:text-orange-400 transition">
             About
           </a>
@@ -28,7 +31,7 @@ export default function Navbar() {
           </a>
         </div>
         <button className="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm hover:bg-orange-500 hover:text-white transition-all">
-          Get Started
+          Book a Demo
         </button>
       </div>
     </nav>
