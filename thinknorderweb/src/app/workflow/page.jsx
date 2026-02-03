@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Scan, MousePointerClick, CookingPot, CheckCircle2, ArrowDown } from "lucide-react";
+import { Scan, MousePointerClick, CookingPot, CheckCircle2, ArrowDown, Activity } from "lucide-react";
 
 const steps = [
   {
@@ -40,17 +40,24 @@ export default function WorkflowPage() {
     <section className="bg-orange-50 py-24 overflow-hidden">
       <div className="max-w-5xl mx-auto px-6">
         
-        {/* Header */}
-        <div className="text-center mb-24">
+       {/* Header */}
+        <div className="text-center mb-32">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-8"
+          >
+            <Activity size={12} /> The Synchronized Process
+          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-6xl md:text-8xl font-black text-orange-950 tracking-tighter mb-8"
+            className="text-7xl md:text-9xl font-black text-orange-950 tracking-tighter leading-none mb-10"
           >
             THE <span className="text-orange-600 italic">FLOW.</span>
           </motion.h1>
-          <p className="text-orange-900/60 text-xl font-medium max-w-2xl mx-auto">
-            Discover how ThinkNOrder streamlines the ordering process from menu browsing to fulfillment.
+          <p className="text-orange-900/40 text-xl font-bold max-w-2xl mx-auto leading-relaxed italic">
+            "Eliminating the friction between hunger and fulfillment."
           </p>
         </div>
 
@@ -109,6 +116,31 @@ export default function WorkflowPage() {
              </button>
           </div>
         </motion.div>
+
+
+        {/* Final CTA Visual */}
+        {/* <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          className="mt-40 text-center"
+        >
+          <div className="relative inline-block">
+             <div className="absolute inset-0 border-2 border-orange-200 rounded-[3rem] -rotate-3 -z-10" />
+             <div className="bg-orange-950 text-white p-12 md:p-20 rounded-[3rem] shadow-3xl relative overflow-hidden">
+                <Sparkles className="absolute top-10 right-10 text-orange-500 opacity-20" size={60} />
+                <h2 className="text-4xl md:text-5xl font-black mb-8 italic tracking-tighter">
+                  Ready to plate <span className="text-orange-500">perfection?</span>
+                </h2>
+                <motion.button 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="group bg-orange-600 hover:bg-white hover:text-orange-950 text-white px-14 py-6 rounded-2xl font-black text-2xl transition-all shadow-2xl flex items-center gap-4 mx-auto"
+                >
+                  See It In Action <ArrowRight size={28} className="group-hover:translate-x-2 transition-transform" />
+                </motion.button>
+             </div>
+          </div>
+        </motion.div> */}
 
       </div>
     </section>
