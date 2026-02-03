@@ -1,7 +1,18 @@
-import React from "react";
-import { QrCode } from "lucide-react";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { QrCode, Zap, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <nav className="fixed w-full z-50 border-b border-white/5 bg-black/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
