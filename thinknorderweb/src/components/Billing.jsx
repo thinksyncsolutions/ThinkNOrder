@@ -13,7 +13,7 @@ import {
 
 export default function Billing() {
   return (
-    <section id="billing" className="relative py-32 bg-white overflow-hidden">
+    <section id="billing" className="relative py-12 bg-white overflow-hidden">
       {/* Decorative Background Text */}
       <div className="absolute top-10 left-10 text-[15rem] font-black text-slate-50 select-none pointer-events-none -z-0 leading-none">
         PAY
@@ -107,20 +107,20 @@ export default function Billing() {
 
           {/* Right Column: Text Content */}
           <div className="order-1 lg:order-2">
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.2em] mb-8"
             >
               <Globe size={12} /> Contactless Economy
             </motion.div>
-            
-            <h2 className="text-5xl md:text-7xl font-black text-orange-950 mb-8 leading-[0.9] tracking-tighter">
+             */}
+            <h2 className="text-5xl md:text-7xl font-black text-orange-950 mb-6 leading-[0.9] tracking-tighter">
               BILLING THAT <br />
               <span className="text-orange-600 italic">FLOWS.</span>
             </h2>
             
-            <p className="text-orange-900/60 text-xl mb-12 leading-relaxed font-medium">
+            <p className="text-orange-900/60 text-xl mb-6 leading-relaxed font-medium">
               Eliminate the "waiting for the check" bottleneck. Customers can
               view their live bill and pay directly from their phones.
             </p>

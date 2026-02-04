@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#050505] text-white pt-32 pb-10 overflow-hidden border-t border-white/5">
+    <footer className="relative bg-[#050505] text-white pt-12 pb-10 overflow-hidden border-t border-white/5">
       {/* --- Abstract Background Glow --- */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-12">
           
           {/* Brand & Manifesto Column (Span 4) */}
           <div className="lg:col-span-4 space-y-8">
@@ -136,7 +136,7 @@ export default function Footer() {
           <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-full border border-white/5">
             <Globe size={14} className="text-orange-500" />
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
-              Active in 12 Countries
+              Active in 4 Cities
             </span>
           </div>
         </div>

@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 
 export default function Waiter() {
   return (
-    <section id="waiter-flow" className="relative py-32 bg-orange-950 overflow-hidden">
+    <section id="waiter-flow" className="relative py-12 bg-orange-950 overflow-hidden">
       {/* Creative Background: Animated Mesh & Glow */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_30%,#f97316_0%,transparent_50%)]" />

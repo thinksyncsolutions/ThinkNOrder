@@ -52,7 +52,7 @@ const features = [
 
 export default function FeaturesPage() {
   return (
-    <section className="relative py-32 bg-orange-50 min-h-screen overflow-hidden">
+    <section className="relative py-28 bg-orange-50 min-h-screen overflow-hidden">
       {/* Abstract Background Texture */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
            style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/pinstriped-suit.png")` }} />
@@ -60,20 +60,20 @@ export default function FeaturesPage() {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         {/* Header Section */}
-        <div className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8">
+        <div className="mb-16 flex flex-col md:flex-row justify-between items-end gap-8">
           <div>
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6"
             >
               <Sparkles size={12} /> Optimization Suite
-            </motion.div>
+            </motion.div> */}
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-6xl md:text-[100px] font-black text-orange-950 tracking-tighter leading-[0.85] mb-4"
+              className="text-6xl md:text-8xl font-black text-orange-950 tracking-tighter leading-[0.85] mb-4"
             >
               BUILT FOR <br />
               <span className="text-orange-600 italic">VELOCITY.</span>
@@ -94,7 +94,7 @@ export default function FeaturesPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -8 }}
-              className={`${feature.bg} ${feature.size} ${feature.glow || "shadow-xl shadow-orange-900/5"} p-12 rounded-[3.5rem] flex flex-col justify-between min-h-[380px] border border-orange-200/50 relative overflow-hidden group transition-all duration-500`}
+              className={`${feature.bg} ${feature.size} ${feature.glow || "shadow-xl shadow-orange-900/5"} p-10 rounded-[3.5rem] flex flex-col justify-between min-h-[260px] border border-orange-200/50 relative overflow-hidden group transition-all duration-500`}
             >
               <div className={`${feature.accent} relative z-10 group-hover:scale-110 transition-transform duration-500`}>
                 {feature.icon}

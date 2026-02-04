@@ -22,7 +22,7 @@ export default function AdminDesk() {
   ];
 
   return (
-    <section id="admin" className="relative py-32 bg-zinc-950 overflow-hidden">
+    <section id="admin" className="relative py-12 bg-zinc-950 overflow-hidden">
       {/* Background Decorative Element */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
 
@@ -31,13 +31,13 @@ export default function AdminDesk() {
           
           {/* Left Column: Content */}
           <div>
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-[10px] font-black uppercase tracking-[0.2em] mb-6"
             >
               <Activity size={12} /> Command Center
-            </motion.div>
+            </motion.div> */}
             
             <h2 className="text-5xl md:text-6xl font-black text-white mb-10 tracking-tighter leading-[1.1]">
               COMPLETE <span className="text-orange-500">CONTROL</span> <br />

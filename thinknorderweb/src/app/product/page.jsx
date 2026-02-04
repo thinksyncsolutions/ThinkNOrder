@@ -45,7 +45,7 @@ const products = [
 
 export default function ProductPage() {
   return (
-    <section className="relative bg-white py-32 min-h-screen overflow-hidden">
+    <section className="relative bg-white py-28 min-h-screen overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
            style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/pinstriped-suit.png")` }} />
@@ -53,17 +53,17 @@ export default function ProductPage() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <header className="mb-40">
+        <header className="mb-16">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-12">
             <div className="max-w-4xl">
-              <motion.div 
+              {/* <motion.div 
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-8"
               >
                 <Sparkles size={12} /> The Hardware & Software Suite
-              </motion.div>
-              <h1 className="text-7xl md:text-9xl font-black text-orange-950 tracking-[0.02em] leading-[0.85]">
+              </motion.div> */}
+              <h1 className="text-7xl md:text-8xl font-black text-orange-950 tracking-[0.02em] leading-[0.85]">
                 THE <br />
                 <span className="text-orange-600 italic">ECOSYSTEM.</span>
               </h1>
@@ -134,11 +134,11 @@ export default function ProductPage() {
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="mt-32 relative group"
+          className="mt-16 relative group"
         >
           <div className="absolute inset-0 bg-orange-600 rounded-[5rem] blur-[120px] opacity-10 group-hover:opacity-20 transition-opacity" />
           
-          <div className="relative bg-orange-600 p-12 md:p-24 rounded-[4.5rem] text-center text-white overflow-hidden shadow-[0_40px_100px_-20px_rgba(234,88,12,0.4)]">
+          <div className="relative bg-orange-600 p-10 md:p-16 rounded-[4.5rem] text-center text-white overflow-hidden shadow-[0_40px_100px_-20px_rgba(234,88,12,0.4)]">
             {/* Visual Decor inside CTA */}
             <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
               <div className="absolute top-10 left-10"><Cpu size={200} strokeWidth={1} /></div>

@@ -6,13 +6,13 @@ import { Users, Rocket, ShieldCheck, Heart, Sparkles, Zap, Globe, ChefHat } from
 
 const stats = [
   { label: "Orders Processed", value: "2M+", desc: "Seamless transactions" },
-  { label: "Partner Venues", value: "500+", desc: "Global trust" },
+  { label: "Partner Venues", value: "8+", desc: "Global trust" },
   { label: "Table Turnover", value: "15min", desc: "Average time saved" },
 ];
 
 export default function AboutPage() {
   return (
-    <section className="relative bg-white py-32 overflow-hidden">
+    <section className="relative bg-white py-28 overflow-hidden">
       {/* Creative Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" 
            style={{ backgroundImage: `url("https://www.transparenttextures.com/patterns/carbon-fibre.png")` }} />
@@ -21,21 +21,21 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         {/* --- Hero: Asymmetric Intro --- */}
-        <div className="grid lg:grid-cols-12 gap-12 items-center mb-40">
+        <div className="grid lg:grid-cols-12 gap-12 items-center mb-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="lg:col-span-7"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
+            {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
               <Sparkles size={12} /> The ThinkSync Manifesto
-            </div>
-            <h1 className="text-7xl md:text-[120px] font-black text-orange-950 tracking-tighter leading-[0.8] mb-10">
+            </div> */}
+            <h1 className="text-7xl md:text-8xl font-black text-orange-950 tracking-tighter leading-[0.8] mb-10">
               WE THINK. <br />
               <span className="text-orange-600 italic">YOU ORDER.</span>
             </h1>
-            <p className="text-2xl font-bold text-orange-900/30 italic max-w-xl leading-relaxed">
+            <p className="text-2xl font-bold text-orange-900/90 italic max-w-xl leading-relaxed">
               "Technology should be invisible at the table but invincible in the kitchen."
             </p>
           </motion.div>
@@ -58,7 +58,7 @@ export default function AboutPage() {
         </div>
 
         {/* --- Mission: The Dual Perspectives --- */}
-        <div className="grid lg:grid-cols-2 gap-12 mb-40">
+        <div className="grid lg:grid-cols-2 gap-12 mb-16">
           <motion.div 
             whileHover={{ y: -10 }}
             className="group p-12 bg-orange-50 rounded-[4rem] border border-orange-100 relative overflow-hidden"
@@ -97,7 +97,7 @@ export default function AboutPage() {
         </div>
 
         {/* --- Stats: High-Contrast Grid --- */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-40">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {stats.map((stat, i) => (
             <motion.div 
               key={i} 
@@ -132,14 +132,14 @@ export default function AboutPage() {
               hospitality feel <span className="text-orange-600 underline decoration-orange-200 underline-offset-8 italic">human</span> again.
             </h2>
             
-            <div className="flex flex-wrap justify-center gap-4">
+            {/* <div className="flex flex-wrap justify-center gap-4">
               <div className="px-8 py-4 bg-white rounded-2xl shadow-sm border border-orange-100 flex items-center gap-3 text-orange-950 font-black text-xs uppercase tracking-widest">
                 <ShieldCheck className="text-orange-500" size={20} /> Enterprise-Grade Security
               </div>
               <div className="px-8 py-4 bg-white rounded-2xl shadow-sm border border-orange-100 flex items-center gap-3 text-orange-950 font-black text-xs uppercase tracking-widest">
                 <Rocket className="text-orange-500" size={20} /> Cloud-Native Speed
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

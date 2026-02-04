@@ -28,7 +28,7 @@ export default function Features() {
   ];
 
   return (
-    <section id="features" className="relative py-32 px-6 bg-[#050505] overflow-hidden">
+    <section id="features" className="relative py-12 px-6 bg-[#050505] overflow-hidden">
       {/* Creative Background Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-orange-600/5 blur-[100px] rounded-full pointer-events-none" />
@@ -36,28 +36,28 @@ export default function Features() {
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-24 gap-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-14 gap-8">
           <div className="max-w-2xl">
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-black uppercase tracking-[0.3em] mb-6"
             >
               <Sparkles size={12} /> The Ecosystem
-            </motion.div>
+            </motion.div> */}
             <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.9] tracking-tighter">
               DESIGNED FOR <br />
               <span className="text-orange-500 italic">EVERY TABLE.</span>
             </h2>
           </div>
-          <div className="flex flex-wrap gap-3">
+          {/* <div className="flex flex-wrap gap-3">
             <div className="px-6 py-3 bg-white/5 rounded-2xl border border-white/10 text-zinc-400 text-sm font-bold flex items-center gap-2">
               <Zap size={16} className="text-orange-500" /> MERN Stack
             </div>
             <div className="px-6 py-3 bg-white/5 rounded-2xl border border-white/10 text-zinc-400 text-sm font-bold flex items-center gap-2">
               <ShieldCheck size={16} className="text-orange-500" /> Real-time Sync
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Feature Cards Grid */}

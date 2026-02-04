@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function ClientFacedHero() {
   return (
-    <section className="relative min-h-screen flex items-center pt-32 pb-20 bg-white overflow-hidden">
+    <section className="relative min-h-screen flex items-center pt-26 pb-10 bg-white overflow-hidden">
       {/* --- High-End Background Architecture --- */}
       <div className="absolute top-0 right-0 w-[55%] h-full bg-orange-50/50 -skew-x-12 transform origin-top translate-x-24 -z-0" />
       <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-orange-200/20 blur-[150px] rounded-full" />
@@ -18,13 +18,13 @@ export default function ClientFacedHero() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-zinc-950 text-white text-[10px] font-black uppercase tracking-[0.3em] mb-10 shadow-2xl shadow-orange-950/10">
+          {/* <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-zinc-950 text-white text-[10px] font-black uppercase tracking-[0.3em] mb-10 shadow-2xl shadow-orange-950/10">
             <div className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
             </div>
             Global Hospitality OS 2026
-          </div>
+          </div> */}
 
           <h1 className="text-6xl md:text-8xl lg:text-[110px] font-black text-zinc-950 tracking-tighter mb-10 leading-[0.8] lg:leading-[0.85]">
             OWN THE <br />
@@ -33,7 +33,7 @@ export default function ClientFacedHero() {
             </span>
           </h1>
 
-          <p className="text-zinc-500 text-xl font-medium max-w-lg leading-relaxed mb-12">
+          <p className="text-zinc-500 text-xl font-medium max-w-lg leading-relaxed mb-10">
             Eliminate ordering friction. The complete operating system for modern venues—synchronizing <span className="text-zinc-950 font-bold italic">QR-Menus</span>, <span className="text-zinc-950 font-bold italic">Kitchen Prep</span>, and <span className="text-zinc-950 font-bold italic">Deep Analytics</span>.
           </p>
 
@@ -45,9 +45,9 @@ export default function ClientFacedHero() {
             >
               Get Started Free <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
             </motion.button>
-            <button className="px-12 py-6 bg-transparent text-zinc-900 rounded-2xl font-black text-xl border-2 border-zinc-200 hover:border-orange-600 hover:bg-orange-50/50 transition-all">
+            {/* <button className="px-12 py-6 bg-transparent text-zinc-900 rounded-2xl font-black text-xl border-2 border-zinc-200 hover:border-orange-600 hover:bg-orange-50/50 transition-all">
                Watch the Sync
-            </button>
+            </button> */}
           </div>
 
           {/* Social Proof / Stats Area */}
@@ -60,12 +60,12 @@ export default function ClientFacedHero() {
               <p className="text-3xl font-black text-zinc-950 tracking-tighter">100%</p>
               <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Order Accuracy</p>
             </div>
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <div className="flex gap-1 text-orange-500 mb-1">
                 {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
               </div>
               <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Industry Leader</p>
-            </div>
+            </div> */}
           </div>
         </motion.div>
 
@@ -101,7 +101,7 @@ export default function ClientFacedHero() {
                     <p className="text-[10px] font-black text-zinc-200 uppercase tracking-widest">Revenue Flow</p>
                     <Globe size={14} className="text-zinc-200" />
                   </div>
-                  <h3 className="text-4xl font-black text-white tracking-tighter">$4,280.50</h3>
+                  <h3 className="text-4xl font-black text-white tracking-tighter">₹4,280.50</h3>
                   <div className="mt-4 flex items-center gap-2">
                     <div className="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
                       <motion.div 
@@ -156,7 +156,7 @@ export default function ClientFacedHero() {
            </div>
 
            {/* Creative Floating Accessory: Table Pin */}
-            <motion.div 
+            {/* <motion.div 
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-6 -right-12 p-5 bg-white shadow-2xl rounded-3xl border border-zinc-100 hidden xl:flex items-center gap-4"
@@ -168,7 +168,7 @@ export default function ClientFacedHero() {
                 <p className="text-[10px] font-black text-zinc-400 uppercase">Peak Time</p>
                 <p className="text-sm font-black text-zinc-950">19:30 - 21:00</p>
               </div>
-            </motion.div>
+            </motion.div> */}
             
          </motion.div>
 

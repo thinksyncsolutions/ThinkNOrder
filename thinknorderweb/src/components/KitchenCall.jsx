@@ -4,11 +4,11 @@ import { motion } from "framer-motion";
 
 export default function KitchenCall() {
   return (
-    <section className="py-32 px-6 bg-white">
+    <section className="py-12 px-6 bg-white">
       <div className="max-w-6xl mx-auto relative">
         
         {/* Main CTA Card */}
-        <div className="bg-orange-600 rounded-[4.5rem] p-12 md:p-24 text-center text-white relative shadow-[0_40px_100px_-20px_rgba(234,88,12,0.4)] overflow-hidden">
+        <div className="bg-orange-600 rounded-[4.5rem] p-10 md:p-12 text-center text-white relative shadow-[0_40px_100px_-20px_rgba(234,88,12,0.4)] overflow-hidden">
           
           {/* Creative Background: Animated Mesh */}
           <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -27,13 +27,13 @@ export default function KitchenCall() {
 
           {/* Content Layer */}
           <div className="relative z-10">
-            <motion.div 
+            {/* <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-white text-[10px] font-black uppercase tracking-[0.4em] mb-10"
             >
               <Star size={12} fill="currentColor" /> Limited Slots for 2026
-            </motion.div>
+            </motion.div> */}
 
             <h2 className="text-6xl md:text-[90px] font-black mb-8 leading-[0.85] tracking-tighter">
               THE KITCHEN <br /> 
@@ -72,7 +72,7 @@ export default function KitchenCall() {
         <motion.div 
           animate={{ y: [0, -20, 0] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[3rem] shadow-2xl border border-orange-100 hidden lg:block z-20"
+          className="absolute -bottom-10 -left-10 bg-white p-6 rounded-[3rem] shadow-2xl border border-orange-100 hidden lg:block z-20"
         >
           <div className="flex items-center gap-5">
             <div className="flex -space-x-3">
@@ -83,7 +83,7 @@ export default function KitchenCall() {
               ))}
             </div>
             <div className="text-left">
-              <p className="text-orange-950 font-black text-lg leading-none">12 New Venues</p>
+              <p className="text-orange-950 font-black text-lg leading-none">4 New Venues</p>
               <p className="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mt-1">Joined this week</p>
             </div>
           </div>

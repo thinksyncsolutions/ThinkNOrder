@@ -10,7 +10,7 @@ export default function Kitchen() {
   ];
 
   return (
-    <section id="kitchen" className="relative py-32 bg-white overflow-hidden">
+    <section id="kitchen" className="relative py-12 bg-white overflow-hidden">
       {/* Subtle Background Elements */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-orange-50/50 -skew-x-12 translate-x-20 z-0" />
       

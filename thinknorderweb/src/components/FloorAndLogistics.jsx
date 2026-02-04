@@ -4,22 +4,22 @@ import { motion } from "framer-motion";
 
 export default function FloorAndLogistics() {
   return (
-    <section id="logistics" className="relative py-32 bg-white overflow-hidden">
+    <section id="logistics" className="relative py-12 bg-white overflow-hidden">
       {/* Blueprint Pattern Background */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
            style={{ backgroundImage: `radial-gradient(#f97316 1px, transparent 1px)`, backgroundSize: '32px 32px' }} 
       />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center mb-20">
-          <motion.div 
+        <div className="text-center mb-8">
+          {/* <motion.div 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-50 border border-orange-100 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6"
           >
             <Map size={12} /> Spatial Intelligence
-          </motion.div>
-          <h2 className="text-5xl md:text-6xl font-black text-orange-950 mb-6 tracking-tighter">
+          </motion.div> */}
+          <h2 className="text-5xl md:text-6xl font-black text-orange-950 mb-4 tracking-tighter">
             FLOOR & TABLE <br />
             <span className="text-orange-600">LOGISTICS.</span>
           </h2>
@@ -37,7 +37,7 @@ export default function FloorAndLogistics() {
           <div className="bg-white rounded-[4rem] border border-orange-100 p-8 md:p-12 shadow-[0_40px_100px_-20px_rgba(249,115,22,0.1)] relative overflow-hidden">
             
             {/* Header / Controls */}
-            <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-6">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
               <div className="flex p-1.5 bg-orange-50 rounded-3xl border border-orange-100 w-fit">
                 <button className="px-8 py-3 bg-orange-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-orange-200 transition-all">
                   Level 1: Main Hall
@@ -100,7 +100,7 @@ export default function FloorAndLogistics() {
             </div>
 
             {/* Scale Indicator */}
-            <div className="mt-16 pt-8 border-t border-orange-50 flex justify-center">
+            <div className="mt-8 pt-8 border-t border-orange-50 flex justify-center">
               <div className="flex gap-8 text-[10px] font-black uppercase text-orange-900/20 tracking-[0.3em]">
                 <span>North Entrance</span>
                 <div className="w-20 h-px bg-orange-100 self-center" />

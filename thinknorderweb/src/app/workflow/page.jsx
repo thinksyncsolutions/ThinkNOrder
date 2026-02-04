@@ -41,18 +41,18 @@ export default function WorkflowPage() {
       <div className="max-w-5xl mx-auto px-6">
         
        {/* Header */}
-        <div className="text-center mb-32">
-          <motion.div 
+        <div className="text-center mb-14">
+          {/* <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-[10px] font-black uppercase tracking-[0.3em] mb-8"
           >
             <Activity size={12} /> The Synchronized Process
-          </motion.div>
+          </motion.div> */}
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-7xl md:text-9xl font-black text-orange-950 tracking-tighter leading-none mb-10"
+            className="text-7xl md:text-8xl font-black text-orange-950 tracking-tighter leading-none mb-2"
           >
             THE <span className="text-orange-600 italic">FLOW.</span>
           </motion.h1>
@@ -66,7 +66,7 @@ export default function WorkflowPage() {
           {/* Connecting Line (Desktop Only) */}
           <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-orange-200 -translate-x-1/2" />
 
-          <div className="space-y-24">
+          <div className="space-y-12">
             {steps.map((step, index) => (
               <motion.div 
                 key={index}
@@ -106,7 +106,7 @@ export default function WorkflowPage() {
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          className="mt-32 text-center"
+          className="mt-16 text-center"
         >
           <div className="inline-flex flex-col items-center">
              <div className="w-1 h-12 bg-gradient-to-b from-orange-200 to-orange-600 mb-6 rounded-full animate-bounce" />

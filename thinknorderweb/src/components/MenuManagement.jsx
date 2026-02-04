@@ -22,7 +22,7 @@ export default function MenuManagement() {
   };
 
   return (
-    <section id="menu" className="relative py-32 bg-orange-950 text-white overflow-hidden">
+    <section id="menu" className="relative py-12 bg-orange-950 text-white overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
       
