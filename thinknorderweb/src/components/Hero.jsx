@@ -6,7 +6,7 @@ export default function ClientFacedHero() {
   return (
     <section className="relative min-h-screen flex items-center pt-26 pb-10 bg-white overflow-hidden">
       {/* --- High-End Background Architecture --- */}
-      <div className="absolute top-0 right-0 w-[55%] h-full bg-orange-50/50 -skew-x-12 transform origin-top translate-x-24 -z-0" />
+      <div className="absolute top-0 right-0 w-[55%] h-full bg-orange-50/50 -skew-x-12 transform origin-top translate-x-24 z-0" />
       <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-orange-200/20 blur-[150px] rounded-full" />
       <div className="absolute bottom-[-5%] right-[10%] w-[30%] h-[30%] bg-orange-500/5 blur-[120px] rounded-full" />
 
@@ -77,10 +77,10 @@ export default function ClientFacedHero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative flex justify-center lg:justify-end"
         >
-          <div className="relative w-full max-w-[340px]"> 
+          <div className="relative w-full max-w-85"> 
             <div className="absolute -inset-10 bg-orange-100/60 rounded-[4rem] blur-3xl" />
             
-            <div className="relative bg-white p-4 rounded-[3.5rem] border-[12px] border-zinc-900 shadow-2xl overflow-hidden aspect-[9/18.5]">
+            <div className="relative bg-white p-4 rounded-[3.5rem] border-12 border-zinc-900 shadow-2xl overflow-hidden aspect-[9/18.5]">
               
               <div className="relative h-full flex flex-col pt-6">
                 {/* Merchant Branding */}

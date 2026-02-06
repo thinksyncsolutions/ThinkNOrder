@@ -24,7 +24,7 @@ export default function MenuManagement() {
   return (
     <section id="menu" className="relative py-12 bg-orange-950 text-white overflow-hidden">
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-150 h-150 bg-orange-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
       
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-24 items-center">
@@ -103,7 +103,7 @@ export default function MenuManagement() {
               </div>
 
               {/* Items List */}
-              <div className="min-h-[280px]">
+              <div className="min-h-70">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeCategory}
@@ -118,7 +118,7 @@ export default function MenuManagement() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="group bg-white/[0.03] p-5 rounded-3xl border border-white/5 hover:border-orange-500/30 hover:bg-white/[0.05] transition-all"
+                        className="group bg-white/3 p-5 rounded-3xl border border-white/5 hover:border-orange-500/30 hover:bg-white/5 transition-all"
                       >
                         <div className="flex justify-between items-center mb-3">
                           <span className="font-bold text-lg group-hover:text-orange-500 transition-colors">{item.name}</span>
@@ -146,7 +146,7 @@ export default function MenuManagement() {
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full mt-8 py-5 rounded-[1.5rem] border-2 border-dashed border-orange-500/20 text-orange-500/40 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-500 hover:text-black hover:border-orange-500 transition-all flex items-center justify-center gap-2"
+                className="w-full mt-8 py-5 rounded-3xl border-2 border-dashed border-orange-500/20 text-orange-500/40 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-500 hover:text-black hover:border-orange-500 transition-all flex items-center justify-center gap-2"
               >
                 <Plus size={14} /> Add New {activeCategory}
               </motion.button>

@@ -24,7 +24,7 @@ export default function AdminDesk() {
   return (
     <section id="admin" className="relative py-12 bg-zinc-950 overflow-hidden">
       {/* Background Decorative Element */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-125 h-125 bg-orange-500/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
@@ -49,7 +49,7 @@ export default function AdminDesk() {
                 <motion.div 
                   key={i}
                   whileHover={{ x: 10 }}
-                  className="group flex gap-5 p-6 rounded-3xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-orange-500/30 transition-all duration-300"
+                  className="group flex gap-5 p-6 rounded-3xl bg-white/2 border border-white/5 hover:bg-white/4 hover:border-orange-500/30 transition-all duration-300"
                 >
                   <div className="mt-1 text-orange-500 group-hover:scale-110 transition-transform">
                     {f.icon}
@@ -91,11 +91,11 @@ export default function AdminDesk() {
 
               {/* Mockup Stats Grid */}
               <div className="grid grid-cols-2 gap-4 mb-8">
-                 <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl">
+                 <div className="bg-white/3 border border-white/5 p-4 rounded-2xl">
                     <p className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Active Orders</p>
                     <p className="text-2xl font-black text-white">14</p>
                  </div>
-                 <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl">
+                 <div className="bg-white/3 border border-white/5 p-4 rounded-2xl">
                     <p className="text-[10px] text-zinc-500 uppercase font-bold mb-1">Floor Occupancy</p>
                     <p className="text-2xl font-black text-orange-500">82%</p>
                  </div>

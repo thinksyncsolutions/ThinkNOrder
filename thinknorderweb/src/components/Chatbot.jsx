@@ -123,7 +123,7 @@ export default function ThinkBot({ open, onClose, onOpen }) {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[1000]">
+    <div className="fixed bottom-6 right-6 z-1000">
       <AnimatePresence mode="wait">
         {open ? (
           /* --- THINKBOT WINDOW --- */
@@ -132,10 +132,10 @@ export default function ThinkBot({ open, onClose, onOpen }) {
             initial={{ opacity: 0, scale: 0.9, y: 50, transformOrigin: "bottom right" }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 50 }}
-            className="lg:w-[400px] w-[340px] bg-[#0a0a0a] rounded-3xl shadow-[0_20px_50px_rgba(249,115,22,0.15)] border border-white/10 overflow-hidden flex flex-col h-[550px]"
+            className="lg:w-100 w-85 bg-[#0a0a0a] rounded-3xl shadow-[0_20px_50px_rgba(249,115,22,0.15)] border border-white/10 overflow-hidden flex flex-col h-137.5"
           >
             {/* Header: Dark & Glossy */}
-            <div className="p-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white flex items-center gap-4 shrink-0 shadow-lg">
+            <div className="p-4 bg-linear-to-r from-orange-600 to-orange-500 text-white flex items-center gap-4 shrink-0 shadow-lg">
               <div className="relative">
                 <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center border border-white/20">
                   <QrCode size={24} className="text-orange-500" />
@@ -283,8 +283,8 @@ export default function ThinkBot({ open, onClose, onOpen }) {
               <div className="absolute -bottom-1 right-6 w-2 h-2 bg-orange-600 rotate-45" />
             </div>
 
-            <div className="w-16 h-16 lg:w-20 lg:h-20 bg-orange-600 rounded-[2rem] flex items-center justify-center shadow-[0_10px_30px_rgba(249,115,22,0.4)] border-4 border-black relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-tr from-orange-400 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="w-16 h-16 lg:w-20 lg:h-20 bg-orange-600 rounded-4xl flex items-center justify-center shadow-[0_10px_30px_rgba(249,115,22,0.4)] border-4 border-black relative overflow-hidden group">
+              <div className="absolute inset-0 bg-linear-to-tr from-orange-400 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity" />
               <Utensils size={32} className="text-black relative z-10 group-hover:scale-110 transition-transform" />
               
               {/* Notification Badge */}

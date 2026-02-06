@@ -34,10 +34,10 @@ export default function VisualShowcase() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative aspect-video bg-[#1e1e1e] rounded-[3rem] border-[8px] border-[#2a2a2a] shadow-2xl overflow-hidden flex items-center justify-center group"
+            className="relative aspect-video bg-[#1e1e1e] rounded-[3rem] border-8 border-[#2a2a2a] shadow-2xl overflow-hidden flex items-center justify-center group"
           >
             {/* Screen Content Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#252525] via-[#1a1a1a] to-[#252525] flex items-center justify-center">
+            <div className="absolute inset-0 bg-linear-to-br from-[#252525] via-[#1a1a1a] to-[#252525] flex items-center justify-center">
               <div className="text-center">
                 <div className="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(249,115,22,0.3)] group-hover:scale-110 transition-transform cursor-pointer">
                   <Play size={32} className="text-[#121212] ml-1" fill="currentColor" />

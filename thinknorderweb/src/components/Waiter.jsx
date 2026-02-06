@@ -49,7 +49,7 @@ export default function Waiter() {
               {/* Order Stream Animation */}
               <div className="space-y-6 relative">
                 {/* Visual Connection Line */}
-                <div className="absolute left-[22px] top-10 bottom-10 w-0.5 bg-gradient-to-b from-orange-200 via-orange-500 to-orange-200 border-dashed border-l" />
+                <div className="absolute left-5.5 top-10 bottom-10 w-0.5 bg-linear-to-b from-orange-200 via-orange-500 to-orange-200 border-dashed border-l" />
 
                 <div className="flex items-center gap-4 relative z-10">
                   <div className="w-11 h-11 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">01</div>
@@ -84,7 +84,7 @@ export default function Waiter() {
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="mt-10 bg-zinc-950 rounded-[2rem] p-5 text-white flex justify-between items-center shadow-2xl"
+                  className="mt-10 bg-zinc-950 rounded-4xl p-5 text-white flex justify-between items-center shadow-2xl"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
@@ -135,7 +135,7 @@ export default function Waiter() {
                 }
               ].map((feature, i) => (
                 <div key={i} className="flex gap-6 group">
-                  <div className="flex-shrink-0 w-14 h-14 bg-white/10 border border-white/10 rounded-[1.5rem] flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-black transition-all duration-300">
+                  <div className="shrink-0 w-14 h-14 bg-white/10 border border-white/10 rounded-3xl flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-black transition-all duration-300">
                     {feature.icon}
                   </div>
                   <div>

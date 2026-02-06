@@ -91,7 +91,7 @@ export default function Kitchen() {
                   <motion.div
                     key={i}
                     whileHover={{ x: 10 }}
-                    className="bg-white/[0.03] border border-white/10 rounded-[2rem] p-5 flex justify-between items-center transition-colors hover:bg-white/[0.06] hover:border-orange-500/30"
+                    className="bg-white/3 border border-white/10 rounded-4xl p-5 flex justify-between items-center transition-colors hover:bg-white/6 hover:border-orange-500/30"
                   >
                     <div className="flex items-center gap-5">
                        <div className="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center font-black text-orange-500 text-sm border border-white/5">
@@ -124,7 +124,7 @@ export default function Kitchen() {
             <motion.div 
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 6, repeat: Infinity }}
-              className="absolute -top-10 -right-10 bg-white p-5 rounded-[2rem] shadow-2xl border border-orange-100 hidden xl:flex items-center gap-4"
+              className="absolute -top-10 -right-10 bg-white p-5 rounded-4xl shadow-2xl border border-orange-100 hidden xl:flex items-center gap-4"
             >
                <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-white">
                   <ChefHat size={24} />

@@ -13,7 +13,7 @@ export default function ProductStats() {
     <section className="relative py-20 bg-[#050505] overflow-hidden border-y border-white/5">
       {/* Subtle Background Decoration */}
       <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(#f97316_0.5px,transparent_0.5px)] [background-size:24px_24px]" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-orange-500/50 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -82,7 +82,7 @@ export default function ProductStats() {
               </div>
 
               {/* Decorative Corner Glow */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-linear-to-r from-transparent via-orange-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
             </motion.div>
           ))}
         </div>
