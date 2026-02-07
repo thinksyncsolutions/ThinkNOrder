@@ -1,83 +1,81 @@
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 
-// auth
-import Login from "../pages/auth/login";
+import Login from "../pages/auth/Login";
+import SuperAdminLayout from "../layouts/SuperAdminLayout";
+// import RegisterOwner from "../pages/auth/RegisterOwner";
 
-// superadmin
-// import SuperAdminDashboard from "../superadmin/SuperAdminDashboard";
-// import CreateRestaurant from "../superadmin/CreateRestaurant";
+// import SuperAdminDashboard from "../pages/superadmin/Dashboard";
+import CreateRestaurant from "../pages/superadmin/CreateRestaurant";
 
-// owner
-// import OwnerDashboard from "../owner/OwnerDashboard";
-// import CreateBranch from "../owner/CreateBranch";
+// import OwnerDashboard from "../pages/owner/Dashboard";
+// import CreateBranch from "../pages/owner/CreateBranch";
 
-// staff
-// import Orders from "../staff/Orders";
-// import Tables from "../staff/Tables";
-// import Kitchen from "../staff/Kitchen";
+// import Orders from "../pages/staff/Orders";
+// import Tables from "../pages/staff/Tables";
+// import Kitchen from "../pages/staff/Kitchen";
 
 export const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
+  { path: "/", element: <Login /> },
+  // { path: "/register", element: <RegisterOwner /> },
 
-//   {
-//     path: "/superadmin",
-//     element: (
-//       <ProtectedRoute roles={["SUPERADMIN"]}>
-//         <SuperAdminDashboard />
-//       </ProtectedRoute>
-//     )
-//   },
-//   {
-//     path: "/superadmin/restaurants/create",
-//     element: (
-//       <ProtectedRoute roles={["SUPERADMIN"]}>
-//         <CreateRestaurant />
-//       </ProtectedRoute>
-//     )
-//   },
+  // 🔴 SUPER ADMIN
+  {
+    path: "/superadmin",
+    element: (
+      <ProtectedRoute roles={["SUPERADMIN"]}>
+        <SuperAdminLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      // { index: true, element: <SuperAdminDashboard /> },
+      { path: "restaurants/create", element: <CreateRestaurant /> },
+    ],
+  },
 
-//   {
-//     path: "/owner",
-//     element: (
-//       <ProtectedRoute roles={["OWNER"]}>
-//         <OwnerDashboard />
-//       </ProtectedRoute>
-//     )
-//   },
-//   {
-//     path: "/owner/branches/create",
-//     element: (
-//       <ProtectedRoute roles={["OWNER"]}>
-//         <CreateBranch />
-//       </ProtectedRoute>
-//     )
-//   },
+  // 🟠 OWNER
+  // {
+  //   path: "/owner",
+  //   element: (
+  //     <ProtectedRoute roles={["OWNER"]}>
+  //       <OwnerDashboard />
+  //     </ProtectedRoute>
+  //   ),
+  // },
+  // {
+  //   path: "/owner/branches/create",
+  //   element: (
+  //     <ProtectedRoute roles={["OWNER"]}>
+  //       <CreateBranch />
+  //     </ProtectedRoute>
+  //   ),
+  // },
 
-//   {
-//     path: "/staff/orders",
-//     element: (
-//       <ProtectedRoute roles={["WAITER", "CASHIER"]}>
-//         <Orders />
-//       </ProtectedRoute>
-//     )
-//   },
-//   {
-//     path: "/staff/tables",
-//     element: (
-//       <ProtectedRoute roles={["WAITER", "CASHIER"]}>
-//         <Tables />
-//       </ProtectedRoute>
-//     )
-//   },
-//   {
-//     path: "/staff/kitchen",
-//     element: (
-//       <ProtectedRoute roles={["KITCHEN"]}>
-//         <Kitchen />
-//       </ProtectedRoute>
-//     )
-//   },
+  // // 🟡 STAFF
+  // {
+  //   path: "/staff/orders",
+  //   element: (
+  //     <ProtectedRoute roles={["WAITER", "CASHIER"]}>
+  //       <Orders />
+  //     </ProtectedRoute>
+  //   ),
+  // },
+  // {
+  //   path: "/staff/tables",
+  //   element: (
+  //     <ProtectedRoute roles={["WAITER", "CASHIER"]}>
+  //       <Tables />
+  //     </ProtectedRoute>
+  //   ),
+  // },
+  // {
+  //   path: "/staff/kitchen",
+  //   element: (
+  //     <ProtectedRoute roles={["KITCHEN"]}>
+  //       <Kitchen />
+  //     </ProtectedRoute>
+  //   ),
+  // },
 
-  { path: "*", element: <h2>404 – Page not found</h2> }
+  { path: "*", element: <h2>404 – Page not found</h2> },
 ]);
