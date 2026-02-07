@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const BranchSchema = new mongoose.Schema({
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -15,3 +17,7 @@ const BranchSchema = new mongoose.Schema({
 
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
+
+BranchSchema.index({ restaurantId: 1, branchCode: 1 }, { unique: true });
+
+module.exports = mongoose.model("Branch", BranchSchema);

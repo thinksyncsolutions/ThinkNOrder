@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const paymentSchema = new mongoose.Schema({
   restaurantId: mongoose.Schema.Types.ObjectId,
   branchId: mongoose.Schema.Types.ObjectId,
@@ -18,4 +20,8 @@ const paymentSchema = new mongoose.Schema({
 
   transactionId: String
 }, { timestamps: true });
+
+paymentSchema.index({ restaurantId: 1, branchId: 1, orderSessionId: 1 });
+
+module.exports = mongoose.model("Payment", paymentSchema);
  

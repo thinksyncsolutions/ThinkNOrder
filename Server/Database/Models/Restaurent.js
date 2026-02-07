@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const RestaurantSchema = new mongoose.Schema({
   name: { type: String, required: true },
   owner: {
@@ -16,3 +18,7 @@ const RestaurantSchema = new mongoose.Schema({
 
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
+
+RestaurantSchema.index({ owner: 1 });
+
+module.exports = mongoose.model("Restaurant", RestaurantSchema);

@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const placeSchema = new mongoose.Schema({
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -42,3 +44,7 @@ const placeSchema = new mongoose.Schema({
   qrCodeUrl: String,
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
+
+placeSchema.index({ restaurantId: 1, branchId: 1, number: 1 }, { unique: true });
+
+module.exports = mongoose.model("Place", placeSchema);
