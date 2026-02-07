@@ -11,7 +11,7 @@ const RestaurantSchema = new mongoose.Schema({
     enum: ["FREE", "STARTER", "GROWTH", "ENTERPRISE"],
     default: "FREE"
   },
-
+  
   maxBranches: { type: Number, default: 1 },
 
   isActive: { type: Boolean, default: true }
