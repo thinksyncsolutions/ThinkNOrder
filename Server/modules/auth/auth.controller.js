@@ -25,7 +25,7 @@ exports.registerOwner = async (req, res) => {
       password,
       role: "OWNER",
       restaurantId: null,
-      accessibleBranches: []
+      accessibleBranches: [],
     });
     await owner.save({ session });
 
@@ -33,7 +33,7 @@ exports.registerOwner = async (req, res) => {
     const restaurant = new Restaurant({
       name: restaurantName,
       owner: owner._id,
-      plan: "FREE"
+      plan: "FREE",
     });
     await restaurant.save({ session });
 
@@ -48,9 +48,8 @@ exports.registerOwner = async (req, res) => {
     res.status(201).json({
       message: "Restaurant & Owner registered successfully",
       restaurantId: restaurant._id,
-      ownerId: owner._id
+      ownerId: owner._id,
     });
-
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
@@ -58,7 +57,6 @@ exports.registerOwner = async (req, res) => {
     res.status(500).json({ message: "Registration failed" });
   }
 };
-
 
 exports.createBranch = async (req, res) => {
   const session = await mongoose.startSession();
@@ -70,17 +68,21 @@ exports.createBranch = async (req, res) => {
 
     if (user.role !== "OWNER") {
       await session.abortTransaction();
-      return res.status(403).json({ message: "Only owner can create branches" });
+      return res
+        .status(403)
+        .json({ message: "Only owner can create branches" });
     }
 
-    const restaurant = await Restaurant.findById(user.restaurantId).session(session);
+    const restaurant = await Restaurant.findById(user.restaurantId).session(
+      session,
+    );
     if (!restaurant) {
       await session.abortTransaction();
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
     const branchCount = await Branch.countDocuments({
-      restaurantId: restaurant._id
+      restaurantId: restaurant._id,
     }).session(session);
 
     if (branchCount >= restaurant.maxBranches) {
@@ -93,7 +95,7 @@ exports.createBranch = async (req, res) => {
       branchCode: `${restaurant._id}-BR${branchCount + 1}`,
       name,
       city,
-      address
+      address,
     });
 
     await branch.save({ session });
@@ -103,16 +105,16 @@ exports.createBranch = async (req, res) => {
 
     res.status(201).json({
       message: "Branch created successfully",
-      branch
+      branch,
     });
-
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
-    res.status(500).json({ message: "Failed to create branch", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to create branch", error: err.message });
   }
 };
-
 
 exports.createUser = async (req, res) => {
   try {
@@ -135,7 +137,7 @@ exports.createUser = async (req, res) => {
 
     const branches = await Branch.find({
       _id: { $in: branchIds },
-      restaurantId: admin.restaurantId
+      restaurantId: admin.restaurantId,
     });
 
     if (branches.length !== branchIds.length) {
@@ -148,21 +150,19 @@ exports.createUser = async (req, res) => {
       email,
       password,
       role,
-      accessibleBranches: branchIds
+      accessibleBranches: branchIds,
     });
 
     await user.save();
 
     res.status(201).json({
       message: "User created successfully",
-      userId: user._id
+      userId: user._id,
     });
-
   } catch (err) {
     res.status(500).json({ message: "User creation failed" });
   }
 };
-
 
 exports.login = async (req, res) => {
   try {
@@ -182,10 +182,10 @@ exports.login = async (req, res) => {
       {
         id: user._id,
         role: user.role,
-        restaurantId: user.restaurantId
+        restaurantId: user.restaurantId,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({
@@ -195,10 +195,9 @@ exports.login = async (req, res) => {
         id: user._id,
         role: user.role,
         restaurantId: user.restaurantId,
-        branches: user.accessibleBranches
-      }
+        branches: user.accessibleBranches,
+      },
     });
-
   } catch (err) {
     res.status(500).json({ message: "Login failed" });
   }
