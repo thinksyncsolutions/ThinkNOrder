@@ -5,7 +5,7 @@ exports.createPlace = async (req, res, next) => {
   try {
     const { type, number, floor, capacity, branchId } = req.body;
 
-    const place = await Place.create({
+    const place = new Place({
       type,
       number,
       floor,
@@ -13,6 +13,7 @@ exports.createPlace = async (req, res, next) => {
       branchId,
       restaurantId: req.user.restaurantId
     });
+    await place.save();
 
     res.status(201).json({ success: true, data: place });
   } catch (err) {

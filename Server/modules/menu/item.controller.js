@@ -5,7 +5,7 @@ exports.createItem = async (req, res, next) => {
   try {
     const { name, image, description, prices, sectionId, branchId, isVeg, preparationTime } = req.body;
 
-    const item = await Item.create({
+    const item = new Item({
       name,
       image,
       description,
@@ -16,6 +16,7 @@ exports.createItem = async (req, res, next) => {
       preparationTime,
       restaurantId: req.user.restaurantId
     });
+    await item.save();
 
     res.status(201).json({ success: true, data: item });
   } catch (err) {

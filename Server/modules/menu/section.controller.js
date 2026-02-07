@@ -5,13 +5,14 @@ exports.createSection = async (req, res, next) => {
   try {
     const { name, image, branchId, order } = req.body;
 
-    const section = await Section.create({
+    const section = new Section({
       name,
       image,
       order,
       branchId: branchId || null,
       restaurantId: req.user.restaurantId
     });
+    await section.save();
 
     res.status(201).json({ success: true, data: section });
   } catch (err) {
@@ -56,7 +57,12 @@ exports.updateSection = async (req, res, next) => {
 
 exports.deleteSection = async (req, res, next) => {
   try {
-    await Section.findByIdAndUpdate(req.params.id, { isActive: false });
+    const section = await Section.findByIdAndDelete(req.params.id);
+    if (!section) return res.status(404).json({ message: "Section not found" });
+
+    section.isActive = false;
+    await section.save();
+
     res.json({ success: true, message: "Section removed" });
   } catch (err) {
     next(err);

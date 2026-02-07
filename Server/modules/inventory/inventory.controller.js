@@ -4,7 +4,7 @@ exports.createInventoryItem = async (req, res, next) => {
   try {
     const { itemName, unit, quantity, minThreshold, branchId } = req.body;
 
-    const item = await Inventory.create({
+    const item = new Inventory({
       itemName,
       unit,
       quantity,
@@ -12,6 +12,7 @@ exports.createInventoryItem = async (req, res, next) => {
       branchId,
       restaurantId: req.user.restaurantId
     });
+    await item.save();
 
     res.status(201).json({ success: true, data: item });
   } catch (err) {
