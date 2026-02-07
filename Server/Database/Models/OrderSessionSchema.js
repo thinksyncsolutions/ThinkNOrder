@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const orderSessionSchema = new mongoose.Schema({
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -30,3 +32,5 @@ const orderSessionSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 orderSessionSchema.index({ restaurantId: 1, branchId: 1, isClosed: 1 });
+
+module.exports = mongoose.model("OrderSession", orderSessionSchema);

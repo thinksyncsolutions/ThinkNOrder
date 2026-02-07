@@ -3,7 +3,7 @@ const app = express();
 require("dotenv").config();
 
 // Connect to DB
-const connectDB = require("./Databases/DbConnect/DbConnect");
+const connectDB = require("./database/dbConnect/DbConnect");
 connectDB();
 
 const cors = require("cors");
@@ -13,12 +13,6 @@ const http = require("http");
 const socketIO = require("socket.io");
 const server = http.createServer(app); // Attach Express to HTTP server
 
-// Routes
-const authRoutes = require("./Routes/authRoutes");
-const menuRoutes = require("./Routes/menuRoutes");
-const userRoutes = require("./Routes/userRoutes");
-const orderRoutes = require("./Routes/orderRoutes");
-const placeRoutes = require("./Routes/placeroutes");
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
@@ -62,11 +56,11 @@ app.get("/", (req, res) => {
   res.send("Server is Alive!");
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/menu", menuRoutes);
-app.use("/api/order", orderRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/place", placeRoutes);
+app.use("/api/auth", require("./modules/auth/auth.routes"));
+app.use("/api/menu", require("./modules/menu/menu.routes"));
+// app.use("/api/order", require("./modules/order/order.routes"));
+// app.use("/api/user", require("./modules/user/user.routes"));
+app.use("/api/place", require("./modules/place/place.routes"));
 
 // Start server (ONLY this)
 const port = process.env.PORT || 3000;

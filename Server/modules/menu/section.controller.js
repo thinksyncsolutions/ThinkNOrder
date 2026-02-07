@@ -1,0 +1,70 @@
+// section.controller.js
+const Section = require("../../database/models/Section");
+
+exports.createSection = async (req, res, next) => {
+  try {
+    const { name, image, branchId, order } = req.body;
+
+    const section = new Section({
+      name,
+      image,
+      order,
+      branchId: branchId || null,
+      restaurantId: req.user.restaurantId
+    });
+    await section.save();
+
+    res.status(201).json({ success: true, data: section });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getSections = async (req, res, next) => {
+  try {
+    const { branchId } = req.query;
+
+    const sections = await Section.find({
+      restaurantId: req.user.restaurantId,
+      isActive: true,
+      $or: [{ branchId: null }, { branchId }]
+    }).sort({ order: 1 });
+
+    res.json({ success: true, data: sections });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateSection = async (req, res, next) => {
+  try {
+    const section = await Section.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        restaurantId: req.user.restaurantId
+      },
+      req.body,
+      { new: true }
+    );
+
+    if (!section) return res.status(404).json({ message: "Section not found" });
+
+    res.json({ success: true, data: section });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteSection = async (req, res, next) => {
+  try {
+    const section = await Section.findByIdAndDelete(req.params.id);
+    if (!section) return res.status(404).json({ message: "Section not found" });
+
+    section.isActive = false;
+    await section.save();
+
+    res.json({ success: true, message: "Section removed" });
+  } catch (err) {
+    next(err);
+  }
+};

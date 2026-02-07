@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const itemSchema = new mongoose.Schema({
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,3 +35,5 @@ const itemSchema = new mongoose.Schema({
 
 itemSchema.index({ restaurantId: 1, branchId: 1 });
 itemSchema.index({ sectionId: 1 });
+
+module.exports = mongoose.model("Item", itemSchema);

@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const kitchenTicketSchema = new mongoose.Schema({
   restaurantId: mongoose.Schema.Types.ObjectId,
   branchId: mongoose.Schema.Types.ObjectId,
@@ -31,3 +33,7 @@ const kitchenTicketSchema = new mongoose.Schema({
   }
 
 }, { timestamps: true });
+
+kitchenTicketSchema.index({ restaurantId: 1, branchId: 1, createdAt: -1 });
+
+module.exports = mongoose.model("KitchenTicket", kitchenTicketSchema);

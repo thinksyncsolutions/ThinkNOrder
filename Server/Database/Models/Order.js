@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const orderSchema = new mongoose.Schema({
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,3 +50,5 @@ const orderSchema = new mongoose.Schema({
 
 orderSchema.index({ restaurantId: 1, branchId: 1, createdAt: -1 });
 orderSchema.index({ orderSessionId: 1 });
+
+module.exports = mongoose.model("Order", orderSchema);
