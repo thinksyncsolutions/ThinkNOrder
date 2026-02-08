@@ -20,20 +20,22 @@ const authSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(loginThunk.pending, state => {
-        state.loading = true;
-      })
-      .addCase(loginThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        localStorage.setItem("user", JSON.stringify(action.payload.user));
-        localStorage.setItem("token", action.payload.token);
-      })
-      .addCase(loginThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      });
+     .addCase(loginThunk.pending, state => {
+  state.loading = true;
+  state.error = null;
+})
+.addCase(loginThunk.fulfilled, (state, action) => {
+  state.loading = false;
+  state.user = action.payload.user;
+  state.token = action.payload.token;
+
+  localStorage.setItem("user", JSON.stringify(action.payload.user));
+  localStorage.setItem("token", action.payload.token);
+})
+.addCase(loginThunk.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+});
   }
 });
 

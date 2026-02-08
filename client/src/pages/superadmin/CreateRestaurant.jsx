@@ -21,9 +21,9 @@ const CreateRestaurant = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-orange-50 p-6 selection:bg-orange-600 selection:text-white">
+    <div className="min-h-screen flex items-center justify-center bg-orange-50 selection:bg-orange-600 selection:text-white">
       {/* Decorative Brand Elements */}
-      <div className="absolute top-10 left-10 opacity-10 pointer-events-none">
+      <div className="opacity-10 pointer-events-none">
         <Pizza size={300} className="rotate-12" />
       </div>
 

@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginThunk } from "../../redux/features/auth/auth.thunk";
 import { Eye, EyeOff, LogIn, Pizza, ShieldCheck, Zap } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { user, loading, error } = useSelector(state => state.auth);
+
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -14,9 +23,45 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login Data:", form);
-    // 🔥 call your API here
+    dispatch(loginThunk(form));
   };
+
+useEffect(() => {
+  if (error) {
+    toast.error(error);
+  }
+}, [error]);
+
+React.useEffect(() => {
+  if (user) {
+    toast.success("Login successful");
+  }
+}, [user]);
+
+
+   // 🔥 ROLE BASED NAVIGATION
+  useEffect(() => {
+    if (user?.role) {
+      switch (user.role) {
+        case "SUPERADMIN":
+          navigate("/superadmin");
+          break;
+        case "OWNER":
+          navigate("/owner");
+          break;
+        case "WAITER":
+        case "CASHIER":
+          navigate("/staff/orders");
+          break;
+        case "KITCHEN":
+          navigate("/staff/kitchen");
+          break;
+        default:
+          navigate("/");
+      }
+    }
+  }, [user, navigate]);
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-orange-50 p-6 selection:bg-orange-600 selection:text-white">
@@ -85,12 +130,14 @@ const Login = () => {
 
             {/* Button */}
             <button
-              type="submit"
-              className="w-full flex items-center justify-center gap-3 bg-orange-600 hover:bg-orange-700 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-xl shadow-orange-600/20 active:scale-95 group"
-            >
-              <LogIn size={20} className="group-hover:translate-x-1 transition-transform" />
-              Open Terminal
-            </button>
+  type="submit"
+  disabled={loading}
+  className="w-full flex items-center justify-center gap-3 bg-orange-600 hover:bg-orange-700 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-xl shadow-orange-600/20 active:scale-95 disabled:opacity-60"
+>
+  <LogIn size={20} />
+  {loading ? "Opening Terminal..." : "Open Terminal"}
+</button>
+
           </form>
 
           {/* "Crowded" Professional Details */}

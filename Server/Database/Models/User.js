@@ -22,6 +22,8 @@ const UserSchema = new mongoose.Schema({
     enum: ["OWNER", "SUPERADMIN", "MANAGER", "CASHIER", "WAITER", "KITCHEN", "GUARD"],
     required: true
   },
+  loginAttempts: { type: Number, default: 0 },
+  lockUntil: { type: Date, default: null },
 
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });

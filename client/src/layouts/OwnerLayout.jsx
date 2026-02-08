@@ -10,9 +10,12 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/features/auth/auth.slice";
 
 const OwnerLayout = () => {
   const [open, setOpen] = useState(true);
+  const dispatch = useDispatch();
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -40,7 +43,9 @@ const OwnerLayout = () => {
         <div className="p-3 border-t border-slate-700">
           <button className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-slate-800">
             <LogOut size={18} />
-            {open && "Logout"}
+            <span onClick={() => dispatch(logout())} className="cursor-pointer">
+              {open && "Logout"}
+            </span>
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ const User = require("../../database/models/User");
 const Restaurant = require("../../database/models/Restaurant");
 const Branch = require("../../database/models/Branch");
 
-exports.registerOwner = async (req, res) => {
+exports.registerRestaurant = async (req, res) => {
   const session = await mongoose.startSession();
 
   try {
@@ -116,16 +116,53 @@ exports.createBranch = async (req, res) => {
   }
 };
 
+const MAX_ATTEMPTS = 6;
+const LOCK_TIME = 5 * 60 * 1000; // 5 minutes
+
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email, isActive: true });
-    if (!user) throw new Error("Invalid credentials");
+    const user = await User.findOne({ email });
+    if (!user) {
+      await delay(500); // fake delay to avoid user enumeration
+      throw new Error("User Not Found");
+    }
+
+    // 🔒 Account locked?
+    if (user.lockUntil && user.lockUntil > Date.now()) {
+      return res.status(423).json({
+        message: "Account temporarily locked. Try again later."
+      });
+    }
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) throw new Error("Invalid credentials");
+
+    // ❌ Wrong password
+    if (!isMatch) {
+      user.loginAttempts += 1;
+
+      // 🐢 Slow down on 4–5 attempts
+      if (user.loginAttempts >= 4 && user.loginAttempts <= 5) {
+        await delay(3000); // 3 sec delay
+      }
+
+      // 🔐 Lock on 6th attempt
+      if (user.loginAttempts >= MAX_ATTEMPTS) {
+        user.lockUntil = Date.now() + LOCK_TIME;
+      }
+
+      await user.save();
+
+      throw new Error("Invalid credentials");
+    }
+
+    // ✅ Correct password → reset counters
+    user.loginAttempts = 0;
+    user.lockUntil = null;
+    await user.save();
 
     const token = jwt.sign(
       {
@@ -157,7 +194,9 @@ exports.login = async (req, res) => {
   }
 };
 
+
 exports.createUser = async (req, res) => {
+  console.log("Create user attempt:", req.body);
   try {
     const { name, email, password, role, branchIds } = req.body;
     const admin = req.user;
@@ -201,10 +240,32 @@ exports.createUser = async (req, res) => {
     });
 
   } catch (err) {
+    console.error("Error creating user:", err);
     res.status(500).json({
       message: "User creation failed",
       error: err.message
     });
+  }
+};
+
+exports.registerSuperAdmin = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const userExists = await User.findOne({ email });
+    if (userExists) return res.status(400).json({ message: "User already exists" });
+
+    const superadmin = await User.create({
+      name,
+      email,
+      password,
+      role: "SUPERADMIN",
+      isActive: true
+    });
+
+    res.status(201).json({ message: "Superadmin created", user: superadmin });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 

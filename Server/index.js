@@ -52,15 +52,9 @@ io.on("connection", (socket) => {
 });
 
 // Routes
-app.get("/", (req, res) => {
-  res.send("Server is Alive!");
-});
 
-app.use("/api/auth", require("./modules/auth/auth.routes"));
-app.use("/api/menu", require("./modules/menu/menu.routes"));
-// app.use("/api/order", require("./modules/order/order.routes"));
-// app.use("/api/user", require("./modules/user/user.routes"));
-app.use("/api/place", require("./modules/place/place.routes"));
+app.get("/", (req, res) => res.send("Server is Alive!"));
+app.use("/api", require("./routes")); // 🔥 ONLY THIS
 
 // Start server (ONLY this)
 const port = process.env.PORT || 3000;
