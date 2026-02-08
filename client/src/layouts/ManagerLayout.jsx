@@ -4,14 +4,14 @@ import {
   Menu,
   X,
   LayoutDashboard,
-  Store,
-  Users,
   ClipboardList,
-  Settings,
+  Users,
+  UtensilsCrossed,
+  BarChart3,
   LogOut,
 } from "lucide-react";
 
-const OwnerLayout = () => {
+const ManagerLayout = () => {
   const [open, setOpen] = useState(true);
 
   return (
@@ -23,18 +23,18 @@ const OwnerLayout = () => {
         } flex flex-col`}
       >
         <div className="flex items-center justify-between p-4 border-b border-slate-700">
-          {open && <h1 className="text-lg font-bold">Owner Panel</h1>}
+          {open && <h1 className="text-lg font-bold">Branch Manager</h1>}
           <button onClick={() => setOpen(!open)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         <nav className="flex-1 p-3 space-y-2">
-          <SidebarLink to="/owner" icon={<LayoutDashboard size={18} />} label="Dashboard" open={open} />
-          <SidebarLink to="/owner/branches" icon={<Store size={18} />} label="Branches" open={open} />
-          <SidebarLink to="/owner/staff" icon={<Users size={18} />} label="Staff" open={open} />
-          <SidebarLink to="/owner/menu" icon={<ClipboardList size={18} />} label="Menu" open={open} />
-          <SidebarLink to="/owner/settings" icon={<Settings size={18} />} label="Settings" open={open} />
+          <SidebarLink to="/manager" icon={<LayoutDashboard size={18} />} label="Dashboard" open={open} />
+          <SidebarLink to="/manager/orders" icon={<ClipboardList size={18} />} label="Orders" open={open} />
+          <SidebarLink to="/manager/tables" icon={<UtensilsCrossed size={18} />} label="Tables" open={open} />
+          <SidebarLink to="/manager/staff" icon={<Users size={18} />} label="Staff" open={open} />
+          <SidebarLink to="/manager/reports" icon={<BarChart3 size={18} />} label="Reports" open={open} />
         </nav>
 
         <div className="p-3 border-t border-slate-700">
@@ -47,15 +47,13 @@ const OwnerLayout = () => {
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col">
-        {/* Topbar */}
         <header className="h-14 bg-white shadow flex items-center justify-between px-6">
-          <h2 className="text-lg font-semibold text-gray-700">Restaurant Owner</h2>
+          <h2 className="text-lg font-semibold text-gray-700">Branch Operations</h2>
           <div className="w-9 h-9 rounded-full bg-slate-800 text-white flex items-center justify-center font-semibold">
-            O
+            M
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 p-6 overflow-y-auto">
           <Outlet />
         </main>
@@ -78,4 +76,4 @@ const SidebarLink = ({ to, icon, label, open }) => (
   </NavLink>
 );
 
-export default OwnerLayout;
+export default ManagerLayout;
