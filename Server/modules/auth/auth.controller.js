@@ -1,93 +1,91 @@
-const bcrypt = require("bcryptjs");
-const Restaurant = require("../../database/models/Restaurent");
-const User = require("../../database/models/User");
-const Branch = require("../../database/models/Branch");
-const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const User = require("../../database/models/User");
+const Restaurant = require("../../database/models/Restaurant");
+const Branch = require("../../database/models/Branch");
 
 exports.registerOwner = async (req, res) => {
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
+    session.startTransaction();
+
     const { restaurantName, ownerName, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    // Check email
+    const existingUser = await User.findOne({ email }).session(session);
     if (existingUser) {
-      await session.abortTransaction();
-      return res.status(400).json({ message: "Email already registered" });
+      throw new Error("Email already registered");
     }
 
-    // 1️⃣ Create Owner
+    // 1. Create Owner
     const owner = new User({
       name: ownerName,
       email,
       password,
       role: "OWNER",
       restaurantId: null,
-      accessibleBranches: [],
+      accessibleBranches: []
     });
+
     await owner.save({ session });
 
-    // 2️⃣ Create Restaurant
+    // 2. Create Restaurant
     const restaurant = new Restaurant({
       name: restaurantName,
       owner: owner._id,
-      plan: "FREE",
+      plan: "FREE"
     });
+
     await restaurant.save({ session });
 
-    // 3️⃣ Link back
+    // 3. Link owner → restaurant
     owner.restaurantId = restaurant._id;
     await owner.save({ session });
 
-    // 4️⃣ Commit
     await session.commitTransaction();
-    session.endSession();
 
     res.status(201).json({
-      message: "Restaurant & Owner registered successfully",
-      restaurantId: restaurant._id,
+      message: "Owner & Restaurant registered successfully",
       ownerId: owner._id,
+      restaurantId: restaurant._id
     });
+
   } catch (err) {
     await session.abortTransaction();
+    res.status(400).json({
+      message: "Registration failed",
+      error: err.message
+    });
+  } finally {
     session.endSession();
-    console.error(err);
-    res.status(500).json({ message: "Registration failed" });
   }
 };
 
 exports.createBranch = async (req, res) => {
   const session = await mongoose.startSession();
-  session.startTransaction();
 
   try {
+    session.startTransaction();
+
     const { name, city, address } = req.body;
     const user = req.user;
 
     if (user.role !== "OWNER") {
-      await session.abortTransaction();
-      return res
-        .status(403)
-        .json({ message: "Only owner can create branches" });
+      throw new Error("Only owner can create branches");
     }
 
-    const restaurant = await Restaurant.findById(user.restaurantId).session(
-      session,
-    );
+    const restaurant = await Restaurant.findById(user.restaurantId).session(session);
     if (!restaurant) {
-      await session.abortTransaction();
-      return res.status(404).json({ message: "Restaurant not found" });
+      throw new Error("Restaurant not found");
     }
 
     const branchCount = await Branch.countDocuments({
-      restaurantId: restaurant._id,
+      restaurantId: restaurant._id
     }).session(session);
 
     if (branchCount >= restaurant.maxBranches) {
-      await session.abortTransaction();
-      return res.status(403).json({ message: "Branch limit reached" });
+      throw new Error("Branch limit reached for your plan");
     }
 
     const branch = new Branch({
@@ -95,24 +93,67 @@ exports.createBranch = async (req, res) => {
       branchCode: `${restaurant._id}-BR${branchCount + 1}`,
       name,
       city,
-      address,
+      address
     });
 
     await branch.save({ session });
 
     await session.commitTransaction();
-    session.endSession();
 
     res.status(201).json({
       message: "Branch created successfully",
-      branch,
+      branch
     });
+
   } catch (err) {
     await session.abortTransaction();
+    res.status(400).json({
+      message: "Branch creation failed",
+      error: err.message
+    });
+  } finally {
     session.endSession();
-    res
-      .status(500)
-      .json({ message: "Failed to create branch", error: err.message });
+  }
+};
+
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email, isActive: true });
+    if (!user) throw new Error("Invalid credentials");
+
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) throw new Error("Invalid credentials");
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        restaurantId: user.restaurantId
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        restaurantId: user.restaurantId,
+        branches: user.accessibleBranches
+      }
+    });
+
+  } catch (err) {
+    res.status(401).json({
+      message: "Login failed",
+      error: err.message
+    });
   }
 };
 
@@ -125,19 +166,18 @@ exports.createUser = async (req, res) => {
       return res.status(403).json({ message: "Permission denied" });
     }
 
+    if (admin.role !== "OWNER" && role === "OWNER") {
+      return res.status(403).json({ message: "Cannot assign OWNER role" });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Prevent role escalation
-    if (admin.role !== "OWNER" && role === "OWNER") {
-      return res.status(403).json({ message: "Cannot assign OWNER role" });
-    }
-
     const branches = await Branch.find({
       _id: { $in: branchIds },
-      restaurantId: admin.restaurantId,
+      restaurantId: admin.restaurantId
     });
 
     if (branches.length !== branchIds.length) {
@@ -150,55 +190,226 @@ exports.createUser = async (req, res) => {
       email,
       password,
       role,
-      accessibleBranches: branchIds,
+      accessibleBranches: branchIds
     });
 
     await user.save();
 
     res.status(201).json({
       message: "User created successfully",
-      userId: user._id,
+      userId: user._id
     });
+
   } catch (err) {
-    res.status(500).json({ message: "User creation failed" });
+    res.status(500).json({
+      message: "User creation failed",
+      error: err.message
+    });
   }
 };
 
-exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
 
-    const user = await User.findOne({ email, isActive: true });
-    if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+// const bcrypt = require("bcryptjs");
+// const Restaurant = require("../../database/models/Restaurent");
+// const User = require("../../database/models/User");
+// const Branch = require("../../database/models/Branch");
+// const jwt = require("jsonwebtoken");
+// const mongoose = require("mongoose");
 
-    const match = await user.comparePassword(password);
-    if (!match) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+// exports.registerOwner = async (req, res) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
 
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-        restaurantId: user.restaurantId,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" },
-    );
+//   try {
+//     const { restaurantName, ownerName, email, password } = req.body;
 
-    res.json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user._id,
-        role: user.role,
-        restaurantId: user.restaurantId,
-        branches: user.accessibleBranches,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Login failed" });
-  }
-};
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       await session.abortTransaction();
+//       return res.status(400).json({ message: "Email already registered" });
+//     }
+
+//     // 1️⃣ Create Owner
+//     const owner = new User({
+//       name: ownerName,
+//       email,
+//       password,
+//       role: "OWNER",
+//       restaurantId: null,
+//       accessibleBranches: [],
+//     });
+//     await owner.save({ session });
+
+//     // 2️⃣ Create Restaurant
+//     const restaurant = new Restaurant({
+//       name: restaurantName,
+//       owner: owner._id,
+//       plan: "FREE",
+//     });
+//     await restaurant.save({ session });
+
+//     // 3️⃣ Link back
+//     owner.restaurantId = restaurant._id;
+//     await owner.save({ session });
+
+//     // 4️⃣ Commit
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     res.status(201).json({
+//       message: "Restaurant & Owner registered successfully",
+//       restaurantId: restaurant._id,
+//       ownerId: owner._id,
+//     });
+//   } catch (err) {
+//     await session.abortTransaction();
+//     session.endSession();
+//     console.error(err);
+//     res.status(500).json({ message: "Registration failed" });
+//   }
+// };
+
+// exports.createBranch = async (req, res) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const { name, city, address } = req.body;
+//     const user = req.user;
+
+//     if (user.role !== "OWNER") {
+//       await session.abortTransaction();
+//       return res
+//         .status(403)
+//         .json({ message: "Only owner can create branches" });
+//     }
+
+//     const restaurant = await Restaurant.findById(user.restaurantId).session(
+//       session,
+//     );
+//     if (!restaurant) {
+//       await session.abortTransaction();
+//       return res.status(404).json({ message: "Restaurant not found" });
+//     }
+
+//     const branchCount = await Branch.countDocuments({
+//       restaurantId: restaurant._id,
+//     }).session(session);
+
+//     if (branchCount >= restaurant.maxBranches) {
+//       await session.abortTransaction();
+//       return res.status(403).json({ message: "Branch limit reached" });
+//     }
+
+//     const branch = new Branch({
+//       restaurantId: restaurant._id,
+//       branchCode: `${restaurant._id}-BR${branchCount + 1}`,
+//       name,
+//       city,
+//       address,
+//     });
+
+//     await branch.save({ session });
+
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     res.status(201).json({
+//       message: "Branch created successfully",
+//       branch,
+//     });
+//   } catch (err) {
+//     await session.abortTransaction();
+//     session.endSession();
+//     res
+//       .status(500)
+//       .json({ message: "Failed to create branch", error: err.message });
+//   }
+// };
+
+// exports.createUser = async (req, res) => {
+//   try {
+//     const { name, email, password, role, branchIds } = req.body;
+//     const admin = req.user;
+
+//     if (!["OWNER", "SUPERADMIN", "MANAGER"].includes(admin.role)) {
+//       return res.status(403).json({ message: "Permission denied" });
+//     }
+
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ message: "Email already exists" });
+//     }
+
+//     // Prevent role escalation
+//     if (admin.role !== "OWNER" && role === "OWNER") {
+//       return res.status(403).json({ message: "Cannot assign OWNER role" });
+//     }
+
+//     const branches = await Branch.find({
+//       _id: { $in: branchIds },
+//       restaurantId: admin.restaurantId,
+//     });
+
+//     if (branches.length !== branchIds.length) {
+//       return res.status(400).json({ message: "Invalid branch selection" });
+//     }
+
+//     const user = new User({
+//       restaurantId: admin.restaurantId,
+//       name,
+//       email,
+//       password,
+//       role,
+//       accessibleBranches: branchIds,
+//     });
+
+//     await user.save();
+
+//     res.status(201).json({
+//       message: "User created successfully",
+//       userId: user._id,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: "User creation failed" });
+//   }
+// };
+
+// exports.login = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const user = await User.findOne({ email, isActive: true });
+//     if (!user) {
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const match = await user.comparePassword(password);
+//     if (!match) {
+//       return res.status(401).json({ message: "Invalid credentials" });
+//     }
+
+//     const token = jwt.sign(
+//       {
+//         id: user._id,
+//         role: user.role,
+//         restaurantId: user.restaurantId,
+//       },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "7d" },
+//     );
+
+//     res.json({
+//       message: "Login successful",
+//       token,
+//       user: {
+//         id: user._id,
+//         role: user.role,
+//         restaurantId: user.restaurantId,
+//         branches: user.accessibleBranches,
+//       },
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: "Login failed" });
+//   }
+// };
