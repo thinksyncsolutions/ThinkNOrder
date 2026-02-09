@@ -80,7 +80,7 @@ React.useEffect(() => {
 
         <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(251,146,60,0.15)] border border-orange-100 p-10 relative overflow-hidden">
           {/* Subtle Decorative Gradient */}
-          <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[4rem] -z-0" />
+          <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[4rem] z-0" />
 
           <div className="relative z-10 text-center mb-10">
             <h1 className="text-3xl font-black text-orange-950 tracking-tight">Admin Portal</h1>
