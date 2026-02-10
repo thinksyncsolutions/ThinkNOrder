@@ -10,6 +10,9 @@ const Menu = () => {
   // const [showModal, setShowModal] = useState(false);
   const { sections, items, loading, error } = useSelector((state) => state.menu);
 
+  console.log("Sections:", sections);
+  console.log("Items:", items);
+
   // 1️⃣ Fetch sections only once
   useEffect(() => {
     dispatch(fetchMenuSections());
