@@ -12,6 +12,7 @@ const WaiterLayout = () => {
         </div>
 
         <nav className="flex-1 p-3 space-y-2">
+          <SidebarLink to="/waiter" icon={<Utensils size={18} />} label="Dashboard" />
           <SidebarLink to="/waiter/tables" icon={<Utensils size={18} />} label="Tables" />
           <SidebarLink to="/waiter/orders" icon={<ClipboardList size={18} />} label="Orders" />
           <SidebarLink to="/waiter/history" icon={<History size={18} />} label="History" />

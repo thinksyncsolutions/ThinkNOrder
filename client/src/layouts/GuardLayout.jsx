@@ -13,6 +13,7 @@ const GuardLayout = () => {
         </div>
 
         <nav className="flex-1 p-3 space-y-2">
+          <SidebarLink to="/guard" icon={<ClipboardList size={18} />} label="Dashboard" />
           <SidebarLink to="/guard/checkins" icon={<CalendarCheck size={18} />} label="Check-Ins" />
           <SidebarLink to="/guard/tables" icon={<ClipboardList size={18} />} label="Table Status" />
         </nav>

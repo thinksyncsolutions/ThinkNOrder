@@ -12,6 +12,7 @@ const KitchenLayout = () => {
         </div>
 
         <nav className="flex-1 p-3 space-y-2">
+          <SidebarLink to="/kitchen" icon={<ClipboardList size={18} />} label="Dashboard" />
           <SidebarLink to="/kitchen/orders" icon={<ClipboardList size={18} />} label="Live Orders" />
           <SidebarLink to="/kitchen/history" icon={<History size={18} />} label="History" />
         </nav>

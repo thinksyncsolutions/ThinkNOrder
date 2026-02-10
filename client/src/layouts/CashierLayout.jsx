@@ -12,6 +12,7 @@ const CashierLayout = () => {
         </div>
 
         <nav className="flex-1 p-3 space-y-2">
+          <SidebarLink to="/cashier" icon={<Receipt size={18} />} label="Dashboard" />
           <SidebarLink to="/cashier/billing" icon={<Receipt size={18} />} label="Billing" />
           <SidebarLink to="/cashier/payments" icon={<CreditCard size={18} />} label="Payments" />
           <SidebarLink to="/cashier/history" icon={<History size={18} />} label="History" />
