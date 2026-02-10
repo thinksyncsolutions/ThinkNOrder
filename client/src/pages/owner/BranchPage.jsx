@@ -117,6 +117,7 @@ const BranchPage = () => {
                   <th className="p-2">Name</th>
                   <th className="p-2">Email</th>
                   <th className="p-2">Number</th>
+                  <th className="p-2">Status</th>
                   <th className="p-2">Role</th>
                 </tr>
               </thead>
@@ -126,6 +127,17 @@ const BranchPage = () => {
                     <td className="p-2">{user.name}</td>
                     <td className="p-2">{user.email}</td>
                     <td className="p-2">{user.number}</td>
+                    <td className="p-2">
+                      <span
+                        className={`px-2 py-1 text-xs rounded ${
+                          user.isActive
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {user.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
                     <td className="p-2 font-medium">{user.role}</td>
                   </tr>
                 ))}

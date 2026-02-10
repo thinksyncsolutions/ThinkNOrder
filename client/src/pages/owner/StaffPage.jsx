@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { CreateStaffModal } from "../../components/owner/CreateStaffModal";
 import { useDispatch, useSelector } from "react-redux";
-import { createUserThunk, fetchUsersThunk } from "../../redux/features/user/user.thunk";
+import {
+  createUserThunk,
+  fetchUsersThunk,
+} from "../../redux/features/user/user.thunk";
 import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
 import { toast } from "react-hot-toast";
 
@@ -17,8 +20,10 @@ const StaffPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   // Filtered users based on branch & role
-  const filteredUsers = users.filter(user => {
-    const branchMatch = selectedBranch === "ALL" || user.accessibleBranches.includes(selectedBranch);
+  const filteredUsers = users.filter((user) => {
+    const branchMatch =
+      selectedBranch === "ALL" ||
+      user.accessibleBranches.includes(selectedBranch);
     const roleMatch = selectedRole === "ALL" || user.role === selectedRole;
     return branchMatch && roleMatch;
   });
@@ -36,17 +41,16 @@ const StaffPage = () => {
       });
   }, [dispatch]);
 
-
   const handleCreateStaff = (newStaff) => {
-      dispatch(createUserThunk(newStaff))
-        .unwrap()
-        .then((data) => {
-          toast.success(data.message || "Staff created successfully");
-          setShowModal(false);
-        })
-        .catch((error) => {
-          toast.error(error.message || "Failed to create staff");
-        });
+    dispatch(createUserThunk(newStaff))
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message || "Staff created successfully");
+        setShowModal(false);
+      })
+      .catch((error) => {
+        toast.error(error.message || "Failed to create staff");
+      });
   };
 
   return (
@@ -66,22 +70,26 @@ const StaffPage = () => {
       <div className="flex gap-4 mb-6">
         <select
           value={selectedBranch}
-          onChange={e => setSelectedBranch(e.target.value)}
+          onChange={(e) => setSelectedBranch(e.target.value)}
           className="border rounded px-3 py-2 text-sm"
         >
           <option value="ALL">All Branches</option>
-          {branches.map(branch => (
-            <option key={branch._id} value={branch._id}>{branch.name}</option>
+          {branches.map((branch) => (
+            <option key={branch._id} value={branch._id}>
+              {branch.name}
+            </option>
           ))}
         </select>
 
         <select
           value={selectedRole}
-          onChange={e => setSelectedRole(e.target.value)}
+          onChange={(e) => setSelectedRole(e.target.value)}
           className="border rounded px-3 py-2 text-sm"
         >
-          {roles.map(role => (
-            <option key={role} value={role}>{role}</option>
+          {roles.map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
           ))}
         </select>
       </div>
@@ -102,23 +110,30 @@ const StaffPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map(user => (
+              {filteredUsers.map((user) => (
                 <tr key={user._id} className="border-t">
                   <td className="p-3 font-medium">{user.name}</td>
                   <td className="p-3">{user.email}</td>
                   <td className="p-3">{user.role}</td>
                   <td className="p-3">
                     {user.accessibleBranches?.length
-  ? user.accessibleBranches
-      .map(id => branches.find(b => b._id === id)?.name || "Unknown")
-      .join(", ")
-  : "—"}
-
+                      ? user.accessibleBranches
+                          .map(
+                            (id) =>
+                              branches.find((b) => b._id === id)?.name ||
+                              "Unknown",
+                          )
+                          .join(", ")
+                      : "—"}
                   </td>
                   <td className="p-3">
-                    <span className={`px-2 py-1 text-xs rounded ${
-                      user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded ${
+                        user.isActive
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
