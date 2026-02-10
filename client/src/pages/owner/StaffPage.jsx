@@ -1,25 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { CreateStaffModal } from "../../components/owner/CreateStaffModal";
-
-// Mock branches
-const mockBranches = [
-  { _id: "1", name: "Main Branch" },
-  { _id: "2", name: "Indiranagar" },
-];
-
-// Mock users
-const mockUsers = [
-  { _id: "u1", name: "Rohit Sharma", email: "rohit@thinknorder.com", role: "MANAGER", accessibleBranches: ["1"], isActive: true },
-  { _id: "u2", name: "Amit Verma", email: "amit@thinknorder.com", role: "CASHIER", accessibleBranches: ["1"], isActive: true },
-  { _id: "u3", name: "Neha Singh", email: "neha@thinknorder.com", role: "WAITER", accessibleBranches: ["2"], isActive: false },
-  { _id: "u4", name: "Karan Patel", email: "karan@thinknorder.com", role: "KITCHEN", accessibleBranches: ["2"], isActive: true },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { createUserThunk, fetchUsersThunk } from "../../redux/features/user/user.thunk";
+import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
+import { toast } from "react-hot-toast";
 
 const roles = ["ALL", "ADMIN", "MANAGER", "CASHIER", "WAITER", "KITCHEN"];
 
 const StaffPage = () => {
-  const [users, setUsers] = useState(mockUsers);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users);
+  const branches = useSelector((state) => state.branch.branches);
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [selectedRole, setSelectedRole] = useState("ALL");
   const [showModal, setShowModal] = useState(false);
@@ -31,8 +23,30 @@ const StaffPage = () => {
     return branchMatch && roleMatch;
   });
 
+  useEffect(() => {
+    dispatch(fetchBranchesThunk())
+      .unwrap()
+      .catch((error) => {
+        toast.error(error.message || "Failed to fetch branches");
+      });
+    dispatch(fetchUsersThunk())
+      .unwrap()
+      .catch((error) => {
+        toast.error(error.message || "Failed to fetch users");
+      });
+  }, [dispatch]);
+
+
   const handleCreateStaff = (newStaff) => {
-    setUsers(prev => [...prev, newStaff]);
+      dispatch(createUserThunk(newStaff))
+        .unwrap()
+        .then((data) => {
+          toast.success(data.message || "Staff created successfully");
+          setShowModal(false);
+        })
+        .catch((error) => {
+          toast.error(error.message || "Failed to create staff");
+        });
   };
 
   return (
@@ -56,7 +70,7 @@ const StaffPage = () => {
           className="border rounded px-3 py-2 text-sm"
         >
           <option value="ALL">All Branches</option>
-          {mockBranches.map(branch => (
+          {branches.map(branch => (
             <option key={branch._id} value={branch._id}>{branch.name}</option>
           ))}
         </select>
@@ -94,9 +108,12 @@ const StaffPage = () => {
                   <td className="p-3">{user.email}</td>
                   <td className="p-3">{user.role}</td>
                   <td className="p-3">
-                    {user.accessibleBranches
-                      .map(id => mockBranches.find(b => b._id === id)?.name)
-                      .join(", ")}
+                    {user.accessibleBranches?.length
+  ? user.accessibleBranches
+      .map(id => branches.find(b => b._id === id)?.name || "Unknown")
+      .join(", ")
+  : "—"}
+
                   </td>
                   <td className="p-3">
                     <span className={`px-2 py-1 text-xs rounded ${

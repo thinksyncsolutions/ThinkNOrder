@@ -10,7 +10,8 @@ const auth = require("./middleware/auth");
 router.use("/auth", require("./modules/auth/auth.routes"));
 
 // protected
-// router.use("/branches", auth, branchRoutes);
+router.use("/", auth, require("./modules/branch/branch.routes"));
+router.use("/", auth, require("./modules/user/user.route"));
 // router.use("/orders", auth, orderRoutes);
 // router.use("/tables", auth, tableRoutes);
 

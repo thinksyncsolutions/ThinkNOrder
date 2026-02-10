@@ -1,70 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import {CreateBranchModal} from "../../components/owner/CreateBranchModal";
-
-const mockBranches = [
-  {
-    _id: "1",
-    branchCode: "THINKNORDER-BR1",
-    name: "Think N Order – Main Branch",
-    city: "Bangalore",
-    address: "MG Road, Bangalore",
-    isOpen: true,
-  },
-  {
-    _id: "2",
-    branchCode: "THINKNORDER-BR2",
-    name: "Think N Order – Indiranagar",
-    city: "Bangalore",
-    address: "Indiranagar 100ft Road",
-    isOpen: false,
-  },
-];
-
-const mockUsers = [
-  {
-    _id: "u1",
-    name: "Rohit Sharma",
-    email: "rohit@thinknorder.com",
-    number: "857543210",
-    role: "MANAGER",
-    accessibleBranches: ["1"],
-  },
-  {
-    _id: "u2",
-    name: "Amit Verma",
-    email: "amit@thinknorder.com",
-    number: "857543211",
-    role: "CASHIER",
-    accessibleBranches: ["1"],
-  },
-  {
-    _id: "u3",
-    name: "Neha Singh",
-    email: "neha@thinknorder.com",
-    number: "857543212",
-    role: "WAITER",
-    accessibleBranches: ["2"],
-  },
-  {
-    _id: "u4",
-    name: "Karan Patel",
-    email: "karan@thinknorder.com",
-    number: "857543213",
-    role: "KITCHEN",
-    accessibleBranches: ["2"],
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { createBranchThunk, fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
+import { fetchUsersByBranchThunk } from "../../redux/features/user/user.thunk";
+import { toast } from "react-hot-toast";
 
 const BranchPage = () => {
+  const dispatch = useDispatch();
+  const branches = useSelector((state) => state.branch.branches);
+  const branchUsers = useSelector((state) => state.users.users);
   const [showModal, setShowModal] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState(null);
 
-  const branchUsers = selectedBranch
-    ? mockUsers.filter((u) =>
-        u.accessibleBranches.includes(selectedBranch._id)
-      )
-    : [];
+  useEffect(() => {
+  dispatch(fetchBranchesThunk())
+    .unwrap()
+    .catch((error) => {
+      toast.error(error.message || "Failed to fetch branches");
+    });
+  if (selectedBranch) {
+    dispatch(fetchUsersByBranchThunk(selectedBranch._id))
+      .unwrap()
+      .catch((error) => {
+        toast.error(error.message || "Failed to fetch users for branch");
+      });
+  }
+}, [dispatch, selectedBranch]);
+
+
+  const handleCreateBranch = (branchData) => {
+    dispatch(createBranchThunk(branchData))
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message || "Branch created successfully");
+        setShowModal(false);
+      })
+      .catch((error) => {
+        toast.error(error.message || "Failed to create branch");
+      });
+  };
 
   return (
     <div>
@@ -93,7 +68,7 @@ const BranchPage = () => {
             </tr>
           </thead>
           <tbody>
-            {mockBranches.map((branch) => (
+            {branches.map((branch) => (
               <tr
                 key={branch._id}
                 onClick={() => setSelectedBranch(branch)}
@@ -162,8 +137,12 @@ const BranchPage = () => {
 
       {/* Create Branch Modal */}
       {showModal && (
-        <CreateBranchModal onClose={() => setShowModal(false)} />
-      )}
+  <CreateBranchModal
+    onClose={() => setShowModal(false)}
+    onCreate={handleCreateBranch}   // 🔥 connect here
+  />
+)}
+
     </div>
   );
 };

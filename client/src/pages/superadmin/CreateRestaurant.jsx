@@ -1,7 +1,22 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, UserPlus, Pizza, Store, BadgeCheck, Globe } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  UserPlus,
+  Store,
+  BadgeCheck,
+  Globe,
+  ChevronRight,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { createRestaurantThunk } from "../../redux/features/restaurant/restaurant.thunk";
+import toast from "react-hot-toast";
 
 const CreateRestaurant = () => {
+  const dispatch = useDispatch();
+  const { restaurant, loading, error } = useSelector(
+    (state) => state.restaurant,
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     restaurantName: "",
@@ -17,146 +32,175 @@ const CreateRestaurant = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Owner Register Data:", form);
-    // 🔥 call API here
+    dispatch(createRestaurantThunk(form))
+      .unwrap()
+      .then((data) => {
+  toast.success(data.message || "Restaurant created successfully!");
+})
+      .catch((error) => {
+        toast.error(error.message || "Failed to create restaurant");
+      });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-orange-50 selection:bg-orange-600 selection:text-white">
-      {/* Decorative Brand Elements */}
-      <div className="opacity-10 pointer-events-none">
-        <Pizza size={300} className="rotate-12" />
+    <div className="p-6 lg:p-10 bg-slate-50 min-h-full">
+      {/* Breadcrumbs / Header */}
+      <div className="mb-8">
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+          <span>SuperAdmin</span>
+          <ChevronRight size={12} />
+          <span className="text-orange-600">Inventory & Tenants</span>
+        </div>
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          Onboard New Restaurant
+        </h1>
+        <p className="text-slate-500 text-sm mt-1">
+          Deploy a new instance to the ThinknOrder multi-tenant ecosystem.
+        </p>
       </div>
 
-      <div className="w-full max-w-2xl relative">
-        <div className="bg-white rounded-[3rem] shadow-[0_30px_60px_rgba(251,146,60,0.12)] border border-orange-100 overflow-hidden">
-          <div className="flex flex-col md:flex-row">
-            
-            {/* Left Side: Onboarding Vibe */}
-            <div className="md:w-1/3 bg-orange-600 p-10 text-white flex flex-col justify-between">
-              <div>
-                <div className="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-md">
-                  <Store size={24} />
-                </div>
-                <h2 className="text-3xl font-black leading-tight tracking-tighter">
-                  Welcome to the <br /> Ecosystem.
-                </h2>
-                <p className="text-orange-100 text-xs mt-4 font-medium leading-relaxed">
-                  Join 500+ restaurateurs who have digitized their kitchen operations.
-                </p>
+      <div className="max-w-5xl">
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+          {/* Left Panel: Status & Info */}
+          <div className="md:w-72 bg-slate-900 p-8 text-white flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-orange-600 mb-6 shadow-lg shadow-orange-600/20">
+                <Store size={22} />
               </div>
-              
-              <div className="space-y-4 mt-10">
-                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-orange-200">
-                  <BadgeCheck size={14} /> Global Standards
-                </div>
-                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-orange-200">
-                  <Globe size={14} /> 24/7 Support
-                </div>
-              </div>
+              <h3 className="text-xl font-bold leading-tight">
+                Instance Configuration
+              </h3>
+              <p className="text-slate-400 text-xs mt-3 leading-relaxed">
+                You are creating a top-level administrative account for a new
+                tenant.
+              </p>
             </div>
 
-            {/* Right Side: Form */}
-            <div className="md:w-2/3 p-10">
-              <div className="mb-8">
-                <h1 className="text-2xl font-black text-orange-950 tracking-tight">Onboard Restaurant</h1>
-                <p className="text-orange-900/40 text-[10px] font-black uppercase tracking-[0.2em] mt-1">
-                  New Owner Registration
-                </p>
+            <div className="space-y-4 mt-10">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                System Ready
               </div>
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Restaurant Name */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-orange-900/40 ml-1">Establishment Name</label>
-                    <input
-                      type="text"
-                      name="restaurantName"
-                      value={form.restaurantName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-xl bg-orange-50 border border-orange-100 text-orange-950 text-sm focus:outline-none focus:border-orange-600 transition-all font-medium"
-                      placeholder="Spice Garden"
-                    />
-                  </div>
-
-                  {/* Owner Name */}
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-orange-900/40 ml-1">Full Name</label>
-                    <input
-                      type="text"
-                      name="ownerName"
-                      value={form.ownerName}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-xl bg-orange-50 border border-orange-100 text-orange-950 text-sm focus:outline-none focus:border-orange-600 transition-all font-medium"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                </div>
-
-                {/* Email */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-orange-900/40 ml-1">Business Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 rounded-xl bg-orange-50 border border-orange-100 text-orange-950 text-sm focus:outline-none focus:border-orange-600 transition-all font-medium"
-                    placeholder="owner@restaurant.com"
-                  />
-                </div>
-
-                {/* Password */}
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-orange-900/40 ml-1">Secure Password</label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={form.password}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 rounded-xl bg-orange-50 border border-orange-100 text-orange-950 text-sm focus:outline-none focus:border-orange-600 transition-all font-medium pr-10"
-                      placeholder="••••••••"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-900/20 hover:text-orange-600 transition-colors"
-                    >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  className="w-full flex items-center justify-center gap-3 bg-zinc-950 hover:bg-orange-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all shadow-xl hover:shadow-orange-600/20 active:scale-95 group mt-4"
-                >
-                  <UserPlus size={18} className="group-hover:rotate-12 transition-transform" />
-                  Create Account
-                </button>
-              </form>
-
-              <div className="mt-8 pt-6 border-t border-orange-50 flex justify-between items-center">
-                <span className="text-[9px] font-black uppercase text-orange-900/20 tracking-widest leading-tight">
-                  ThinknOrder V3.0 <br /> Multi-Tenant Architecture
-                </span>
-                <div className="bg-orange-50 px-3 py-1 rounded-full text-[9px] font-black text-orange-600 uppercase tracking-tighter">
-                  Cloud Ready
-                </div>
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <Globe size={14} className="text-orange-500" /> Auto-Scaling
+                Enabled
               </div>
             </div>
           </div>
+
+          {/* Right Panel: Form */}
+          <div className="flex-1 p-8 lg:p-12">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Restaurant Name */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
+                    Establishment Name
+                  </label>
+                  <input
+                    type="text"
+                    name="restaurantName"
+                    value={form.restaurantName}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all"
+                    placeholder="e.g. The Gourmet Hub"
+                  />
+                </div>
+
+                {/* Owner Name */}
+                <div className="space-y-2">
+                  <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
+                    Primary Owner
+                  </label>
+                  <input
+                    type="text"
+                    name="ownerName"
+                    value={form.ownerName}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all"
+                    placeholder="John Doe"
+                  />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
+                  Administrative Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all"
+                  placeholder="admin@tenant.com"
+                />
+              </div>
+
+              {/* Password */}
+              <div className="space-y-2">
+                <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
+                  Temporary Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all pr-12"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 flex flex-col sm:flex-row gap-4">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 flex items-center justify-center gap-3 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg shadow-orange-600/20 active:scale-[0.98]"
+                >
+                  {loading ? "Creating..." : "Provision Account"}
+                </button>
+
+                <button
+                  type="button"
+                  className="px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest text-slate-500 hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        
-        <p className="text-[10px] text-center text-orange-900/20 font-black uppercase tracking-[0.4em] mt-8">
-          Restaurant Management System • SuperAdmin Console
-        </p>
+
+        {/* System Footer Metadata */}
+        <div className="mt-6 flex justify-between items-center px-2">
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+            ThinknOrder V3.0 • Node Cluster: US-EAST-1
+          </p>
+          <div className="flex gap-4">
+            <span className="text-[10px] font-bold text-slate-400 uppercase">
+              Security Policy
+            </span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">
+              SLA Docs
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

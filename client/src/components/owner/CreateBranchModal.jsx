@@ -1,6 +1,23 @@
-import { Plus, X } from "lucide-react";
+import { useState } from "react";
+import { X } from "lucide-react";
 
-export const CreateBranchModal = ({ onClose }) => {
+export const CreateBranchModal = ({ onClose, onCreate }) => {
+  const [form, setForm] = useState({
+    name: "",
+    branchCode: "",
+    city: "",
+    address: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onCreate(form); // 🔥 send data to parent
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
       <div className="bg-white rounded-lg w-full max-w-lg p-6 relative">
@@ -13,25 +30,38 @@ export const CreateBranchModal = ({ onClose }) => {
 
         <h2 className="text-xl font-bold mb-4">Create Branch</h2>
 
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
             placeholder="Branch Name"
             className="w-full border rounded px-3 py-2"
+            required
           />
           <input
-            type="text"
+            name="branchCode"
+            value={form.branchCode}
+            onChange={handleChange}
             placeholder="Branch Code (e.g. THINKNORDER-BR3)"
             className="w-full border rounded px-3 py-2"
+            required
           />
           <input
-            type="text"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
             placeholder="City"
             className="w-full border rounded px-3 py-2"
+            required
           />
           <textarea
+            name="address"
+            value={form.address}
+            onChange={handleChange}
             placeholder="Address"
             className="w-full border rounded px-3 py-2"
+            required
           />
 
           <div className="flex justify-end gap-3 pt-2">

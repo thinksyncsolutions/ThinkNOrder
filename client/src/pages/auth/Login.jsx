@@ -49,12 +49,17 @@ React.useEffect(() => {
         case "OWNER":
           navigate("/owner");
           break;
+        case "MANAGER":
+           navigate("/manager");
+           break;
         case "WAITER":
+          navigate("/waiter");
+          break;
         case "CASHIER":
-          navigate("/staff/orders");
+          navigate("/cashier");
           break;
         case "KITCHEN":
-          navigate("/staff/kitchen");
+          navigate("/kitchen");
           break;
         default:
           navigate("/");

@@ -54,7 +54,7 @@ exports.registerRestaurant = async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
     res.status(400).json({
-      message: "Registration failed",
+      message: err.message || "Registration failed",
       error: err.message
     });
   } finally {
@@ -108,7 +108,7 @@ exports.createBranch = async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
     res.status(400).json({
-      message: "Branch creation failed",
+      message: err.message || "Branch creation failed",
       error: err.message
     });
   } finally {
@@ -188,7 +188,7 @@ exports.login = async (req, res) => {
 
   } catch (err) {
     res.status(401).json({
-      message: "Login failed",
+      message: err.message || "Login failed",
       error: err.message
     });
   }
@@ -198,7 +198,7 @@ exports.login = async (req, res) => {
 exports.createUser = async (req, res) => {
   console.log("Create user attempt:", req.body);
   try {
-    const { name, email, password, role, branchIds } = req.body;
+    const { name, email, role, branchIds } = req.body;
     const admin = req.user;
 
     if (!["OWNER", "SUPERADMIN", "MANAGER"].includes(admin.role)) {
@@ -223,6 +223,8 @@ exports.createUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid branch selection" });
     }
 
+    const password = "123456789"; // default password for new users
+
     const user = new User({
       restaurantId: admin.restaurantId,
       name,
@@ -242,7 +244,7 @@ exports.createUser = async (req, res) => {
   } catch (err) {
     console.error("Error creating user:", err);
     res.status(500).json({
-      message: "User creation failed",
+      message: err.message || "User creation failed",
       error: err.message
     });
   }
@@ -265,7 +267,7 @@ exports.registerSuperAdmin = async (req, res) => {
 
     res.status(201).json({ message: "Superadmin created", user: superadmin });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: err.message || "Superadmin creation failed" });
   }
 };
 

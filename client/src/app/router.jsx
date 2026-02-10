@@ -13,6 +13,10 @@ import OwnerDashboard from "../pages/owner/OwnerDashboard";
 import BranchPage from "../pages/owner/BranchPage";
 import StaffPage from "../pages/owner/StaffPage";
 
+import ManagerLayout from "../layouts/ManagerLayout";
+import ManagerDashboard from "../pages/manager/ManagerDashboard";
+import SuperAdminDashboard from "../pages/superadmin/SuperAdminDashboard";
+
 
 export const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -27,7 +31,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      // { index: true, element: <SuperAdminDashboard /> },
+      { index: true, element: <SuperAdminDashboard /> },
       { path: "restaurants", element: <CreateRestaurant /> },
     ],
   },
@@ -46,32 +50,18 @@ export const router = createBrowserRouter([
     { path: "staff", element: <StaffPage /> },
   ],
 },
-
-  // // 🟡 STAFF
-  // {
-  //   path: "/staff/orders",
-  //   element: (
-  //     <ProtectedRoute roles={["WAITER", "CASHIER"]}>
-  //       <Orders />
-  //     </ProtectedRoute>
-  //   ),
-  // },
-  // {
-  //   path: "/staff/tables",
-  //   element: (
-  //     <ProtectedRoute roles={["WAITER", "CASHIER"]}>
-  //       <Tables />
-  //     </ProtectedRoute>
-  //   ),
-  // },
-  // {
-  //   path: "/staff/kitchen",
-  //   element: (
-  //     <ProtectedRoute roles={["KITCHEN"]}>
-  //       <Kitchen />
-  //     </ProtectedRoute>
-  //   ),
-  // },
-
+  // 🟡 MANAGER
+  {
+    path: "/manager",
+    element: (
+      <ProtectedRoute roles={["MANAGER"]}>
+        <ManagerLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <ManagerDashboard /> },
+    ],
+  },
+  
   { path: "*", element: <Unauthorized /> },
 ]);

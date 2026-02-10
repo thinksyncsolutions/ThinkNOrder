@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-
-const mockBranches = [
-  { _id: "1", name: "Main Branch" },
-  { _id: "2", name: "Indiranagar" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
 
 const roles = ["ADMIN", "MANAGER", "CASHIER", "WAITER", "KITCHEN"];
 
 export const CreateStaffModal = ({ onClose, onCreate }) => {
+  const dispatch = useDispatch();
+  const branches = useSelector((state) => state.branch.branches);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState(roles[0]);
-  const [branchId, setBranchId] = useState(mockBranches[0]._id);
+  const [branchId, setBranchId] = useState(branches.length > 0 ? branches[0]._id : "");
+
+  useEffect(() => {
+    if (branches.length === 0) {
+      dispatch(fetchBranchesThunk())
+        .unwrap()
+        .catch((error) => {
+          console.error("Failed to fetch branches:", error);
+        });
+    }
+  }, [dispatch, branches.length]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,7 +31,7 @@ export const CreateStaffModal = ({ onClose, onCreate }) => {
       name,
       email,
       role,
-      accessibleBranches: [branchId],
+      branchIds: [branchId],
       isActive: true,
     };
 
@@ -84,7 +93,7 @@ export const CreateStaffModal = ({ onClose, onCreate }) => {
               onChange={e => setBranchId(e.target.value)}
               className="w-full border rounded px-3 py-2 text-sm"
             >
-              {mockBranches.map(b => (
+              {branches.map(b => (
                 <option key={b._id} value={b._id}>{b.name}</option>
               ))}
             </select>

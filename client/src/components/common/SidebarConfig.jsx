@@ -10,7 +10,7 @@ import {
 
 export const SidebarConfig = {
   SUPERADMIN: [
-    { to: "/superadmin/dashboard", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
+    { to: "/superadmin", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/superadmin/restaurants", label: "Restaurants", icon: <Users size={18} /> },
     { to: "/superadmin/users", label: "Users", icon: <Users size={18} /> },
     { to: "/superadmin/settings", label: "Settings", icon: <Settings size={18} /> },
