@@ -3,6 +3,7 @@ import authReducer from "./features/auth/auth.slice"
 import restaurantReducer from "./features/restaurant/restaurant.slice";
 import branchReducer from "./features/branch/branch.slice";
 import userReducer from "./features/user/user.slice";
+import menuReducer from "./features/menu/menu.slice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     restaurant: restaurantReducer,
     branch: branchReducer,
     users: userReducer,
+    menu: menuReducer,
   }
 });
 

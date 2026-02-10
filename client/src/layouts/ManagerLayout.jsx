@@ -33,6 +33,7 @@ const ManagerLayout = () => {
           <SidebarLink to="/manager" icon={<LayoutDashboard size={18} />} label="Dashboard" open={open} />
           <SidebarLink to="/manager/orders" icon={<ClipboardList size={18} />} label="Orders" open={open} />
           <SidebarLink to="/manager/tables" icon={<UtensilsCrossed size={18} />} label="Tables" open={open} />
+          <SidebarLink to="/manager/menu" icon={<Menu size={18} />} label="Menu" open={open} />
           <SidebarLink to="/manager/staff" icon={<Users size={18} />} label="Staff" open={open} />
           <SidebarLink to="/manager/reports" icon={<BarChart3 size={18} />} label="Reports" open={open} />
         </nav>

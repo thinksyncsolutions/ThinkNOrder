@@ -30,10 +30,12 @@ exports.getItemsBySection = async (req, res, next) => {
     const { branchId } = req.query;
 
     const items = await Item.find({
-      sectionId,
-      isAvailable: true,
-      $or: [{ branchId: null }, { branchId }]
-    });
+  sectionId,
+  restaurantId: req.user.restaurantId,
+  isAvailable: true,
+  $or: [{ branchId: null }, { branchId }]
+});
+
 
     res.json({ success: true, data: items });
   } catch (err) {

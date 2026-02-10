@@ -9,7 +9,8 @@ const sectionSchema = new mongoose.Schema({
 
   branchId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Branch" // null = shared across branches
+    ref: "Branch", // null = shared across branches
+    required: true
   },
 
   name: { type: String, required: true },
