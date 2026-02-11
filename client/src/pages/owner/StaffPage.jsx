@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Delete, Edit, Plus, Trash } from "lucide-react";
 import { CreateStaffModal } from "../../components/owner/CreateStaffModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createUserThunk,
   fetchUsersThunk,
+  updateUserThunk,
+  deleteUserThunk,
 } from "../../redux/features/user/user.thunk";
 import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
 import { toast } from "react-hot-toast";
@@ -18,6 +20,8 @@ const StaffPage = () => {
   const [selectedBranch, setSelectedBranch] = useState("ALL");
   const [selectedRole, setSelectedRole] = useState("ALL");
   const [showModal, setShowModal] = useState(false);
+  const [editUser, setEditUser] = useState(null);
+
 
   // Filtered users based on branch & role
   const filteredUsers = users.filter((user) => {
@@ -41,17 +45,43 @@ const StaffPage = () => {
       });
   }, [dispatch]);
 
-  const handleCreateStaff = (newStaff) => {
-    dispatch(createUserThunk(newStaff))
+ const handleCreateStaff = (staffData, id) => {
+  if (id) {
+    // EDIT MODE
+    dispatch(updateUserThunk({ id, data: staffData }))
       .unwrap()
       .then((data) => {
-        toast.success(data.message || "Staff created successfully");
+        toast.success(data.message || "Staff updated");
         setShowModal(false);
+        setEditUser(null);
+        dispatch(fetchUsersThunk());
       })
-      .catch((error) => {
-        toast.error(error.message || "Failed to create staff");
-      });
-  };
+      .catch((error) => toast.error(error.message));
+  } else {
+    // CREATE MODE
+    dispatch(createUserThunk(staffData))
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message || "Staff created");
+        setShowModal(false);
+        dispatch(fetchUsersThunk());
+      })
+      .catch((error) => toast.error(error.message));
+  }
+};
+
+  const handleDelete = (id) => {
+  if (!window.confirm("Delete this staff member?")) return;
+
+  dispatch(deleteUserThunk(id))
+    .unwrap()
+    .then((data) => {
+      toast.success(data.message || "Deleted");
+      dispatch(fetchUsersThunk());
+    })
+    .catch((error) => toast.error(error.message));
+};
+
 
   return (
     <div>
@@ -107,6 +137,7 @@ const StaffPage = () => {
                 <th className="p-3 text-left">Role</th>
                 <th className="p-3 text-left">Branch</th>
                 <th className="p-3 text-left">Status</th>
+                <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -137,6 +168,24 @@ const StaffPage = () => {
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
+                  <td className="p-3 flex gap-3">
+                    <button
+                      onClick={() => {
+                        setEditUser(user);
+                        setShowModal(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <Edit size={18} />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(user._id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <Trash size={18} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -146,11 +195,16 @@ const StaffPage = () => {
 
       {/* Create Staff Modal */}
       {showModal && (
-        <CreateStaffModal
-          onClose={() => setShowModal(false)}
-          onCreate={handleCreateStaff}
-        />
-      )}
+  <CreateStaffModal
+    onClose={() => {
+      setShowModal(false);
+      setEditUser(null);
+    }}
+    onCreate={handleCreateStaff}
+    editData={editUser} // 👈 important
+  />
+)}
+
     </div>
   );
 };

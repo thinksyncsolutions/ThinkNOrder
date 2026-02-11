@@ -236,10 +236,15 @@ exports.createUser = async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({
-      message: "User created successfully",
-      userId: user._id
-    });
+    const createdUser = await User.findById(user._id)
+  .select("-password")
+  .populate("accessibleBranches", "name");
+
+res.status(201).json({
+  message: "User created successfully",
+  user: createdUser
+});
+
 
   } catch (err) {
     console.error("Error creating user:", err);
