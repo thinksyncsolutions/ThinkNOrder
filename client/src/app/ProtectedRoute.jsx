@@ -5,7 +5,7 @@ const ProtectedRoute = ({ roles, children }) => {
   const { user, token } = useSelector(state => state.auth);
 
   // 🔒 Not logged in
-  if (!token) {
+  if (!token || !user) {
     return <Navigate to="/" replace />;
   }
 
