@@ -2,11 +2,16 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ roles, children }) => {
-  const { user, token } = useSelector(state => state.auth);
+  const { user, token, requiresBranchSelection } = useSelector(state => state.auth);
 
   // 🔒 Not logged in
   if (!token || !user) {
     return <Navigate to="/" replace />;
+  }
+
+  // 🏢 Branch required but not selected
+  if (requiresBranchSelection) {
+    return <Navigate to="/select-branch" replace />;
   }
 
   // 🚫 Logged in but wrong role

@@ -30,11 +30,20 @@ import CashierDashboard from "../pages/cashier/CashierDashboard";
 import KitchenLayout from "../layouts/KitchenLayout";
 import KitchenDashboard from "../pages/kitchen/KitchenDashboard";
 
-
+import SelectBranchScreen from "../components/SelectBranchScreen"
 
 export const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   // { path: "/register", element: <RegisterOwner /> },
+
+  {
+  path: "/select-branch",
+  element: (
+    <ProtectedRoute>
+      <SelectBranchScreen />
+    </ProtectedRoute>
+  )
+},
 
   // 🔴 SUPER ADMIN
   {

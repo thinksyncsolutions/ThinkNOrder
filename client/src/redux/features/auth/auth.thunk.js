@@ -5,11 +5,26 @@ import { handleAxiosError } from "../../../utils/handleErrors";
 export const loginThunk = createAsyncThunk(
   "auth/login",
   async (payload, thunkAPI) => {
+    console.log(payload);
     try {
       const res = await api.post("/auth/login", payload);
+      console.log(res);
       return res.data;
     } catch (err) {
       return handleAxiosError(err, thunkAPI);
     }
   }
 );
+
+export const selectBranchThunk = createAsyncThunk(
+  "auth/selectBranch",
+  async (branchId, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/auth/select-branch", { branchId });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data.message);
+    }
+  }
+);
+

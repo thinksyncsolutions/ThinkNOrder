@@ -9,7 +9,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { user, loading, error } = useSelector(state => state.auth);
+  const { user, loading, error, requiresBranchSelection } = useSelector(state => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
@@ -39,33 +39,52 @@ React.useEffect(() => {
 }, [user]);
 
 
-   // 🔥 ROLE BASED NAVIGATION
-  useEffect(() => {
-    if (user?.role) {
-      switch (user.role) {
-        case "SUPERADMIN":
-          navigate("/superadmin");
-          break;
-        case "OWNER":
-          navigate("/owner");
-          break;
-        case "MANAGER":
-           navigate("/manager");
-           break;
-        case "WAITER":
-          navigate("/waiter");
-          break;
-        case "CASHIER":
-          navigate("/cashier");
-          break;
-        case "KITCHEN":
-          navigate("/kitchen");
-          break;
-        default:
-          navigate("/");
-      }
+useEffect(() => {
+  if (user && requiresBranchSelection) {
+    navigate("/select-branch");
+    return;
+  }
+
+  if (user?.role) {
+    switch (user.role) {
+      case "SUPERADMIN": navigate("/superadmin"); break;
+      case "OWNER": navigate("/owner"); break;
+      case "MANAGER": navigate("/manager"); break;
+      case "WAITER": navigate("/waiter"); break;
+      case "CASHIER": navigate("/cashier"); break;
+      case "KITCHEN": navigate("/kitchen"); break;
+      default: navigate("/");
     }
-  }, [user, navigate]);
+  }
+}, [user, requiresBranchSelection]);
+
+   // 🔥 ROLE BASED NAVIGATION
+  // useEffect(() => {
+  //   if (user?.role) {
+  //     switch (user.role) {
+  //       case "SUPERADMIN":
+  //         navigate("/superadmin");
+  //         break;
+  //       case "OWNER":
+  //         navigate("/owner");
+  //         break;
+  //       case "MANAGER":
+  //          navigate("/manager");
+  //          break;
+  //       case "WAITER":
+  //         navigate("/waiter");
+  //         break;
+  //       case "CASHIER":
+  //         navigate("/cashier");
+  //         break;
+  //       case "KITCHEN":
+  //         navigate("/kitchen");
+  //         break;
+  //       default:
+  //         navigate("/");
+  //     }
+  //   }
+  // }, [user, navigate]);
 
 
   return (
