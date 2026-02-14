@@ -10,6 +10,7 @@ const SelectBranchScreen = () => {
     dispatch(selectBranchThunk(branchId));
   };
 
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">

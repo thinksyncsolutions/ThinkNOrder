@@ -10,10 +10,8 @@ module.exports = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded JWT:", decoded);
 
-    const user = await User.findById(decoded.id);
-    console.log("Authenticated user:", user);
+    const user = await User.findById(decoded.id).select("role restaurantId isActive").lean();
 
     if (!user || !user.isActive) {
       return res.status(401).json({ message: "Invalid user" });
@@ -23,7 +21,7 @@ module.exports = async (req, res, next) => {
       id: user._id,
       role: user.role,
       restaurantId: user.restaurantId,
-      accessibleBranches: user.accessibleBranches
+      branchId: decoded.branchId // from token, can be null
     };
 
     next();

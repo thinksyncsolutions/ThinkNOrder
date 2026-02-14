@@ -20,7 +20,7 @@ export const selectBranchThunk = createAsyncThunk(
   "auth/selectBranch",
   async (branchId, { rejectWithValue }) => {
     try {
-      const res = await api.post("/auth/select-branch", { branchId });
+      const res = await api.post("/select-branch", { branchId });
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response.data.message);

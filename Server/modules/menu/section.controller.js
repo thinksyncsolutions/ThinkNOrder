@@ -23,7 +23,7 @@ exports.createSection = async (req, res, next) => {
 
 exports.getSections = async (req, res, next) => {
   try {
-    const { branchId } = req.query;
+    const { branchId } = req.user;
 
     const sections = await Section.find({
       restaurantId: req.user.restaurantId,

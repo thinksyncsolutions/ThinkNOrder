@@ -4,8 +4,13 @@ import { loginThunk, selectBranchThunk } from "./auth.thunk";
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")),
   token: localStorage.getItem("token"),
-  branches: [],
-  requiresBranchSelection: false,
+  // branches: [],
+  // requiresBranchSelection: false,
+  // loading: false,
+  // error: null,
+  branches: JSON.parse(localStorage.getItem("branches")) || [],
+  requiresBranchSelection:
+    JSON.parse(localStorage.getItem("requiresBranchSelection")) || false,
   loading: false,
   error: null,
 };
@@ -17,6 +22,8 @@ const authSlice = createSlice({
     logout(state) {
       state.user = null;
       state.token = null;
+      state.branches = [];
+      state.requiresBranchSelection = false;
       localStorage.clear();
     },
   },
@@ -34,21 +41,32 @@ const authSlice = createSlice({
         state.branches = action.payload.branches || [];
         state.requiresBranchSelection = action.payload.requiresBranchSelection;
 
+        // Persist everything
         localStorage.setItem("user", JSON.stringify(action.payload.user));
         localStorage.setItem("token", action.payload.token);
+        localStorage.setItem(
+          "branches",
+          JSON.stringify(action.payload.branches || []),
+        );
+        localStorage.setItem(
+          "requiresBranchSelection",
+          JSON.stringify(state.requiresBranchSelection),
+        );
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-
       .addCase(selectBranchThunk.fulfilled, (state, action) => {
-  state.token = action.payload.token;
-  state.requiresBranchSelection = false;
+        console.log("SELECT BRANCH PAYLOAD", action.payload);
+        state.token = action.payload.token;
+        state.requiresBranchSelection = false;
 
-  localStorage.setItem("token", action.payload.token);
-});
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("requiresBranchSelection", "false");
+        localStorage.removeItem("branches"); // Clean up
+      });
   },
 });
 

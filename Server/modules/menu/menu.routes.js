@@ -2,10 +2,11 @@
 const router = require("express").Router();
 const sectionCtrl = require("./section.controller");
 const itemCtrl = require("./item.controller");
+const authMiddleware = require("../../middleware/auth");
 
 // SECTION
 router.post("/sections", sectionCtrl.createSection);
-router.get("/sections", sectionCtrl.getSections);
+router.get("/sections", authMiddleware, sectionCtrl.getSections);
 router.put("/sections/:id", sectionCtrl.updateSection);
 router.delete("/sections/:id", sectionCtrl.deleteSection);
 

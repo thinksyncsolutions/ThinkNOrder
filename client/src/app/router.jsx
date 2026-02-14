@@ -17,7 +17,7 @@ import StaffPage from "../pages/owner/StaffPage";
 import ManagerLayout from "../layouts/ManagerLayout";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import Orders from "../pages/manager/Orders";
-import Tables from "../pages/manager/Tables";
+import Tables from "../pages/manager/Places";
 import Menu from "../pages/manager/Menu";
 import Staff from "../pages/manager/Staff";
 

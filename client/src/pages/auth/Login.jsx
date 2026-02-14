@@ -40,23 +40,25 @@ React.useEffect(() => {
 
 
 useEffect(() => {
-  if (user && requiresBranchSelection) {
-    navigate("/select-branch");
-    return;
-  }
-
-  if (user?.role) {
-    switch (user.role) {
-      case "SUPERADMIN": navigate("/superadmin"); break;
-      case "OWNER": navigate("/owner"); break;
-      case "MANAGER": navigate("/manager"); break;
-      case "WAITER": navigate("/waiter"); break;
-      case "CASHIER": navigate("/cashier"); break;
-      case "KITCHEN": navigate("/kitchen"); break;
-      default: navigate("/");
+  if (user) {
+    // 1. Check branch requirement first
+    if (requiresBranchSelection) {
+      navigate("/select-branch", { replace: true });
+    } 
+    // 2. Otherwise, route by role
+    else if (user.role) {
+      const roleRoutes = {
+        SUPERADMIN: "/superadmin",
+        OWNER: "/owner",
+        MANAGER: "/manager",
+        WAITER: "/waiter",
+        CASHIER: "/cashier",
+        KITCHEN: "/kitchen",
+      };
+      navigate(roleRoutes[user.role] || "/", { replace: true });
     }
   }
-}, [user, requiresBranchSelection]);
+}, [user, requiresBranchSelection, navigate]);
 
    // 🔥 ROLE BASED NAVIGATION
   // useEffect(() => {

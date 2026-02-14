@@ -9,9 +9,14 @@ const ProtectedRoute = ({ roles, children }) => {
     return <Navigate to="/" replace />;
   }
 
-  // 🏢 Branch required but not selected
-  if (requiresBranchSelection) {
+  // 🚩 Requires branch selection
+  if (requiresBranchSelection && window.location.pathname !== "/select-branch") {
     return <Navigate to="/select-branch" replace />;
+  }
+
+  // If branch is NOT needed but they try to go to select-branch, send them home
+  if (!requiresBranchSelection && window.location.pathname === "/select-branch") {
+    return <Navigate to="/" replace />;
   }
 
   // 🚫 Logged in but wrong role

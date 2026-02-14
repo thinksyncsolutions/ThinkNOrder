@@ -1,5 +1,6 @@
 const Branch = require("../../database/models/Branch");
 const User = require("../../database/models/User");
+const jwt = require("jsonwebtoken");
 
 exports.fetchBranches = async (req, res) => {
     console.log("Fetching branches for restaurant:", req.user.restaurantId);
@@ -14,6 +15,7 @@ exports.fetchBranches = async (req, res) => {
 exports.selectBranch = async (req, res) => {
   try {
     const { branchId } = req.body;
+    console.log(branchId)
     const userId = req.user.id; // from auth middleware
 
     const user = await User.findById(userId);
@@ -40,6 +42,7 @@ exports.selectBranch = async (req, res) => {
     });
 
   } catch (err) {
+    console.log(err.message);
     res.status(500).json({ message: err.message });
   }
 };

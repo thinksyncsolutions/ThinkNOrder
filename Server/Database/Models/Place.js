@@ -14,7 +14,7 @@ const placeSchema = new mongoose.Schema({
 
   type: {
     type: String,
-    enum: ["TABLE", "ROOM", "COUNTER"],
+    enum: ["TABLE", "ROOM", "COUNTER", "DOME"],
     required: true
   },
 
@@ -45,6 +45,6 @@ const placeSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
-placeSchema.index({ restaurantId: 1, branchId: 1, number: 1 }, { unique: true });
+placeSchema.index({ restaurantId: 1, branchId: 1, floor: 1, type: 1, number: 1 }, { unique: true });
 
 module.exports = mongoose.model("Place", placeSchema);

@@ -4,6 +4,7 @@ import axios from "axios";
 let isLoggingOut = false;
 
 export const handleAxiosError = (error, thunkAPI) => {
+  console.error("Error in handleAxiosError:", error);
   const timestamp = Date.now();
 
   // ✅ AXIOS ERRORS
