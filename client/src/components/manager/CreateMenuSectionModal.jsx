@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-const CreateMenuSectionModal = ({ onClose, onSubmit, branches }) => {
+const CreateMenuSectionModal = ({ onClose, onSubmit }) => {
  
   const [form, setForm] = useState({
     name: "",
     image: "",
-    branchId: "",
     order: 0,
     isActive: true
   });
@@ -65,7 +64,7 @@ const CreateMenuSectionModal = ({ onClose, onSubmit, branches }) => {
         </div>
 
         {/* Branch Selector */}
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="text-sm font-medium">Branch</label>
           <select
             name="branchId"
@@ -78,7 +77,7 @@ const CreateMenuSectionModal = ({ onClose, onSubmit, branches }) => {
               <option key={b._id} value={b._id}>{b.name}</option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Order */}
         <div className="mb-4">

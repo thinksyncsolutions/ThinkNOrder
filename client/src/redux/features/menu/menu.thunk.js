@@ -100,3 +100,15 @@ export const deleteMenuItem = createAsyncThunk(
     }
   },
 );
+
+export const fetchFullMenu = createAsyncThunk(
+  "menu/getFullMenu",
+  async (_, thunkAPI) => {
+    try {
+      const response = await api.get("/menu/full-menu");
+      return response.data;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);

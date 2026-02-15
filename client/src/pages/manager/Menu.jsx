@@ -1,71 +1,139 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import CreateMenuSectionModal from "../../components/manager/CreateMenuSectionModal";
 import {
-  fetchMenuSections,
-  fetchMenuItemsBySection,
+  fetchFullMenu,
+  updateMenuSection,
+  deleteMenuSection,
+  updateMenuItem,
+  deleteMenuItem,
 } from "../../redux/features/menu/menu.thunk";
-import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
-import { Plus } from "lucide-react";
+
+import EditSectionModal from "../../components/common/EditSectionModal";
+import EditItemModal from "../../components/common/EditItemModal";
 
 const Menu = () => {
   const dispatch = useDispatch();
-  // const [showModal, setShowModal] = useState(false);
-  const { sections, items, loading, error } = useSelector(
-    (state) => state.menu,
-  );
-  const branches = useSelector((state) => state.branch.branches);
-  const [showModal, setShowModal] = useState(false);
+  const { sections, loading, error } = useSelector((state) => state.menu);
 
-  console.log("Sections:", sections);
-  console.log("Items:", items);
+  console.log("Sections in Menu.jsx:", sections); // Debug log
 
-  // 1️⃣ Fetch sections only once
+  const [editSection, setEditSection] = useState(null);
+  const [editItem, setEditItem] = useState(null);
+
   useEffect(() => {
-    dispatch(fetchMenuSections());
-    dispatch(fetchBranchesThunk());
+    dispatch(fetchFullMenu());
   }, [dispatch]);
 
-  // 2️⃣ When sections load, fetch items
-  useEffect(() => {
-    if (sections.length > 0) {
-      sections.forEach((section) => {
-        dispatch(fetchMenuItemsBySection({ sectionId: section._id }));
-      });
+  const handleUpdateSection = async (data) => {
+    const res = await dispatch(
+      updateMenuSection({ sectionId: editSection._id, data })
+    );
+    if (!res.error) {
+      setEditSection(null);
     }
-  }, [sections, dispatch]);
+  };
+
+  const handleDeleteSection = async (sectionId) => {
+    if (!window.confirm("Delete this section?")) return;
+    const res = await dispatch(deleteMenuSection(sectionId));
+    if (!res.error) dispatch(fetchFullMenu());
+  };
+
+  const handleUpdateItem = async (data) => {
+    const res = await dispatch(
+      updateMenuItem({ itemId: editItem._id, itemData: data })
+    );
+    if (!res.error) {
+      dispatch(fetchFullMenu());
+      setEditItem(null);
+    }
+  };
+
+  const handleDeleteItem = async (itemId) => {
+    if (!window.confirm("Delete this item?")) return;
+    const res = await dispatch(deleteMenuItem(itemId));
+    if (!res.error) dispatch(fetchFullMenu());
+  };
 
   return (
-    <div>
-      <h1>Menu</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Menu</h1>
 
-      {/* <button onClick={() => setShowModal(true)}>Add Section</button> */}
-      {showModal && (
-        <CreateMenuSectionModal onClose={() => setShowModal(false)} branches={branches} />
+      {loading && <p className="text-gray-500">Loading menu...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {editSection && (
+        <EditSectionModal
+          section={editSection}
+          onClose={() => setEditSection(null)}
+          onSave={handleUpdateSection}
+        />
       )}
 
-      {loading && <p>Loading menu...</p>}
-      {error && <p>Error: {error}</p>}
-
-      <button
-        onClick={() => setShowModal(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded"
-      >
-        <Plus size={16} /> Create Section
-      </button>
+      {editItem && (
+        <EditItemModal
+          item={editItem}
+          onClose={() => setEditItem(null)}
+          onSave={handleUpdateItem}
+        />
+      )}
 
       {sections.map((section) => (
-        <div key={section._id}>
-          <h2>{section.name}</h2>
+        <div
+          key={section._id}
+          className="mb-8 border rounded-xl p-4 shadow-sm bg-white"
+        >
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-xl font-semibold">{section.name}</h2>
 
-          <ul>
-            {items
-              .filter((item) => item.sectionId === section._id) // ✅ FIXED
-              .map((item) => (
-                <li key={item._id}>
-                  {item.name} — ₹{item.prices?.[0]?.price}
+            <div className="space-x-2">
+              <button
+                onClick={() => setEditSection(section)}
+                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => handleDeleteSection(section._id)}
+                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <ul className="space-y-2">
+            {section.items?.length > 0 ? (
+              section.items.map((item) => (
+                <li
+                  key={item._id}
+                  className="flex justify-between items-center bg-gray-50 p-3 rounded"
+                >
+                  <span>
+                    {item.name} — ₹{item.prices?.[0]?.price}
+                  </span>
+
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => setEditItem(item)}
+                      className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteItem(item._id)}
+                      className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </li>
-              ))}
+              ))
+            ) : (
+              <li className="text-gray-400">No items</li>
+            )}
           </ul>
         </div>
       ))}
