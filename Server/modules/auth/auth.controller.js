@@ -125,7 +125,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("accessibleBranches", "name");
     if (!user) {
       await delay(500); // fake delay to avoid user enumeration
       throw new Error("User Not Found");
