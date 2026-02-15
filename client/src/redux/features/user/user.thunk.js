@@ -14,6 +14,18 @@ export const createUserThunk = createAsyncThunk(
   },
 );
 
+export const createUserByManagerThunk = createAsyncThunk(
+  "user/createByManager",
+  async (payload, thunkAPI) => {
+    try {
+      const res = await api.post("/users/create", payload);
+      return res.data;
+    } catch (err) {
+      return handleAxiosError(err, thunkAPI);
+    }
+  },
+);
+
 export const fetchUsersThunk = createAsyncThunk(
   "user/fetchUsers",
   async (_, thunkAPI) => {
@@ -38,6 +50,29 @@ export const fetchUsersByBranchThunk = createAsyncThunk(
   },
 );
 
+export const fetchUsersByBranchManagerThunk = createAsyncThunk(
+  "user/fetchByBranchManager",
+  async (_, thunkAPI) => {
+    try {      const res = await api.get(`/users/branch/manager`);
+      return res.data;
+    } catch (err) {
+      return handleAxiosError(err, thunkAPI);
+    } 
+  },
+);
+
+export const updateUserByManagerThunk = createAsyncThunk(
+  "user/updateByManager",
+  async ({ id, data }, thunkAPI) => {
+    try {
+      const res = await api.put(`/users/manager/${id}`, data);
+      return res.data;
+    } catch (err) {
+      return handleAxiosError(err, thunkAPI);
+    }
+  },
+);
+
 // UPDATE USER
 export const updateUserThunk = createAsyncThunk(
   "users/update",
@@ -47,6 +82,17 @@ export const updateUserThunk = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
+    }
+  },
+);
+
+export const deleteUserByManagerThunk = createAsyncThunk(
+  "user/deleteByManager",
+  async (id, thunkAPI) => {
+    try {      const res = await api.delete(`/users/manager/${id}`);
+      return { id, message: res.data.message };
+    } catch (err) {
+      return handleAxiosError(err, thunkAPI);
     }
   },
 );

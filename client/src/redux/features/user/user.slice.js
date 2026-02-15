@@ -1,8 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   createUserThunk,
+  createUserByManagerThunk,
   fetchUsersThunk,
   fetchUsersByBranchThunk,
+  fetchUsersByBranchManagerThunk,
   updateUserThunk,
   deleteUserThunk,
 } from "./user.thunk";
@@ -32,6 +34,18 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to create user";
       })
+      .addCase(createUserByManagerThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createUserByManagerThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users.unshift(action.payload); // instant UI update
+      })
+      .addCase(createUserByManagerThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to create user";
+      })
       .addCase(fetchUsersThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -53,6 +67,18 @@ const userSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(fetchUsersByBranchThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch users by branch";
+      })
+      .addCase(fetchUsersByBranchManagerThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUsersByBranchManagerThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(fetchUsersByBranchManagerThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch users by branch";
       })

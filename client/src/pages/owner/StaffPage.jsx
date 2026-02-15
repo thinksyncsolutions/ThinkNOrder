@@ -22,7 +22,6 @@ const StaffPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
 
-
   // Filtered users based on branch & role
   const filteredUsers = users.filter((user) => {
     const branchMatch =
@@ -45,43 +44,42 @@ const StaffPage = () => {
       });
   }, [dispatch]);
 
- const handleCreateStaff = (staffData, id) => {
-  if (id) {
-    // EDIT MODE
-    dispatch(updateUserThunk({ id, data: staffData }))
-      .unwrap()
-      .then((data) => {
-        toast.success(data.message || "Staff updated");
-        setShowModal(false);
-        setEditUser(null);
-        dispatch(fetchUsersThunk());
-      })
-      .catch((error) => toast.error(error.message));
-  } else {
-    // CREATE MODE
-    dispatch(createUserThunk(staffData))
-      .unwrap()
-      .then((data) => {
-        toast.success(data.message || "Staff created");
-        setShowModal(false);
-        dispatch(fetchUsersThunk());
-      })
-      .catch((error) => toast.error(error.message));
-  }
-};
+  const handleCreateStaff = (staffData, id) => {
+    if (id) {
+      // EDIT MODE
+      dispatch(updateUserThunk({ id, data: staffData }))
+        .unwrap()
+        .then((data) => {
+          toast.success(data.message || "Staff updated");
+          setShowModal(false);
+          setEditUser(null);
+          dispatch(fetchUsersThunk());
+        })
+        .catch((error) => toast.error(error.message));
+    } else {
+      // CREATE MODE
+      dispatch(createUserThunk(staffData))
+        .unwrap()
+        .then((data) => {
+          toast.success(data.message || "Staff created");
+          setShowModal(false);
+          dispatch(fetchUsersThunk());
+        })
+        .catch((error) => toast.error(error.message));
+    }
+  };
 
   const handleDelete = (id) => {
-  if (!window.confirm("Delete this staff member?")) return;
+    if (!window.confirm("Delete this staff member?")) return;
 
-  dispatch(deleteUserThunk(id))
-    .unwrap()
-    .then((data) => {
-      toast.success(data.message || "Deleted");
-      dispatch(fetchUsersThunk());
-    })
-    .catch((error) => toast.error(error.message));
-};
-
+    dispatch(deleteUserThunk(id))
+      .unwrap()
+      .then((data) => {
+        toast.success(data.message || "Deleted");
+        dispatch(fetchUsersThunk());
+      })
+      .catch((error) => toast.error(error.message));
+  };
 
   return (
     <div>
@@ -195,16 +193,15 @@ const StaffPage = () => {
 
       {/* Create Staff Modal */}
       {showModal && (
-  <CreateStaffModal
-    onClose={() => {
-      setShowModal(false);
-      setEditUser(null);
-    }}
-    onCreate={handleCreateStaff}
-    editData={editUser} // 👈 important
-  />
-)}
-
+        <CreateStaffModal
+          onClose={() => {
+            setShowModal(false);
+            setEditUser(null);
+          }}
+          onCreate={handleCreateStaff}
+          editData={editUser} // 👈 important
+        />
+      )}
     </div>
   );
 };
