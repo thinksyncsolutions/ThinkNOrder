@@ -11,7 +11,7 @@ const SelectBranchScreen = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-gray-100 p-6">
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl p-10">
 
         {/* Heading */}
