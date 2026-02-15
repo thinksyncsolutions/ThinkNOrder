@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X, LogOut } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/features/auth/auth.slice";
 import { SidebarConfig } from "./SideBarConfig";
+import {clearBranch} from "../../redux/features/auth/auth.slice";
 
 const Sidebar = ({ role, title }) => {
   const [open, setOpen] = useState(true);
@@ -32,6 +33,15 @@ const Sidebar = ({ role, title }) => {
             {open && <span>{link.label}</span>}
           </NavLink>
         ))}
+          <NavLink
+            className={({ isActive }) =>
+              `flex items-center gap-3 p-2 rounded-lg transition"}`
+            }
+            onClick={() => dispatch(clearBranch())}
+          >
+            <LogOut size={18} />
+            {open && <span>Select Branch</span>}
+          </NavLink>
       </nav>
 
       <div className="p-3 border-t border-slate-700">
