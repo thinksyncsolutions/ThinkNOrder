@@ -68,7 +68,7 @@ const authSlice = createSlice({
 
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("requiresBranchSelection", "false");
-        localStorage.removeItem("branches"); // Clean up
+        // localStorage.removeItem("branches"); // Clean up
       });
   },
 });
