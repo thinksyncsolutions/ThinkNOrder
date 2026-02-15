@@ -16,4 +16,6 @@ router.get("/items/section/:sectionId", itemCtrl.getItemsBySection);
 router.put("/items/:id", itemCtrl.updateItem);
 router.delete("/items/:id", itemCtrl.deleteItem);
 
+router.get("/full-menu", authMiddleware, require("./menu.controller").getFullMenu);
+
 module.exports = router;

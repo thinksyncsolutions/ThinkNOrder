@@ -8,6 +8,7 @@ import {
     fetchMenuItemsBySection,
     updateMenuItem,
     deleteMenuItem,
+    fetchFullMenu,
 } from "./menu.thunk";
 
 const initialState = {
@@ -51,10 +52,26 @@ const menuSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
+            // .addCase(updateMenuSection.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     state.sections = action.payload.data;
+            // })
             .addCase(updateMenuSection.fulfilled, (state, action) => {
-                state.loading = false;
-                state.sections = action.payload.data;
-            })
+  state.loading = false;
+
+  const updated = action.payload.data;
+
+  const index = state.sections.findIndex(
+    s => s._id === updated._id
+  );
+
+  if (index !== -1) {
+    state.sections[index] = {
+      ...state.sections[index],
+      ...updated
+    };
+  }
+})
             .addCase(updateMenuSection.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to update sections";
@@ -121,7 +138,19 @@ const menuSlice = createSlice({
             .addCase(deleteMenuItem.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to delete item";
-            });
+            })
+            .addCase(fetchFullMenu.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+.addCase(fetchFullMenu.fulfilled, (state, action) => {
+  state.loading = false;
+  state.sections = action.payload.data; // sections WITH items
+})
+.addCase(fetchFullMenu.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload || "Failed to fetch menu";
+})
     },
 });
 
