@@ -26,6 +26,9 @@ const authSlice = createSlice({
       state.requiresBranchSelection = false;
       localStorage.clear();
     },
+    clearBranch(state) {
+    state.requiresBranchSelection = true;
+  }
   },
   extraReducers: (builder) => {
     builder
@@ -70,5 +73,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, clearBranch } = authSlice.actions;
 export default authSlice.reducer;

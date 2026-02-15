@@ -25,6 +25,7 @@ export const SidebarConfig = {
   MANAGER: [
     { to: "/manager", label: "Dashboard", icon: <LayoutDashboard size={18} /> },
     { to: "/manager/orders", label: "Orders", icon: <ClipboardList size={18} /> },
+    { to: "/manager/menu", label: "Menu", icon: <ClipboardList size={18} /> },
     { to: "/manager/tables", label: "Tables", icon: <UtensilsCrossed size={18} /> },
     { to: "/manager/staff", label: "Staff", icon: <Users size={18} /> },
     { to: "/manager/reports", label: "Reports", icon: <BarChart3 size={18} /> },
