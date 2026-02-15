@@ -35,13 +35,13 @@ const SelectBranchScreen = () => {
 
         {/* Branch grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {branches.map((b) => (
+          {branches.map((branch) => (
             <button
-              key={b}
-              onClick={() => selectBranch(b)}
+              key={branch}
+              onClick={() => selectBranch(branch)}
               className="p-5 border rounded-xl bg-gray-50 hover:bg-blue-50 hover:border-blue-500 hover:shadow-md transition-all duration-200 text-lg font-medium"
             >
-              {b}
+              {branch}
             </button>
           ))}
         </div>
