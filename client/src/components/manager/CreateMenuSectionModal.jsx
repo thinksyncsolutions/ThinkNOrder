@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 const CreateMenuSectionModal = ({ onClose, onSubmit, branches }) => {
-
+ 
   const [form, setForm] = useState({
     name: "",
     image: "",
