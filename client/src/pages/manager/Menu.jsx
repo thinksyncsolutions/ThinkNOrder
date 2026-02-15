@@ -5,14 +5,17 @@ import {
   fetchMenuSections,
   fetchMenuItemsBySection,
 } from "../../redux/features/menu/menu.thunk";
+import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
 import { Plus } from "lucide-react";
-
 
 const Menu = () => {
   const dispatch = useDispatch();
   // const [showModal, setShowModal] = useState(false);
-  const { sections, items, loading, error } = useSelector((state) => state.menu);
-    const [showModal, setShowModal] = useState(false);
+  const { sections, items, loading, error } = useSelector(
+    (state) => state.menu,
+  );
+  const branches = useSelector((state) => state.branch.branches);
+  const [showModal, setShowModal] = useState(false);
 
   console.log("Sections:", sections);
   console.log("Items:", items);
@@ -20,6 +23,7 @@ const Menu = () => {
   // 1️⃣ Fetch sections only once
   useEffect(() => {
     dispatch(fetchMenuSections());
+    dispatch(fetchBranchesThunk());
   }, [dispatch]);
 
   // 2️⃣ When sections load, fetch items
@@ -36,23 +40,22 @@ const Menu = () => {
       <h1>Menu</h1>
 
       {/* <button onClick={() => setShowModal(true)}>Add Section</button> */}
-      {showModal && <CreateMenuSectionModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <CreateMenuSectionModal onClose={() => setShowModal(false)} branches={branches} />
+      )}
 
       {loading && <p>Loading menu...</p>}
       {error && <p>Error: {error}</p>}
 
-
       <button
-                    onClick={() => setShowModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded"
-                  >
-                    <Plus size={16} /> Create Branch
-                  </button>
+        onClick={() => setShowModal(true)}
+        className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded"
+      >
+        <Plus size={16} /> Create Section
+      </button>
 
       {sections.map((section) => (
         <div key={section._id}>
-
-
           <h2>{section.name}</h2>
 
           <ul>
@@ -66,8 +69,6 @@ const Menu = () => {
           </ul>
         </div>
       ))}
-
-      
     </div>
   );
 };
