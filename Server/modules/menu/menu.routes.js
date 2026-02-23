@@ -11,7 +11,7 @@ router.put("/sections/:id", sectionCtrl.updateSection);
 router.delete("/sections/:id", sectionCtrl.deleteSection);
 
 // ITEM
-router.post("/items", itemCtrl.createItem);
+router.post("/items/:sectionId", itemCtrl.createItem);
 router.get("/items/section/:sectionId", itemCtrl.getItemsBySection);
 router.put("/items/:id", itemCtrl.updateItem);
 router.delete("/items/:id", itemCtrl.deleteItem);

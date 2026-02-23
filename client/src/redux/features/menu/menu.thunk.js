@@ -52,14 +52,15 @@ export const deleteMenuSection = createAsyncThunk(
 
 export const createMenuItem = createAsyncThunk(
   "menu/createMenuItem",
-  async ({ sectionId, itemData }, thunkAPI) => {
+  async ( { sectionId, data }, thunkAPI) => {
     try {
-      const response = await api.post("/menu/items", {
-        ...itemData,
-        sectionId,
-      });
+      const response = await api.post(`/menu/items/${sectionId}`, 
+        data
+      );
+      console.log("Create item response:", response.data); // Debug log
       return response.data;
     } catch (error) {
+      console.log(error)
       return handleAxiosError(error, thunkAPI);
     }
   },

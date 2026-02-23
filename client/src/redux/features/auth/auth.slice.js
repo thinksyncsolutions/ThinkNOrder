@@ -62,7 +62,6 @@ const authSlice = createSlice({
       })
 
       .addCase(selectBranchThunk.fulfilled, (state, action) => {
-        console.log("SELECT BRANCH PAYLOAD", action.payload);
         state.token = action.payload.token;
         state.requiresBranchSelection = false;
 

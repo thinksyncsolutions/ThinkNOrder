@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  createMenuSections,
+  createMenuItem,
   fetchFullMenu,
   updateMenuSection,
   deleteMenuSection,
@@ -8,14 +10,15 @@ import {
   deleteMenuItem,
 } from "../../redux/features/menu/menu.thunk";
 
-import EditSectionModal from "../../components/common/EditSectionModal";
-import EditItemModal from "../../components/common/EditItemModal";
+import MenuSectionModal from "../../components/common/MenuSectionModal";
+import MenuItemModal from "../../components/common/MenuItemModal";
 
 const Menu = () => {
   const dispatch = useDispatch();
   const { sections, loading, error } = useSelector((state) => state.menu);
 
-  console.log("Sections in Menu.jsx:", sections); // Debug log
+  const [showCreateSection, setShowCreateSection] = useState(false);
+  const [createItemSection, setCreateItemSection] = useState(null);
 
   const [editSection, setEditSection] = useState(null);
   const [editItem, setEditItem] = useState(null);
@@ -23,6 +26,24 @@ const Menu = () => {
   useEffect(() => {
     dispatch(fetchFullMenu());
   }, [dispatch]);
+
+  const handleCreateSection = async (data) => {
+  const res = await dispatch(createMenuSections(data));
+
+  if (!res.error) {
+    setShowCreateSection(false);
+    dispatch(fetchFullMenu()); // refresh UI
+  }
+};
+
+const handleCreateItem = async (data) => {
+  const res = await dispatch(createMenuItem({ sectionId: createItemSection._id, data }));
+
+  if (!res.error) {
+    setCreateItemSection(null);
+    dispatch(fetchFullMenu());
+  }
+};
 
   const handleUpdateSection = async (data) => {
     const res = await dispatch(
@@ -57,26 +78,42 @@ const Menu = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+
       <h1 className="text-3xl font-bold mb-6">Menu</h1>
+
+        <button
+    onClick={() => setShowCreateSection(true)}
+    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+  >
+    + Create Section
+  </button>
 
       {loading && <p className="text-gray-500">Loading menu...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      {editSection && (
-        <EditSectionModal
-          section={editSection}
-          onClose={() => setEditSection(null)}
-          onSave={handleUpdateSection}
-        />
-      )}
+{/* Section Modal (Handles both Create and Edit) */}
+{(showCreateSection || editSection) && (
+  <MenuSectionModal
+    initialData={editSection} // If null, it behaves as Create
+    onClose={() => {
+      setShowCreateSection(false);
+      setEditSection(null);
+    }}
+    onSubmit={editSection ? handleUpdateSection : handleCreateSection}
+  />
+)}
 
-      {editItem && (
-        <EditItemModal
-          item={editItem}
-          onClose={() => setEditItem(null)}
-          onSave={handleUpdateItem}
-        />
-      )}
+{/* Item Modal (Handles both Create and Edit) */}
+{(createItemSection || editItem) && (
+  <MenuItemModal
+    initialData={editItem}
+    onClose={() => {
+      setCreateItemSection(null);
+      setEditItem(null);
+    }}
+    onSubmit={editItem ? handleUpdateItem : handleCreateItem}
+  />
+)}
 
       {sections.map((section) => (
         <div
@@ -87,6 +124,12 @@ const Menu = () => {
             <h2 className="text-xl font-semibold">{section.name}</h2>
 
             <div className="space-x-2">
+              <button
+    onClick={() => setCreateItemSection(section)}
+    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+  >
+    + Add Item
+  </button>
               <button
                 onClick={() => setEditSection(section)}
                 className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"

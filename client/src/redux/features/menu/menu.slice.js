@@ -92,10 +92,21 @@ const menuSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
+            // .addCase(createMenuItem.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     state.items.push(action.payload.data);
+            // })
             .addCase(createMenuItem.fulfilled, (state, action) => {
-                state.loading = false;
-                state.items.push(action.payload.data);
-            })
+  const newItem = action.payload;
+
+  const section = state.sections.find(
+    (sec) => sec._id === newItem.sectionId
+  );
+
+  if (section) {
+    section.items.push(newItem);
+  }
+})
             .addCase(createMenuItem.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to create item";
