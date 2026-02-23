@@ -1,6 +1,7 @@
 const Section = require("../../database/models/Section");
 
 exports.getFullMenu = async (req, res, next) => {
+  console.log("Fetching full menu for restaurant:", req.user.restaurantId, "branch:", req.user.branchId);
   try {
     const { restaurantId, branchId } = req.user;
 

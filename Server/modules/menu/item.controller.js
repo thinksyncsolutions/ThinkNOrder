@@ -5,7 +5,8 @@ exports.createItem = async (req, res, next) => {
   console.log(req.body)
   console.log(req.params);
   try {
-    const { name, image, description, prices, branchId, isVeg, preparationTime } = req.body;
+    const { branchId, restaurantId } = req.user;
+    const { name, image, description, prices, isVeg, preparationTime } = req.body;
     const {sectionId} = req.params;
     if (!name || !sectionId || !prices?.length) {
    return res.status(400).json({ message: "Missing required fields" });
@@ -16,10 +17,10 @@ exports.createItem = async (req, res, next) => {
       description,
       prices,
       sectionId,
-      branchId: branchId || null,
+      branchId,
       isVeg,
       preparationTime,
-      restaurantId: req.user.restaurantId
+      restaurantId
     });
     await item.save();
     console.log("Created item:", item); // Debug log

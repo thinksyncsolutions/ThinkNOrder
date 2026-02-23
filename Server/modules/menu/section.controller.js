@@ -2,14 +2,14 @@
 const Section = require("../../database/models/Section");
 
 exports.createSection = async (req, res, next) => {
-  console.log("Creating section with data:", req.body);
+  const { restaurantId, branchId } = req.user;
   try {
     const sections = req.body.sections; // array
 
     const docs = sections.map(sec => ({
       ...sec,
-      restaurantId: req.user.restaurantId,
-      branchId: sec.branchId || null
+      restaurantId,
+      branchId
     }));
 
     const created = await Section.insertMany(docs);
@@ -23,10 +23,10 @@ exports.createSection = async (req, res, next) => {
 
 exports.getSections = async (req, res, next) => {
   try {
-    const { branchId } = req.user;
+    const { branchId, restaurantId } = req.user;
 
     const sections = await Section.find({
-      restaurantId: req.user.restaurantId,
+      restaurantId,
       isActive: true,
       $or: [{ branchId: null }, { branchId }]
     }).sort({ order: 1 });
