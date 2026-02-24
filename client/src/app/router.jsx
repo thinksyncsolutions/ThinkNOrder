@@ -32,6 +32,8 @@ import KitchenDashboard from "../pages/kitchen/KitchenDashboard";
 
 import SelectBranchScreen from "../components/SelectBranchScreen"
 
+import UserPage from "../pages/user/UserPage";
+
 export const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   // { path: "/register", element: <RegisterOwner /> },
@@ -124,6 +126,16 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <KitchenDashboard /> },
     ],
+  },
+
+  // user menu page
+  {
+    path: "/user-menu",
+    element: (
+      <ProtectedRoute roles={["USER"]}>
+        <UserPage />
+      </ProtectedRoute>
+    ),
   },
 
   { path: "*", element: <Unauthorized /> },

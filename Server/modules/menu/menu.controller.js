@@ -2,7 +2,7 @@ const Section = require("../../database/models/Section");
 
 exports.getFullMenu = async (req, res, next) => {
   try {
-    const { restaurantId, branchId } = req.user;
+    const { restaurantId, branchId } = req.user // branchId can come from either user or query params
 
     const menu = await Section.aggregate([
       { 
