@@ -1,7 +1,6 @@
 const Section = require("../../database/models/Section");
 
 exports.getFullMenu = async (req, res, next) => {
-  console.log("Fetching full menu for restaurant:", req.user.restaurantId, "branch:", req.user.branchId);
   try {
     const { restaurantId, branchId } = req.user;
 
@@ -32,7 +31,6 @@ exports.getFullMenu = async (req, res, next) => {
       },
       { $sort: { order: 1 } }
     ]);
-
     res.json({ success: true, data: menu });
 
   } catch (err) {

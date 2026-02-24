@@ -17,6 +17,8 @@ const Menu = () => {
   const dispatch = useDispatch();
   const { sections, loading, error } = useSelector((state) => state.menu);
 
+  console.log("Menu sections from state:", sections); // Debug log
+
   const [showCreateSection, setShowCreateSection] = useState(false);
   const [createItemSection, setCreateItemSection] = useState(null);
 
@@ -29,10 +31,10 @@ const Menu = () => {
 
   const handleCreateSection = async (data) => {
   const res = await dispatch(createMenuSections(data));
+  console.log("Create section response:", res); // Debug log
 
   if (!res.error) {
     setShowCreateSection(false);
-    dispatch(fetchFullMenu()); // refresh UI
   }
 };
 
@@ -41,7 +43,6 @@ const handleCreateItem = async (data) => {
 
   if (!res.error) {
     setCreateItemSection(null);
-    dispatch(fetchFullMenu());
   }
 };
 

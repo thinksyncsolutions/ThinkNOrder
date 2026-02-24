@@ -1,6 +1,7 @@
 // middlewares/auth.js
 const jwt = require("jsonwebtoken");
 const User = require("../database/models/User");
+const mongoose = require("mongoose");
 
 module.exports = async (req, res, next) => {
   try {
@@ -17,15 +18,18 @@ module.exports = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid user" });
     }
 
+    const branchId = decoded.branchId ? new mongoose.Types.ObjectId(decoded.branchId) : null;
+
     req.user = {
       id: user._id,
       role: user.role,
       restaurantId: user.restaurantId,
-      branchId: decoded.branchId // from token, can be null
+      branchId: branchId // from token, can be null
     };
 
     next();
   } catch (err) {
+    console.error("Auth Error:", err.message);
     return res.status(401).json({ message: "Unauthorized" });
   }
 };

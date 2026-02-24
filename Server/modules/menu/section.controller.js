@@ -3,16 +3,19 @@ const Section = require("../../database/models/Section");
 
 exports.createSection = async (req, res, next) => {
   const { restaurantId, branchId } = req.user;
+  const { name, image, order } = req.body;
+  console.log(req.body);
+  console.log(req.user);
   try {
-    const sections = req.body.sections; // array
-
-    const docs = sections.map(sec => ({
-      ...sec,
+    const doc = {
+      name,
+      image,
+      order,
       restaurantId,
       branchId
-    }));
+    };
 
-    const created = await Section.insertMany(docs);
+    const created = await Section.create(doc);
 
     res.status(201).json({ success: true, data: created });
   } catch (err) {
@@ -38,11 +41,13 @@ exports.getSections = async (req, res, next) => {
 };
 
 exports.updateSection = async (req, res, next) => {
+  console.log(req.params);
   try {
     const section = await Section.findOneAndUpdate(
       {
         _id: req.params.id,
-        restaurantId: req.user.restaurantId
+        restaurantId: req.user.restaurantId,
+        branchId: req.user.branchId
       },
       req.body,
       { new: true }

@@ -29,9 +29,15 @@ const menuSlice = createSlice({
                 state.error = null;
             })
             .addCase(createMenuSections.fulfilled, (state, action) => {
-                state.loading = false;
-                state.sections = action.payload.data;
-            })
+  state.loading = false;
+  
+  // action.payload.data is the single new section object
+  const newSection = action.payload.data;
+
+  // IMPORTANT: Spread the existing sections and add the new one
+  // This ensures state.sections remains an Array
+  state.sections = [...state.sections, { ...newSection, items: [] }];
+})
             .addCase(createMenuSections.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to create sections";
@@ -80,10 +86,13 @@ const menuSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(deleteMenuSection.fulfilled, (state, action) => {
-                state.loading = false;
-                state.sections = action.payload.data;
-            })
+           .addCase(deleteMenuSection.fulfilled, (state, action) => {
+  state.loading = false;
+  // Filter out the deleted section using the ID passed from the thunk
+  // Note: Check if your thunk returns the ID or the deleted object
+  const deletedId = action.meta.arg; 
+  state.sections = state.sections.filter(s => s._id !== deletedId);
+})
             .addCase(deleteMenuSection.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to delete section";
@@ -97,15 +106,29 @@ const menuSlice = createSlice({
             //     state.items.push(action.payload.data);
             // })
             .addCase(createMenuItem.fulfilled, (state, action) => {
-  const newItem = action.payload;
+  state.loading = false;
+  
+  // 1. Extract the actual item from the response wrapper
+  const newItem = action.payload.data; 
 
-  const section = state.sections.find(
+  if (!newItem) return;
+
+  // 2. Find the section in the 'sections' array
+  const sectionIndex = state.sections.findIndex(
     (sec) => sec._id === newItem.sectionId
   );
 
-  if (section) {
-    section.items.push(newItem);
+  // 3. Update the state immutably
+  if (sectionIndex !== -1) {
+    // Ensure items array exists before pushing
+    if (!state.sections[sectionIndex].items) {
+      state.sections[sectionIndex].items = [];
+    }
+    state.sections[sectionIndex].items.push(newItem);
   }
+  
+  // 4. Also update the flat 'items' list if you use it elsewhere
+  state.items.push(newItem);
 })
             .addCase(createMenuItem.rejected, (state, action) => {
                 state.loading = false;

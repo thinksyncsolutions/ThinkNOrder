@@ -2,8 +2,6 @@
 const Item = require("../../database/models/Item");
 
 exports.createItem = async (req, res, next) => {
-  console.log(req.body)
-  console.log(req.params);
   try {
     const { branchId, restaurantId } = req.user;
     const { name, image, description, prices, isVeg, preparationTime } = req.body;
@@ -23,7 +21,6 @@ exports.createItem = async (req, res, next) => {
       restaurantId
     });
     await item.save();
-    console.log("Created item:", item); // Debug log
 
     res.status(201).json({ success: true, data: item });
   } catch (err) {

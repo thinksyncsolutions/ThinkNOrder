@@ -6,7 +6,7 @@ export const createMenuSections = createAsyncThunk(
   "menu/createMenuSections",
   async (sections, thunkAPI) => {
     try {
-      const response = await api.post("/menu/sections", { sections });
+      const response = await api.post("/menu/sections", sections);
       return response.data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
@@ -29,6 +29,7 @@ export const fetchMenuSections = createAsyncThunk(
 export const updateMenuSection = createAsyncThunk(
   "menu/updateMenuSection",
   async ({ sectionId, data }, thunkAPI) => {
+    console.log("Updating section:", sectionId, data); // Debug log
     try {
       const response = await api.put(`/menu/sections/${sectionId}`, data);
       return response.data;
@@ -107,6 +108,7 @@ export const fetchFullMenu = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await api.get("/menu/full-menu");
+      console.log("Full menu response:", response.data); // Debug log
       return response.data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
