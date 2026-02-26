@@ -1,186 +1,199 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
+import { Search, UtensilsCrossed, PlusCircle, MinusCircle } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  createMenuSections,
-  createMenuItem,
-  fetchFullMenu,
-  updateMenuSection,
-  deleteMenuSection,
-  updateMenuItem,
-  deleteMenuItem,
-} from "../../redux/features/menu/menu.thunk";
+import { fetchFullMenu } from "../../redux/features/menu/menu.thunk";
 
-import MenuSectionModal from "../../components/common/MenuSectionModal";
-import MenuItemModal from "../../components/common/MenuItemModal";
-
-const Menu = () => {
+const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
   const dispatch = useDispatch();
   const { sections, loading, error } = useSelector((state) => state.menu);
 
-  console.log("Menu sections from state:", sections); // Debug log
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
 
-  const [showCreateSection, setShowCreateSection] = useState(false);
-  const [createItemSection, setCreateItemSection] = useState(null);
-
-  const [editSection, setEditSection] = useState(null);
-  const [editItem, setEditItem] = useState(null);
-
+  /* ✅ Fetch menu same as MenuManagement */
   useEffect(() => {
     dispatch(fetchFullMenu());
   }, [dispatch]);
 
-  const handleCreateSection = async (data) => {
-  const res = await dispatch(createMenuSections(data));
-  console.log("Create section response:", res); // Debug log
+  /* ✅ Filtered Menu Logic */
+  const filteredSections = useMemo(() => {
+    if (!sections) return [];
 
-  if (!res.error) {
-    setShowCreateSection(false);
-  }
-};
+    let categoryFiltered =
+      activeCategory === "All"
+        ? sections
+        : sections.filter((s) => s.name === activeCategory);
 
-const handleCreateItem = async (data) => {
-  const res = await dispatch(createMenuItem({ sectionId: createItemSection._id, data }));
+    if (!searchTerm) return categoryFiltered;
 
-  if (!res.error) {
-    setCreateItemSection(null);
-  }
-};
+    return categoryFiltered
+      .map((section) => {
+        const filteredItems = section.items.filter((item) =>
+          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        return { ...section, items: filteredItems };
+      })
+      .filter((section) => section.items.length > 0);
+  }, [sections, searchTerm, activeCategory]);
 
-  const handleUpdateSection = async (data) => {
-    const res = await dispatch(
-      updateMenuSection({ sectionId: editSection._id, data })
+  const handleAddItem = (item, price) => {
+    // This is a simple pass-through to the parent's logic
+    addToTableCart({
+      ...item,
+      selectedPrice: price,
+    });
+  };
+
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <UtensilsCrossed className="w-10 h-10 animate-pulse text-purple-500" />
+        <p className="ml-3 text-gray-600">Loading Menu...</p>
+      </div>
     );
-    if (!res.error) {
-      setEditSection(null);
-    }
-  };
+  }
 
-  const handleDeleteSection = async (sectionId) => {
-    if (!window.confirm("Delete this section?")) return;
-    const res = await dispatch(deleteMenuSection(sectionId));
-    if (!res.error) dispatch(fetchFullMenu());
-  };
-
-  const handleUpdateItem = async (data) => {
-    const res = await dispatch(
-      updateMenuItem({ itemId: editItem._id, itemData: data })
-    );
-    if (!res.error) {
-      dispatch(fetchFullMenu());
-      setEditItem(null);
-    }
-  };
-
-  const handleDeleteItem = async (itemId) => {
-    if (!window.confirm("Delete this item?")) return;
-    const res = await dispatch(deleteMenuItem(itemId));
-    if (!res.error) dispatch(fetchFullMenu());
-  };
+  if (error) {
+    return <p className="text-red-500 text-center">{error}</p>;
+  }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="bg-gray-50 h-full flex flex-col">
 
-      <h1 className="text-3xl font-bold mb-6">Menu</h1>
+      {/* Header */}
+      <div className="p-4 bg-white shadow">
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          Table Menu
+        </h2>
 
-        <button
-    onClick={() => setShowCreateSection(true)}
-    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-  >
-    + Create Section
-  </button>
-
-      {loading && <p className="text-gray-500">Loading menu...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-{/* Section Modal (Handles both Create and Edit) */}
-{(showCreateSection || editSection) && (
-  <MenuSectionModal
-    initialData={editSection} // If null, it behaves as Create
-    onClose={() => {
-      setShowCreateSection(false);
-      setEditSection(null);
-    }}
-    onSubmit={editSection ? handleUpdateSection : handleCreateSection}
-  />
-)}
-
-{/* Item Modal (Handles both Create and Edit) */}
-{(createItemSection || editItem) && (
-  <MenuItemModal
-    initialData={editItem}
-    onClose={() => {
-      setCreateItemSection(null);
-      setEditItem(null);
-    }}
-    onSubmit={editItem ? handleUpdateItem : handleCreateItem}
-  />
-)}
-
-      {sections.map((section) => (
-        <div
-          key={section._id}
-          className="mb-8 border rounded-xl p-4 shadow-sm bg-white"
-        >
-          <div className="flex justify-between items-center mb-3">
-            <h2 className="text-xl font-semibold">{section.name}</h2>
-
-            <div className="space-x-2">
-              <button
-    onClick={() => setCreateItemSection(section)}
-    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-  >
-    + Add Item
-  </button>
-              <button
-                onClick={() => setEditSection(section)}
-                className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={() => handleDeleteSection(section._id)}
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-
-          <ul className="space-y-2">
-            {section.items?.length > 0 ? (
-              section.items.map((item) => (
-                <li
-                  key={item._id}
-                  className="flex justify-between items-center bg-gray-50 p-3 rounded"
-                >
-                  <span>
-                    {item.name} — ₹{item.prices?.[0]?.price}
-                  </span>
-
-                  <div className="space-x-2">
-                    <button
-                      onClick={() => setEditItem(item)}
-                      className="px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDeleteItem(item._id)}
-                      className="px-2 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </li>
-              ))
-            ) : (
-              <li className="text-gray-400">No items</li>
-            )}
-          </ul>
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search item..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border rounded"
+          />
         </div>
-      ))}
+
+        {/* Categories */}
+        <div className="flex gap-2 overflow-x-auto">
+          <button
+            onClick={() => setActiveCategory("All")}
+            className={`px-4 py-1 rounded ${
+              activeCategory === "All"
+                ? "bg-purple-600 text-white"
+                : "bg-gray-200"
+            }`}
+          >
+            All
+          </button>
+
+          {sections.map((section) => (
+            <button
+              key={section._id}
+              onClick={() => setActiveCategory(section.name)}
+              className={`px-4 py-1 rounded whitespace-nowrap ${
+                activeCategory === section.name
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              {section.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Menu Items */}
+      <div className="p-6 overflow-y-auto flex-1 space-y-8">
+        {filteredSections.length > 0 ? (
+          filteredSections.map((section) => (
+            <div key={section._id}>
+              <h3 className="text-xl font-bold mb-4 text-purple-700">
+                {section.name}
+              </h3>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {section.items.map((item) => (
+                  <div
+                    key={item._id}
+                    className="bg-white p-4 rounded shadow"
+                  >
+                    <h4 className="font-semibold mb-2">
+                      {item.name}
+                    </h4>
+
+                    {item.prices?.map((p) => {
+                      const itemInCart = tableCart.find(
+                        (cartItem) =>
+                          cartItem.itemId === item._id &&
+                          cartItem.selectedPrice._id === p._id
+                      );
+
+                      const quantity = itemInCart
+                        ? itemInCart.quantity
+                        : 0;
+
+                      return (
+                        <div key={p._id} className="mt-2 border-t pt-2">
+                          <div className="flex justify-between">
+                            <span>{p.size}</span>
+                            <span className="font-bold">
+                              ₹ {p.price}
+                            </span>
+                          </div>
+
+                          {quantity === 0 ? (
+                            <button
+                              onClick={() =>
+                                handleAddItem(item, p)
+                              }
+                              className="mt-2 w-full bg-purple-500 text-white py-1 rounded"
+                            >
+                              Add
+                            </button>
+                          ) : (
+                            <div className="flex justify-center items-center gap-3 mt-2">
+                              <button
+                                onClick={() =>
+                                  removeFromTableCart(
+                                    item._id,
+                                    p._id
+                                  )
+                                }
+                              >
+                                <MinusCircle size={20} />
+                              </button>
+
+                              <span>{quantity}</span>
+
+                              <button
+                                onClick={() =>
+                                  handleAddItem(item, p)
+                                }
+                              >
+                                <PlusCircle size={20} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">
+            No items found
+          </p>
+        )}
+      </div>
     </div>
   );
 };

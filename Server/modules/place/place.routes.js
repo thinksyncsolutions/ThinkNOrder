@@ -12,4 +12,6 @@ router.delete("/:id", ctrl.deletePlace);
 // Status
 router.patch("/:id/status", ctrl.updatePlaceStatus);
 
+router.get("/running-tables", authMiddleware, ctrl.getRunningTables);
+
 module.exports = router;

@@ -1,54 +1,69 @@
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
+
   restaurantId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Restaurant',
-    required: true
+    ref: "Restaurant",
+    required: true,
+    index: true
   },
 
   branchId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Branch',
-    required: true
+    ref: "Branch",
+    required: true,
+    index: true
   },
 
   orderSessionId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'OrderSession',
-    required: true
+    ref: "OrderSession",
+    required: true,
+    index: true
   },
 
   placeId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Place',
-    required: true
+    required: true,
+    index: true
   },
 
-  items: [{
-    itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Item' },
-    name: String,          // snapshot
-    size: String,
-    qty: Number,
-    price: Number
-  }],
+  floor: String,
+  table: String,
+
+  items: [
+    {
+      itemId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Item",
+        required: true
+      },
+      itemname: { type: String, required: true },
+      selectedSize: { type: String, required: true },
+      quantity: { type: Number, required: true, min: 1 },
+      price: { type: Number, required: true, min: 0 }
+    }
+  ],
+
+  totalAmount: { type: Number, required: true },
 
   status: {
     type: String,
     enum: [
-      'PLACED',
-      'ACCEPTED',
-      'PREPARING',
-      'READY',
-      'SERVED',
-      'CANCELLED'
+      "Pending",
+      "Accepted",
+      "Preparing",
+      "Ready",
+      "Served",
+      "Cancelled"
     ],
-    default: 'PLACED'
+    default: "Pending",
+    index: true
   }
 
 }, { timestamps: true });
 
 orderSchema.index({ restaurantId: 1, branchId: 1, createdAt: -1 });
-orderSchema.index({ orderSessionId: 1 });
 
 module.exports = mongoose.model("Order", orderSchema);

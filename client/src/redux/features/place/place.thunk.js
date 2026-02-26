@@ -76,3 +76,15 @@ export const updatePlaceStatusThunk = createAsyncThunk(
     }
   }
 );
+
+export const getRunningTablesThunk = createAsyncThunk(
+  "place/getRunningTables",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/place/running-tables");
+      return res.data.data;
+    } catch (err) {
+      return rejectWithValue(handleAxiosError(err));
+    }
+  }
+);

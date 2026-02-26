@@ -40,8 +40,8 @@ io.on("connection", (socket) => {
   console.log("New client connected", socket.id);
 
   // Join room for a specific restaurant (called from frontend on login)
-  socket.on("joinRestaurantRoom", (restaurantId) => {
-    const roomName = `restaurant:${restaurantId}`;
+  socket.on("joinRestaurantRoom", (restaurantId, branchId) => {
+    const roomName = `restaurant:${restaurantId}:branch:${branchId}`;
     socket.join(roomName);
     console.log(`Socket ${socket.id} joined room ${roomName}`);
   });

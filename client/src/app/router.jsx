@@ -18,8 +18,9 @@ import ManagerLayout from "../layouts/ManagerLayout";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import Orders from "../pages/manager/Orders";
 import Tables from "../pages/manager/Places";
-import Menu from "../pages/manager/Menu";
+import MenuManagement from "../pages/manager/MenuManagement";
 import Staff from "../pages/manager/Staff";
+import TableManagement from "../pages/manager/TableManagement";
 
 import WaiterLayout from "../layouts/WaiterLayout";
 import WaiterDashboard from "../pages/waiter/WaiterDashboard";
@@ -87,8 +88,9 @@ export const router = createBrowserRouter([
       { index: true, element: <ManagerDashboard /> },
       { path: "orders", element: <Orders /> },
       { path: "tables", element: <Tables /> },
-      { path: "menu", element: <Menu /> },
+      { path: "menu", element: <MenuManagement /> },
       { path: "staff", element: <Staff /> },
+       { path: "table/:id", element: <TableManagement /> },
     ],
   },
   // 🟢 WAITER

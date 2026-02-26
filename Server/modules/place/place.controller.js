@@ -131,3 +131,17 @@ exports.updatePlaceStatus = async (req, res, next) => {
     next(err);
   }
 };
+
+
+exports.getRunningTables = async (req, res) => {
+  const restaurantId = req.user.restaurantId;
+
+  const sessions = await OrderSession.find({
+    restaurantId,
+    branchId: req.user.branchId,
+    isClosed: false,
+  }).select("placeId startedAt");
+
+  res.json(sessions);
+};
+
