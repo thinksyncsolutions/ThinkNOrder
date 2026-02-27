@@ -30,7 +30,7 @@ const BillManagement = ({
 
   // Redux State
   const { tableOrders, loading, sessionClosing } = useSelector(
-    (state) => state.order
+    (state) => state.order,
   );
 
   const [paymentMode, setPaymentMode] = useState("Cash");
@@ -49,7 +49,10 @@ const BillManagement = ({
   }, [tableId, dispatch]);
 
   // Calculations
-  const grandTotal = tableOrders.reduce((acc, order) => acc + order.totalAmount, 0);
+  const grandTotal = tableOrders.reduce(
+    (acc, order) => acc + order.totalAmount,
+    0,
+  );
   const taxRate = 0.18;
   const subtotal = grandTotal / (1 + taxRate);
   const tax = grandTotal - subtotal;
@@ -72,9 +75,8 @@ const BillManagement = ({
           size: item.selectedSize,
           quantity: item.quantity,
         })),
-      })
+      }),
     );
-
 
     if (result.meta.requestStatus === "fulfilled") {
       clearTableCart();
@@ -83,7 +85,7 @@ const BillManagement = ({
 
   const handleSettleAndPrint = async () => {
     const result = await dispatch(
-      closeSession({ placeId: tableId, paymentMode })
+      closeSession({ placeId: tableId, paymentMode }),
     );
 
     if (result.meta.requestStatus === "fulfilled") {
@@ -123,7 +125,7 @@ const BillManagement = ({
         )}
       </header>
 
-      <main className="flex-grow overflow-y-auto p-4 md:p-6 bg-white no-print">
+      <main className="grow overflow-y-auto p-4 md:p-6 bg-white no-print">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full text-slate-400">
             <Loader size={40} className="mb-4 animate-spin text-purple-500" />
@@ -144,12 +146,16 @@ const BillManagement = ({
                 <div className="space-y-3">
                   {order.items.map((item, index) => (
                     <div key={index} className="flex items-center gap-4">
-                      <div className="flex-shrink-0 bg-slate-100 text-purple-600 font-bold w-8 h-8 flex items-center justify-center rounded-full text-xs">
+                      <div className="shrink-0 bg-slate-100 text-purple-600 font-bold w-8 h-8 flex items-center justify-center rounded-full text-xs">
                         {item.quantity}x
                       </div>
-                      <div className="flex-grow">
-                        <p className="font-semibold text-sm text-slate-700">{item.itemname}</p>
-                        <p className="text-xs text-slate-500 capitalize">{item.selectedSize}</p>
+                      <div className="grow">
+                        <p className="font-semibold text-sm text-slate-700">
+                          {item.itemname}
+                        </p>
+                        <p className="text-xs text-slate-500 capitalize">
+                          {item.selectedSize}
+                        </p>
                       </div>
                       <p className="font-semibold text-right text-slate-700">
                         ₹{(item.price * item.quantity).toFixed(2)}
@@ -167,11 +173,15 @@ const BillManagement = ({
         <div className="space-y-2 mb-4 text-sm">
           <div className="flex justify-between text-slate-600">
             <span>Subtotal</span>
-            <span className="font-medium text-slate-800">₹{subtotal.toFixed(2)}</span>
+            <span className="font-medium text-slate-800">
+              ₹{subtotal.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between text-slate-600">
             <span>GST ({taxRate * 100}%)</span>
-            <span className="font-medium text-slate-800">₹{tax.toFixed(2)}</span>
+            <span className="font-medium text-slate-800">
+              ₹{tax.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between font-bold text-lg text-slate-900 border-t border-slate-300 pt-2 mt-2">
             <span>Grand Total</span>
@@ -195,17 +205,37 @@ const BillManagement = ({
               <div className="p-3 border-t border-slate-100 bg-white">
                 <div className="space-y-2 max-h-40 overflow-y-auto mb-3">
                   {tableCart.map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-center bg-slate-50 p-2 rounded-md">
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center bg-slate-50 p-2 rounded-md"
+                    >
                       <div>
-                        <p className="text-xs font-bold text-slate-700">{item.itemname}</p>
-                        <p className="text-[10px] text-slate-500 uppercase">{item.selectedSize}</p>
+                        <p className="text-xs font-bold text-slate-700">
+                          {item.itemname}
+                        </p>
+                        <p className="text-[10px] text-slate-500 uppercase">
+                          {item.selectedSize}
+                        </p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <button onClick={() => removeFromTableCart(item.itemId, item.selectedPrice?._id)} className="p-1 bg-red-50 text-red-500 rounded-full">
+                        <button
+                          onClick={() =>
+                            removeFromTableCart(
+                              item.itemId,
+                              item.selectedPrice?._id,
+                            )
+                          }
+                          className="p-1 bg-red-50 text-red-500 rounded-full"
+                        >
                           <Minus size={14} />
                         </button>
-                        <span className="text-sm font-bold">{item.quantity}</span>
-                        <button onClick={() => addToTableCart(item)} className="p-1 bg-green-50 text-green-500 rounded-full">
+                        <span className="text-sm font-bold">
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() => addToTableCart(item)}
+                          className="p-1 bg-green-50 text-green-500 rounded-full"
+                        >
                           <Plus size={14} />
                         </button>
                       </div>
@@ -225,7 +255,9 @@ const BillManagement = ({
 
         {/* Payment Selection */}
         <div className="mb-4">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Payment</h4>
+          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+            Payment
+          </h4>
           <div className="grid grid-cols-3 gap-2">
             {paymentOptions.map((opt) => (
               <button
@@ -249,7 +281,11 @@ const BillManagement = ({
           disabled={tableOrders.length === 0 || sessionClosing}
           className="w-full flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all disabled:bg-slate-200"
         >
-          {sessionClosing ? <Loader className="animate-spin" size={18} /> : <Printer size={18} />}
+          {sessionClosing ? (
+            <Loader className="animate-spin" size={18} />
+          ) : (
+            <Printer size={18} />
+          )}
           Settle & Print Bill
         </button>
       </footer>
@@ -258,29 +294,75 @@ const BillManagement = ({
       <div id="thermal-bill">
         <div style={{ textAlign: "center", marginBottom: "10px" }}>
           <h2 style={{ fontSize: "16px", margin: "0" }}>MY RESTAURANT</h2>
-          <p style={{ fontSize: "10px" }}>Table: {tableOrders[0]?.table || tableId}</p>
-          <p style={{ fontSize: "10px" }}>Date: {new Date().toLocaleString()}</p>
+          <p style={{ fontSize: "10px" }}>
+            Table: {tableOrders[0]?.table || tableId}
+          </p>
+          <p style={{ fontSize: "10px" }}>
+            Date: {new Date().toLocaleString()}
+          </p>
         </div>
         <div style={{ borderTop: "1px dashed #000", paddingTop: "5px" }}>
-          {tableOrders.flatMap(o => o.items).map((item, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", marginBottom: "2px" }}>
-              <span>{item.itemname} x{item.quantity}</span>
-              <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-            </div>
-          ))}
+          {tableOrders
+            .flatMap((o) => o.items)
+            .map((item, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontSize: "11px",
+                  marginBottom: "2px",
+                }}
+              >
+                <span>
+                  {item.itemname} x{item.quantity}
+                </span>
+                <span>₹{(item.price * item.quantity).toFixed(2)}</span>
+              </div>
+            ))}
         </div>
-        <div style={{ borderTop: "1px dashed #000", marginTop: "5px", paddingTop: "5px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-            <span>Subtotal:</span><span>₹{subtotal.toFixed(2)}</span>
+        <div
+          style={{
+            borderTop: "1px dashed #000",
+            marginTop: "5px",
+            paddingTop: "5px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "11px",
+            }}
+          >
+            <span>Subtotal:</span>
+            <span>₹{subtotal.toFixed(2)}</span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-            <span>GST:</span><span>₹{tax.toFixed(2)}</span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "11px",
+            }}
+          >
+            <span>GST:</span>
+            <span>₹{tax.toFixed(2)}</span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "13px", fontWeight: "bold" }}>
-            <span>Total:</span><span>₹{grandTotal.toFixed(2)}</span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "13px",
+              fontWeight: "bold",
+            }}
+          >
+            <span>Total:</span>
+            <span>₹{grandTotal.toFixed(2)}</span>
           </div>
         </div>
-        <div style={{ textAlign: "center", marginTop: "10px", fontSize: "10px" }}>
+        <div
+          style={{ textAlign: "center", marginTop: "10px", fontSize: "10px" }}
+        >
           <p>Payment: {paymentMode}</p>
           <p>Thank You! Visit Again</p>
         </div>

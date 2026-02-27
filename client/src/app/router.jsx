@@ -132,11 +132,10 @@ export const router = createBrowserRouter([
 
   // user menu page
   {
-    path: "/user-menu",
+    path: "/menu/:restaurantId/:branchId/:tableNumber",
     element: (
-      <ProtectedRoute roles={["USER"]}>
+      
         <UserPage />
-      </ProtectedRoute>
     ),
   },
 

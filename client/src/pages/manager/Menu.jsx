@@ -29,7 +29,7 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
     return categoryFiltered
       .map((section) => {
         const filteredItems = section.items.filter((item) =>
-          item.name.toLowerCase().includes(searchTerm.toLowerCase())
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()),
         );
         return { ...section, items: filteredItems };
       })
@@ -43,7 +43,6 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
       selectedPrice: price,
     });
   };
-
 
   if (loading) {
     return (
@@ -60,12 +59,9 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
 
   return (
     <div className="bg-gray-50 h-full flex flex-col">
-
       {/* Header */}
       <div className="p-4 bg-white shadow">
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Table Menu
-        </h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Table Menu</h2>
 
         {/* Search */}
         <div className="relative mb-4">
@@ -119,39 +115,28 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
 
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {section.items.map((item) => (
-                  <div
-                    key={item._id}
-                    className="bg-white p-4 rounded shadow"
-                  >
-                    <h4 className="font-semibold mb-2">
-                      {item.name}
-                    </h4>
+                  <div key={item._id} className="bg-white p-4 rounded shadow">
+                    <h4 className="font-semibold mb-2">{item.name}</h4>
 
                     {item.prices?.map((p) => {
                       const itemInCart = tableCart.find(
                         (cartItem) =>
                           cartItem.itemId === item._id &&
-                          cartItem.selectedPrice._id === p._id
+                          cartItem.selectedPrice._id === p._id,
                       );
 
-                      const quantity = itemInCart
-                        ? itemInCart.quantity
-                        : 0;
+                      const quantity = itemInCart ? itemInCart.quantity : 0;
 
                       return (
                         <div key={p._id} className="mt-2 border-t pt-2">
                           <div className="flex justify-between">
                             <span>{p.size}</span>
-                            <span className="font-bold">
-                              ₹ {p.price}
-                            </span>
+                            <span className="font-bold">₹ {p.price}</span>
                           </div>
 
                           {quantity === 0 ? (
                             <button
-                              onClick={() =>
-                                handleAddItem(item, p)
-                              }
+                              onClick={() => handleAddItem(item, p)}
                               className="mt-2 w-full bg-purple-500 text-white py-1 rounded"
                             >
                               Add
@@ -160,10 +145,7 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
                             <div className="flex justify-center items-center gap-3 mt-2">
                               <button
                                 onClick={() =>
-                                  removeFromTableCart(
-                                    item._id,
-                                    p._id
-                                  )
+                                  removeFromTableCart(item._id, p._id)
                                 }
                               >
                                 <MinusCircle size={20} />
@@ -171,11 +153,7 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
 
                               <span>{quantity}</span>
 
-                              <button
-                                onClick={() =>
-                                  handleAddItem(item, p)
-                                }
-                              >
+                              <button onClick={() => handleAddItem(item, p)}>
                                 <PlusCircle size={20} />
                               </button>
                             </div>
@@ -189,9 +167,7 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500">
-            No items found
-          </p>
+          <p className="text-center text-gray-500">No items found</p>
         )}
       </div>
     </div>

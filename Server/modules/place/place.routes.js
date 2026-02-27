@@ -1,17 +1,18 @@
 const router = require("express").Router();
 const ctrl = require("./place.controller");
-const authMiddleware = require("../../middleware/auth");
+const auth = require("../../middleware/auth");
+
 
 // CRUD
-router.post("/", ctrl.createPlace);
-router.get("/", authMiddleware, ctrl.getPlaces);
+router.post("/", auth, ctrl.createPlace);
+router.get("/", auth, ctrl.getPlaces);
 router.get("/:id", ctrl.getPlaceById);
-router.put("/:id", ctrl.updatePlace);
-router.delete("/:id", ctrl.deletePlace);
+router.put("/:id", auth, ctrl.updatePlace);
+router.delete("/:id", auth, ctrl.deletePlace);
 
 // Status
 router.patch("/:id/status", ctrl.updatePlaceStatus);
 
-router.get("/running-tables", authMiddleware, ctrl.getRunningTables);
+router.get("/running-tables", auth, ctrl.getRunningTables);
 
 module.exports = router;

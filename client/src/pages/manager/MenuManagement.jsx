@@ -31,25 +31,27 @@ const MenuManagement = () => {
   }, [dispatch]);
 
   const handleCreateSection = async (data) => {
-  const res = await dispatch(createMenuSections(data));
-  console.log("Create section response:", res); // Debug log
+    const res = await dispatch(createMenuSections(data));
+    console.log("Create section response:", res); // Debug log
 
-  if (!res.error) {
-    setShowCreateSection(false);
-  }
-};
+    if (!res.error) {
+      setShowCreateSection(false);
+    }
+  };
 
-const handleCreateItem = async (data) => {
-  const res = await dispatch(createMenuItem({ sectionId: createItemSection._id, data }));
+  const handleCreateItem = async (data) => {
+    const res = await dispatch(
+      createMenuItem({ sectionId: createItemSection._id, data }),
+    );
 
-  if (!res.error) {
-    setCreateItemSection(null);
-  }
-};
+    if (!res.error) {
+      setCreateItemSection(null);
+    }
+  };
 
   const handleUpdateSection = async (data) => {
     const res = await dispatch(
-      updateMenuSection({ sectionId: editSection._id, data })
+      updateMenuSection({ sectionId: editSection._id, data }),
     );
     if (!res.error) {
       setEditSection(null);
@@ -64,7 +66,7 @@ const handleCreateItem = async (data) => {
 
   const handleUpdateItem = async (data) => {
     const res = await dispatch(
-      updateMenuItem({ itemId: editItem._id, itemData: data })
+      updateMenuItem({ itemId: editItem._id, itemData: data }),
     );
     if (!res.error) {
       dispatch(fetchFullMenu());
@@ -83,41 +85,39 @@ const handleCreateItem = async (data) => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold mb-6">Menu Management</h1>
         <button
-    onClick={() => setShowCreateSection(true)}
-    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-  >
-    + Create Section
-  </button></div>
-      
-
-        
+          onClick={() => setShowCreateSection(true)}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          + Create Section
+        </button>
+      </div>
 
       {loading && <p className="text-gray-500">Loading menu...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-{/* Section Modal (Handles both Create and Edit) */}
-{(showCreateSection || editSection) && (
-  <MenuSectionModal
-    initialData={editSection} // If null, it behaves as Create
-    onClose={() => {
-      setShowCreateSection(false);
-      setEditSection(null);
-    }}
-    onSubmit={editSection ? handleUpdateSection : handleCreateSection}
-  />
-)}
+      {/* Section Modal (Handles both Create and Edit) */}
+      {(showCreateSection || editSection) && (
+        <MenuSectionModal
+          initialData={editSection} // If null, it behaves as Create
+          onClose={() => {
+            setShowCreateSection(false);
+            setEditSection(null);
+          }}
+          onSubmit={editSection ? handleUpdateSection : handleCreateSection}
+        />
+      )}
 
-{/* Item Modal (Handles both Create and Edit) */}
-{(createItemSection || editItem) && (
-  <MenuItemModal
-    initialData={editItem}
-    onClose={() => {
-      setCreateItemSection(null);
-      setEditItem(null);
-    }}
-    onSubmit={editItem ? handleUpdateItem : handleCreateItem}
-  />
-)}
+      {/* Item Modal (Handles both Create and Edit) */}
+      {(createItemSection || editItem) && (
+        <MenuItemModal
+          initialData={editItem}
+          onClose={() => {
+            setCreateItemSection(null);
+            setEditItem(null);
+          }}
+          onSubmit={editItem ? handleUpdateItem : handleCreateItem}
+        />
+      )}
 
       {sections.map((section) => (
         <div
@@ -129,11 +129,11 @@ const handleCreateItem = async (data) => {
 
             <div className="space-x-2">
               <button
-    onClick={() => setCreateItemSection(section)}
-    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
-  >
-    <Plus size={16} />
-  </button>
+                onClick={() => setCreateItemSection(section)}
+                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                <Plus size={16} />
+              </button>
               <button
                 onClick={() => setEditSection(section)}
                 className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
