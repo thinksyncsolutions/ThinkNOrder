@@ -12,19 +12,30 @@ module.exports = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select("role restaurantId isActive").lean();
+    const user = await User.findById(decoded.id)
+      .select("role restaurantId isActive")
+      .lean();
 
     if (!user || !user.isActive) {
       return res.status(401).json({ message: "Invalid user" });
     }
 
-    const branchId = decoded.branchId ? new mongoose.Types.ObjectId(decoded.branchId) : null;
+    // const branchId = decoded.branchId ? new mongoose.Types.ObjectId(decoded.branchId) : null;
+    let branchId = null;
+
+    if (decoded.branchId) {
+      if (typeof decoded.branchId === "object") {
+        branchId = new mongoose.Types.ObjectId(decoded.branchId._id);
+      } else {
+        branchId = new mongoose.Types.ObjectId(decoded.branchId);
+      }
+    }
 
     req.user = {
       id: user._id,
       role: user.role,
       restaurantId: user.restaurantId,
-      branchId: branchId // from token, can be null
+      branchId: branchId, // from token, can be null
     };
 
     next();

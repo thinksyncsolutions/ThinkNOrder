@@ -174,13 +174,13 @@ const selectedBranch =
         id: user._id,
         role: user.role,
         restaurantId: user.restaurantId,
-        branchId: selectedBranch // null if multiple
+        branchId: selectedBranch || user.branchId?._id // null if multiple
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    console.log(user);
+    // console.log(user);
     res.json({
       message: "Login successful",
       token,

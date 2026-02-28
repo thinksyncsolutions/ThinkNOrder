@@ -5,7 +5,8 @@ import {
   fetchOrdersForTable,
   createOrder,
   changeOrderStatus,
-  closeSession
+  closeSession,
+  fetchOrdersForKitchen,
 } from "./order.thunk";
 
 const initialState = {
@@ -13,7 +14,7 @@ const initialState = {
   kitchenOrders: [],
   loading: false,
   sessionClosing: false,
-  error: null
+  error: null,
 };
 
 const orderSlice = createSlice({
@@ -22,10 +23,9 @@ const orderSlice = createSlice({
   reducers: {
     clearTableOrders: (state) => {
       state.tableOrders = [];
-    }
+    },
   },
   extraReducers: (builder) => {
-
     // 🔥 FETCH TABLE ORDERS
     builder
       .addCase(fetchOrdersForTable.pending, (state) => {
@@ -43,26 +43,22 @@ const orderSlice = createSlice({
       });
 
     // 🔥 CREATE ORDER
-    builder
-      .addCase(createOrder.fulfilled, (state, action) => {
-        if (action.payload) {
-          state.tableOrders.push(action.payload);
-        }
-      });
+    builder.addCase(createOrder.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.tableOrders.push(action.payload);
+      }
+    });
 
     // 🔥 CHANGE STATUS
-    builder
-      .addCase(changeOrderStatus.fulfilled, (state, action) => {
-        const { orderId, newStatus } = action.payload;
+    builder.addCase(changeOrderStatus.fulfilled, (state, action) => {
+      const { orderId, newStatus } = action.payload;
 
-        const order = state.tableOrders.find(
-          (o) => o._id === orderId
-        );
+      const order = state.tableOrders.find((o) => o._id === orderId);
 
-        if (order) {
-          order.status = newStatus;
-        }
-      });
+      if (order) {
+        order.status = newStatus;
+      }
+    });
 
     // 🔥 CLOSE SESSION
     builder
@@ -77,7 +73,18 @@ const orderSlice = createSlice({
         state.sessionClosing = false;
         state.error = action.payload;
       });
-  }
+
+      builder
+      .addCase(fetchOrdersForKitchen.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(fetchOrdersForKitchen.fulfilled, (state, action) => {
+        state.kitchenOrders = action.payload;
+      })
+      .addCase(fetchOrdersForKitchen.pending, (state) => {
+        state.loading = true;
+      });
+  },
 });
 
 export const { clearTableOrders } = orderSlice.actions;

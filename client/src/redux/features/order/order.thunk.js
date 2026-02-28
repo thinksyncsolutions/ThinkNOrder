@@ -19,9 +19,25 @@ export const fetchOrdersForTable = createAsyncThunk(
   }
 );
 
-// 🔥 CREATE ORDER
 export const createOrder = createAsyncThunk(
   "order/createOrder",
+  async ({ placeId, restaurantId, branchId, items }, thunkAPI) => {
+    try {
+      const response = await api.post(
+        `/orders/create-order`,
+        { placeId, restaurantId, branchId, items }
+      );
+
+      return response.data.order;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+// 🔥 CREATE ORDER
+export const createOrderByAdminItself = createAsyncThunk(
+  "order/createOrderByAdminItself",
   async ({ placeId, items }, thunkAPI) => {
     try {
       const response = await api.post(
@@ -64,6 +80,18 @@ export const closeSession = createAsyncThunk(
       });
 
       return response.data.session;
+    } catch (error) {
+      return handleAxiosError(error, thunkAPI);
+    }
+  }
+);
+
+export const fetchOrdersForKitchen = createAsyncThunk(
+  "order/fetchOrdersForKitchen",
+  async (_, thunkAPI) => {
+    try {
+      const response = await api.get(`/orders/kitchen-orders`);
+      return response.data || [];
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
     }

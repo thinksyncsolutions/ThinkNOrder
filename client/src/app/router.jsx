@@ -30,6 +30,7 @@ import CashierDashboard from "../pages/cashier/CashierDashboard";
 
 import KitchenLayout from "../layouts/KitchenLayout";
 import KitchenDashboard from "../pages/kitchen/KitchenDashboard";
+import KitchenOrders from "../pages/kitchen/KitchenOrders";
 
 import SelectBranchScreen from "../components/SelectBranchScreen"
 
@@ -123,10 +124,12 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedRoute roles={["KITCHEN"]}>
         <KitchenLayout />
+
       </ProtectedRoute>
     ),
     children: [
       { index: true, element: <KitchenDashboard /> },
+      { path: "orders", element: <KitchenOrders /> },
     ],
   },
 

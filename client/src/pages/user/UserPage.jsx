@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ShoppingBag, Plus, Minus, X } from "lucide-react";
 import { fetchFullMenuForUser } from "../../redux/features/menu/menu.thunk";
+import { createOrder } from "../../redux/features/order/order.thunk";
+import { toast } from "react-hot-toast";
 
 const UserPage = () => {
   const dispatch = useDispatch();
@@ -27,7 +29,7 @@ const UserPage = () => {
     });
   };
 
-  const handleSubmitOrder = () => {
+  const handleSubmitOrder = async () => {
   if (cartItems.length === 0) return;
 
   const orderPayload = {
@@ -36,9 +38,9 @@ const UserPage = () => {
     placeId: placeId, // using placeId from URL params
     items: cartItems.map((item) => ({
       itemId: item._id,
-      itemName: item.name,
-      selectedSize: item.selectedPrice.label,
-      price: item.selectedPrice.price,
+      // itemname: item.name,
+      size: item.selectedPrice.label,
+      // price: item.selectedPrice.price,
       quantity: item.qty,
     })),
   };
@@ -46,10 +48,20 @@ const UserPage = () => {
   console.log("Final Order Payload:", orderPayload);
 
   // 👉 Dispatch to backend
-  // dispatch(createOrderThunk(orderPayload))
+  try {
+    const resultAction = await dispatch(createOrder(orderPayload));
 
-  setCartItems([]);
-  setIsCartOpen(false);
+    if (createOrder.fulfilled.match(resultAction)) {
+      toast.success("Order placed successfully!");
+      setCartItems([]);
+      setIsCartOpen(false);
+    } else {
+      toast.error("Failed to place order");
+    }
+  } catch (error) {
+    toast.error("Something went wrong");
+  }
+
 };
 
   /* ===============================

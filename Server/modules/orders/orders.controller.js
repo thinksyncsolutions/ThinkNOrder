@@ -3,10 +3,14 @@ const Order = require("../../database/models/Order"); // adjust the path as need
 const Item = require("../../database/models/Item"); // to get item details
 const OrderSession = require("../../database/models/OrderSession"); // adjust the path as needed
 const Restaurant = require("../../database/models/Restaurant"); // to get place details
+const Branch = require("../../database/models/Branch"); // to get branch details
 
 exports.createOrder = async (req, res) => {
+  // console.log("Create Order Request Body:", req.body);
+
   try {
     const { placeId, items } = req.body;
+    // console.log("Items received for order creation:", items);
     const { restaurantId, branchId } = req.user || req.body;
 
     if (!restaurantId || !branchId || !placeId || !items?.length) {
@@ -21,6 +25,8 @@ exports.createOrder = async (req, res) => {
       isClosed: false
     });
 
+    // console.log("Found session for placeId", placeId, ":", session);
+
     if (!session) {
       session = await OrderSession.create({
         restaurantId,
@@ -34,11 +40,13 @@ exports.createOrder = async (req, res) => {
 
     for (const item of items) {
       const itemDoc = await Item.findById(item.itemId);
+      console.log("Processing item:", item);
       if (!itemDoc) {
         return res.status(404).json({ message: "Item not found" });
       }
 
-      const priceObj = itemDoc.prices.find(p => p.size === item.size);
+      const priceObj = itemDoc.prices.find(p => p.label === item.size);
+      // console.log("Price object for item:", priceObj);
       if (!priceObj) {
         return res.status(400).json({ message: "Invalid size selected" });
       }
@@ -48,12 +56,16 @@ exports.createOrder = async (req, res) => {
 
       detailedItems.push({
         itemId: itemDoc._id,
-        itemname: itemDoc.itemname,
+        itemname: itemDoc.name,
         selectedSize: item.size,
         quantity: item.quantity,
         price: priceObj.price
       });
+
     }
+
+    console.log("Total amount calculated:", totalAmount);
+    console.log("Detailed items for order:", detailedItems);
 
     const order = await Order.create({
       restaurantId,
@@ -63,6 +75,8 @@ exports.createOrder = async (req, res) => {
       items: detailedItems,
       totalAmount
     });
+
+    console.log("Order created successfully:", order);
 
     // Update session totals
     session.subtotal += totalAmount;
@@ -102,9 +116,11 @@ exports.getOrdersByBranch = async (req, res) => {
 };
 
 exports.getOrdersForKitchen = async (req, res) => {
+  console.log("Fetching kitchen orders for restaurantId:", req.user.restaurantId, "branchId:", req.user.branchId); // Debug log
   try {
     const restaurantId = req.user.restaurantId;
     const branchId = req.user.branchId;
+
 
     const orders = await Order.find({
       restaurantId,
@@ -114,6 +130,8 @@ exports.getOrdersForKitchen = async (req, res) => {
 
     // 🔥 Important: do NOT return 404 for empty list
     // Kitchen dashboard should receive []
+
+    console.log("Fetched kitchen orders:", orders); // Debug log
 
     res.status(200).json(orders);
 
