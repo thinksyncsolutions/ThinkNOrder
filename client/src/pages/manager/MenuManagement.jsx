@@ -158,8 +158,17 @@ const MenuManagement = () => {
                   className="flex justify-between items-center bg-gray-50 p-3 rounded"
                 >
                   <span>
-                    {item.name} — ₹{item.prices?.[0]?.price}
-                  </span>
+  {item.name} —{" "}
+  {item.prices?.length > 0
+    ? item.prices.map((p, i) => (
+        <span key={i}>
+          {p.label && p.label !== "default" ? `${p.label}: ` : ""}
+          ₹{p.price}
+          {i !== item.prices.length - 1 && ", "}
+        </span>
+      ))
+    : "N/A"}
+</span>
 
                   <div className="space-x-2">
                     <button

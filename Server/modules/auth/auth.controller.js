@@ -64,7 +64,7 @@ exports.registerRestaurant = async (req, res) => {
 
 exports.createBranch = async (req, res) => {
   const session = await mongoose.startSession();
-
+  console.log("Create branch attempt:", req.body, "by user:", req.user); // Debug log
   try {
     session.startTransaction();
 
@@ -90,7 +90,7 @@ exports.createBranch = async (req, res) => {
 
     const branch = new Branch({
       restaurantId: restaurant._id,
-      branchCode: `${restaurant._id}-BR${branchCount + 1}`,
+      branchCode: `${restaurant.name}-BR${branchCount + 1}`,
       name,
       city,
       address
@@ -107,9 +107,9 @@ exports.createBranch = async (req, res) => {
 
   } catch (err) {
     await session.abortTransaction();
+    console.log("Branch creation error:", err); // Debug log
     res.status(400).json({
-      message: "Branch creation failed",
-      error: err.message
+      message: err.message
     });
   } finally {
     session.endSession();

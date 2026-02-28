@@ -132,7 +132,7 @@ export const router = createBrowserRouter([
 
   // user menu page
   {
-    path: "/menu/:restaurantId/:branchId/:tableNumber",
+    path: "/menu/:restaurantId/:branchId/:placeId/:tableNumber",
     element: (
       
         <UserPage />
