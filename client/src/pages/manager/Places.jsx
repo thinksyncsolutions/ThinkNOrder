@@ -31,9 +31,8 @@ const Places = () => {
   }, [error]);
 
   // ✅ FIXED: Proper QR download logic without UI rendering
-  const handleDownloadQR = (id, tableNumber) => {
-    const url = `${qrurl}/${restaurantId}/${branchId}/${id}`; // Adjust as needed
-
+  const handleDownloadQR = (place) => {
+    const url = `${qrurl}/${restaurantId}/${branchId}/${place._id}/${place.floor}/${place.type}/${place.number}`; // Adjust as needed
     const qrCode = new QRCodeStyling({
       width: 300,
       height: 300,
@@ -53,7 +52,7 @@ const Places = () => {
     });
 
     qrCode.download({
-      name: `Table-${tableNumber}-QR`,
+      name: `${place.type}-${place.number}-QR`,
       extension: "png",
     });
   };
@@ -62,8 +61,8 @@ const Places = () => {
     dispatch(updatePlaceStatusThunk({ id, status }));
   };
 
-  const deleteTable = (id) => {
-    if (window.confirm("Are you sure you want to delete this table?")) {
+  const deletePlace = (id) => {
+    if (window.confirm("Are you sure you want to delete this Place?")) {
       dispatch(deletePlaceThunk(id));
     }
   };
@@ -87,7 +86,7 @@ const Places = () => {
           onClick={() => setOpenModal(true)}
           className="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm"
         >
-          + Add New Table
+          + Add New Place
         </button>
       </div>
 
@@ -96,7 +95,7 @@ const Places = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200 text-gray-600 text-sm uppercase tracking-wider">
-              <th className="px-6 py-4 font-semibold">Table Info</th>
+              <th className="px-6 py-4 font-semibold"> Info</th>
               <th className="px-6 py-4 font-semibold">Floor</th>
               <th className="px-6 py-4 font-semibold">Capacity</th>
               <th className="px-6 py-4 font-semibold">Current Status</th>
@@ -110,39 +109,39 @@ const Places = () => {
                   colSpan="5"
                   className="px-6 py-10 text-center text-gray-400"
                 >
-                  No tables found in the database.
+                  No places found in the database.
                 </td>
               </tr>
             ) : (
-              places.map((table) => (
+              places.map((place) => (
                 <tr
-                  key={table._id}
+                  key={place._id}
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-6 py-4">
                     <div className="font-bold text-gray-900">
-                      {table.type} {table.number}
+                      {place.type} {place.number}
                     </div>
                     <div className="text-xs text-gray-400 font-mono">
-                      {table._id}
+                      {place._id}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-gray-600">
-                    {table.floor}
+                    {place.floor}
                   </td>
                   <td className="px-6 py-4 text-gray-600 font-medium">
-                    {table.capacity} Pax
+                    {place.capacity} Pax
                   </td>
                   <td className="px-6 py-4">
                     <select
-                      value={table.status}
+                      value={place.status}
                       onChange={(e) =>
-                        changeStatus(table._id, e.target.value)
+                        changeStatus(place._id, e.target.value)
                       }
                       className={`text-xs font-bold px-3 py-1 rounded-full border outline-none ${
-                        table.status === "AVAILABLE"
+                        place.status === "AVAILABLE"
                           ? "bg-green-50 text-green-700 border-green-200"
-                          : table.status === "OCCUPIED"
+                          : place.status === "OCCUPIED"
                           ? "bg-red-50 text-red-700 border-red-200"
                           : "bg-yellow-50 text-yellow-700 border-yellow-200"
                       }`}
@@ -156,7 +155,7 @@ const Places = () => {
                     <div className="flex justify-center items-center gap-4">
                       <button
                         onClick={() =>
-                          handleDownloadQR(table._id, table.number)
+                          handleDownloadQR(place)
                         }
                         className="text-indigo-600 hover:text-indigo-900 text-sm font-semibold flex items-center gap-1"
                       >
@@ -176,7 +175,7 @@ const Places = () => {
                         Get QR
                       </button>
                       <button
-                        onClick={() => deleteTable(table._id)}
+                        onClick={() => deletePlace(place._id)}
                         className="text-red-400 hover:text-red-700 text-sm font-medium"
                       >
                         Delete

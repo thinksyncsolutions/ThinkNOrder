@@ -29,14 +29,12 @@ exports.createPlace = async (req, res, next) => {
 
     res.status(201).json({ success: true, data: place });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };
 
 // 📖 GET ALL PLACES (branch-wise)
 exports.getPlaces = async (req, res, next) => {
-  console.log("Fetching places with query:", req.query, "for restaurant:", req.user.restaurantId);
   try {
     const { floor, status } = req.query;
     const { branchId } = req.user;
