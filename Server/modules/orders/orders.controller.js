@@ -7,9 +7,7 @@ const Restaurant = require("../../database/models/Restaurant"); // to get place 
 exports.createOrder = async (req, res) => {
   try {
     const { placeId, items } = req.body;
-
-    const restaurantId = req.user.restaurantId;
-    const branchId = req.user.branchId;
+    const { restaurantId, branchId } = req.user || req.body;
 
     if (!restaurantId || !branchId || !placeId || !items?.length) {
       return res.status(400).json({ message: "Missing required fields" });

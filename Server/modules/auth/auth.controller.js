@@ -180,7 +180,7 @@ const selectedBranch =
       { expiresIn: "7d" }
     );
 
-
+    console.log(user);
     res.json({
       message: "Login successful",
       token,
@@ -194,8 +194,6 @@ const selectedBranch =
       }
     });
 
-    console.log(user.accessibleBranches);
-
   } catch (err) {
     res.status(401).json({
       message: "Login failed",
@@ -203,7 +201,6 @@ const selectedBranch =
     });
   }
 };
-
 
 exports.createUser = async (req, res) => {
   console.log("Create user attempt:", req.body);

@@ -4,13 +4,9 @@ import { loginThunk, selectBranchThunk } from "./auth.thunk";
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")),
   token: localStorage.getItem("token"),
-  // branches: [],
-  // requiresBranchSelection: false,
-  // loading: false,
-  // error: null,
   branches: JSON.parse(localStorage.getItem("branches")) || [],
   requiresBranchSelection:
-    JSON.parse(localStorage.getItem("requiresBranchSelection")) || false,
+  JSON.parse(localStorage.getItem("requiresBranchSelection")) || false,
   loading: false,
   error: null,
 };
@@ -65,8 +61,13 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.requiresBranchSelection = false;
 
+          if (state.user) {
+    state.user.branchId = action.payload.branchId; // ✅ added inside user
+  }
+
         localStorage.setItem("token", action.payload.token);
         localStorage.setItem("requiresBranchSelection", "false");
+        localStorage.setItem("user", JSON.stringify(state.user));
         // localStorage.removeItem("branches"); // Clean up
       });
   },
