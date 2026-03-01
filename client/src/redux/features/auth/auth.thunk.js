@@ -8,9 +8,10 @@ export const loginThunk = createAsyncThunk(
     console.log(payload);
     try {
       const res = await api.post("/auth/login", payload);
-      console.log(res);
+      console.log(res.data);
       return res.data;
     } catch (err) {
+      console.error("Login error:", err);
       return handleAxiosError(err, thunkAPI);
     }
   }

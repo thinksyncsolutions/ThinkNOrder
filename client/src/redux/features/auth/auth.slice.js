@@ -33,7 +33,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
-        console.log("LOGIN PAYLOAD", action.payload);
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
@@ -54,7 +53,7 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message || "Login failed";
       })
 
       .addCase(selectBranchThunk.fulfilled, (state, action) => {

@@ -42,7 +42,7 @@ export const handleAxiosError = (error, thunkAPI) => {
 
       return thunkAPI.rejectWithValue({
         ...baseError,
-        message: data?.message || "Server error",
+        message: data?.error || data?.message || "Server error",
         statusCode: status,
         errorCode: data?.errorCode || "SERVER_ERROR",
         data: data || null,

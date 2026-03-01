@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import Unauthorized from "../components/Unauthorized";
 
@@ -36,6 +36,8 @@ import SelectBranchScreen from "../components/SelectBranchScreen"
 
 import UserPage from "../pages/user/UserPage";
 
+import RoleLayout from "../layouts/RoleLayout";
+
 export const router = createBrowserRouter([
   { path: "/", element: <Login /> },
   // { path: "/register", element: <RegisterOwner /> },
@@ -54,11 +56,12 @@ export const router = createBrowserRouter([
     path: "/superadmin",
     element: (
       <ProtectedRoute roles={["SUPERADMIN"]}>
-        <SuperAdminLayout />
+        <RoleLayout />
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <SuperAdminDashboard /> },
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <SuperAdminDashboard /> },
       { path: "restaurants", element: <CreateRestaurant /> },
     ],
   },
@@ -68,11 +71,12 @@ export const router = createBrowserRouter([
   path: "/owner",
   element: (
     <ProtectedRoute roles={["OWNER"]}>
-      <OwnerLayout />
+      <RoleLayout />
     </ProtectedRoute>
   ),
   children: [
-    { index: true, element: <OwnerDashboard /> }, // <-- Dashboard shows here
+    { index: true, element: <Navigate to="dashboard" replace /> },
+    { path: "dashboard", element: <OwnerDashboard /> },
     { path: "branches", element: <BranchPage /> },
     { path: "staff", element: <StaffPage /> },
   ],
@@ -82,15 +86,17 @@ export const router = createBrowserRouter([
     path: "/manager",
     element: (
       <ProtectedRoute roles={["MANAGER"]}>
-        <ManagerLayout />
+        <RoleLayout />
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <ManagerDashboard /> },
+      { index: true, element: <Navigate to="dashboard" replace /> }, // redirect
+      { path: "dashboard", element: <ManagerDashboard /> },
       { path: "orders", element: <Orders /> },
       { path: "tables", element: <Tables /> },
       { path: "menu", element: <MenuManagement /> },
       { path: "staff", element: <Staff /> },
+      {path: "kitchen", element: <KitchenOrders />},
        { path: "table/:id", element: <TableManagement /> },
     ],
   },
@@ -99,11 +105,13 @@ export const router = createBrowserRouter([
     path: "/waiter",
     element: (
       <ProtectedRoute roles={["WAITER"]}>
-        <WaiterLayout />
+        <RoleLayout />
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <WaiterDashboard /> },
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <WaiterDashboard /> },
+
     ],
   },
   // 🔵 CASHIER
@@ -111,11 +119,12 @@ export const router = createBrowserRouter([
     path: "/cashier",
     element: (
       <ProtectedRoute roles={["CASHIER"]}>
-        <CashierLayout />
+        <RoleLayout />
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <CashierDashboard /> },
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <CashierDashboard /> },
     ],
   },
   // 🟣 KITCHEN
@@ -123,12 +132,13 @@ export const router = createBrowserRouter([
     path: "/kitchen",
     element: (
       <ProtectedRoute roles={["KITCHEN"]}>
-        <KitchenLayout />
+        <RoleLayout />
 
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <KitchenDashboard /> },
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <KitchenDashboard /> },
       { path: "orders", element: <KitchenOrders /> },
     ],
   },
