@@ -19,8 +19,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://think-n-order.vercel.app"],
-    credentials: true,
+    origin: "*",  
   })
 );
 
@@ -40,10 +39,9 @@ io.on("connection", (socket) => {
   console.log("New client connected", socket.id);
 
   // Join room for a specific restaurant (called from frontend on login)
-  socket.on("joinRestaurantRoom", (restaurantId, branchId) => {
+  socket.on("joinRoom", (restaurantId, branchId) => {
     const roomName = `restaurant:${restaurantId}:branch:${branchId}`;
     socket.join(roomName);
-    console.log(`Socket ${socket.id} joined room ${roomName}`);
   });
 
   socket.on("disconnect", () => {

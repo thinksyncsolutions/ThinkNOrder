@@ -73,17 +73,21 @@ const orderSlice = createSlice({
         state.sessionClosing = false;
         state.error = action.payload;
       });
-
-      builder
-      .addCase(fetchOrdersForKitchen.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(fetchOrdersForKitchen.fulfilled, (state, action) => {
-        state.kitchenOrders = action.payload;
-      })
-      .addCase(fetchOrdersForKitchen.pending, (state) => {
-        state.loading = true;
-      });
+      // 🔥 FETCH KITCHEN ORDERS
+builder
+  .addCase(fetchOrdersForKitchen.pending, (state) => {
+    state.loading = true;
+    state.error = null;
+  })
+  .addCase(fetchOrdersForKitchen.fulfilled, (state, action) => {
+    state.loading = false;
+    state.kitchenOrders = action.payload;
+  })
+  .addCase(fetchOrdersForKitchen.rejected, (state, action) => {
+    state.loading = false;
+    state.error = action.payload;
+  });
+      
   },
 });
 

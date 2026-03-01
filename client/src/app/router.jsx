@@ -135,9 +135,8 @@ export const router = createBrowserRouter([
 
   // user menu page
   {
-    path: "/menu/:restaurantId/:branchId/:placeId/:tableNumber",
+    path: "/:restaurantId/:branchId/:placeId/:floor/:type/:number",
     element: (
-      
         <UserPage />
     ),
   },

@@ -168,13 +168,13 @@ exports.login = async (req, res) => {
     const hasMultipleBranches = user.accessibleBranches.length > 1;
 const selectedBranch =
   user.accessibleBranches.length === 1 ? user.accessibleBranches[0] : null;
-
+    console.log(selectedBranch);
     const token = jwt.sign(
       {
         id: user._id,
         role: user.role,
         restaurantId: user.restaurantId,
-        branchId: selectedBranch || user.branchId?._id // null if multiple
+        branchId: selectedBranch || user.branchId || user.branchId?._id || user.selectedBranch?._id || null // null if multiple
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -191,6 +191,7 @@ const selectedBranch =
         name: user.name,
         role: user.role,
         restaurantId: user.restaurantId,
+        branchId: selectedBranch ? selectedBranch._id : null
       }
     });
 

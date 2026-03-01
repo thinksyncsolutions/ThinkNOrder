@@ -57,7 +57,7 @@ export const changeOrderStatus = createAsyncThunk(
   "order/changeOrderStatus",
   async ({ orderId, newStatus }, thunkAPI) => {
     try {
-      await api.put(`/orders/change-status`, {
+      await api.patch(`/orders/change-status`, {
         orderId,
         newStatus,
       });
@@ -91,6 +91,7 @@ export const fetchOrdersForKitchen = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await api.get(`/orders/kitchen-orders`);
+      console.log("Fetched kitchen orders:", response.data);
       return response.data || [];
     } catch (error) {
       return handleAxiosError(error, thunkAPI);

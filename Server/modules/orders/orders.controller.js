@@ -6,11 +6,8 @@ const Restaurant = require("../../database/models/Restaurant"); // to get place 
 const Branch = require("../../database/models/Branch"); // to get branch details
 
 exports.createOrder = async (req, res) => {
-  // console.log("Create Order Request Body:", req.body);
-
   try {
     const { placeId, items } = req.body;
-    // console.log("Items received for order creation:", items);
     const { restaurantId, branchId } = req.user || req.body;
 
     if (!restaurantId || !branchId || !placeId || !items?.length) {
@@ -25,7 +22,6 @@ exports.createOrder = async (req, res) => {
       isClosed: false
     });
 
-    // console.log("Found session for placeId", placeId, ":", session);
 
     if (!session) {
       session = await OrderSession.create({
@@ -40,13 +36,11 @@ exports.createOrder = async (req, res) => {
 
     for (const item of items) {
       const itemDoc = await Item.findById(item.itemId);
-      console.log("Processing item:", item);
       if (!itemDoc) {
         return res.status(404).json({ message: "Item not found" });
       }
 
       const priceObj = itemDoc.prices.find(p => p.label === item.size);
-      // console.log("Price object for item:", priceObj);
       if (!priceObj) {
         return res.status(400).json({ message: "Invalid size selected" });
       }
@@ -64,9 +58,6 @@ exports.createOrder = async (req, res) => {
 
     }
 
-    console.log("Total amount calculated:", totalAmount);
-    console.log("Detailed items for order:", detailedItems);
-
     const order = await Order.create({
       restaurantId,
       branchId,
@@ -75,8 +66,6 @@ exports.createOrder = async (req, res) => {
       items: detailedItems,
       totalAmount
     });
-
-    console.log("Order created successfully:", order);
 
     // Update session totals
     session.subtotal += totalAmount;
@@ -116,7 +105,6 @@ exports.getOrdersByBranch = async (req, res) => {
 };
 
 exports.getOrdersForKitchen = async (req, res) => {
-  console.log("Fetching kitchen orders for restaurantId:", req.user.restaurantId, "branchId:", req.user.branchId); // Debug log
   try {
     const restaurantId = req.user.restaurantId;
     const branchId = req.user.branchId;
@@ -131,12 +119,9 @@ exports.getOrdersForKitchen = async (req, res) => {
     // 🔥 Important: do NOT return 404 for empty list
     // Kitchen dashboard should receive []
 
-    console.log("Fetched kitchen orders:", orders); // Debug log
-
     res.status(200).json(orders);
 
   } catch (error) {
-    console.error("Get Kitchen Orders Error:", error);
     res.status(500).json({
       message: "Server error while fetching orders"
     });
@@ -144,6 +129,7 @@ exports.getOrdersForKitchen = async (req, res) => {
 };
 
 exports.changeOrderStatus = async (req, res) => {
+  console.log("Change Order Status Request Body:", req.body); // Debug log
   try {
     const { orderId, newStatus } = req.body;
 
@@ -202,7 +188,6 @@ exports.changeOrderStatus = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Change Order Status Error:", error);
     res.status(500).json({
       message: "Server error while changing order status"
     });
@@ -246,7 +231,6 @@ exports.getOrdersForTable = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error fetching orders for table:", error);
     res.status(500).json({
       message: "Internal server error"
     });
