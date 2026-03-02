@@ -12,8 +12,8 @@ const Navbar = ({ role, title }) => {
   const links = SidebarConfig[role] || [];
 
   return (
-    <header className="bg-slate-900 text-white shadow">
-      <div className="flex items-center justify-between px-6 h-14">
+    <header className="bg-slate-900 text-white sticky top-0 z-50 shadow">
+      <div className="flex items-center justify-between px-6 h-20">
         {/* Left - Title */}
         <h1 className="text-lg font-bold">{title}</h1>
 

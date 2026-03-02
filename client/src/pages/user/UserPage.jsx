@@ -8,8 +8,8 @@ import { toast } from "react-hot-toast";
 
 const UserPage = () => {
   const dispatch = useDispatch();
-  const { restaurantId, branchId, placeId, tableNumber } = useParams();
-  const { sections, loading, error } = useSelector((state) => state.menu);
+  const { placeCode} = useParams();
+  const { sections, place, loading, error } = useSelector((state) => state.menu);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -17,10 +17,10 @@ const UserPage = () => {
   const sectionRefs = useRef({});
 
   useEffect(() => {
-    if (restaurantId && branchId) {
-      dispatch(fetchFullMenuForUser({ restaurantId, branchId }));
+    if (placeCode) {
+      dispatch(fetchFullMenuForUser({ placeCode }));
     }
-  }, [dispatch, restaurantId, branchId]);
+  }, [dispatch, placeCode]);
 
   const scrollToSection = (id) => {
     sectionRefs.current[id]?.scrollIntoView({
@@ -33,9 +33,9 @@ const UserPage = () => {
   if (cartItems.length === 0) return;
 
   const orderPayload = {
-    restaurantId,
-    branchId,
-    placeId: placeId, // using placeId from URL params
+    restaurantId: place.restaurantId,
+    branchId : place.branchId,
+    placeId: place._id, // using placeId from URL params
     items: cartItems.map((item) => ({
       itemId: item._id,
       // itemname: item.name,
@@ -44,8 +44,6 @@ const UserPage = () => {
       quantity: item.qty,
     })),
   };
-
-  console.log("Final Order Payload:", orderPayload);
 
   // 👉 Dispatch to backend
   try {
@@ -129,7 +127,7 @@ const UserPage = () => {
               The Menu
             </h1>
             <span className="bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-              TABLE {tableNumber}
+              {place?.floor} {place?.type} {place?.number}
             </span>
           </div>
 
@@ -198,7 +196,7 @@ const UserPage = () => {
                               ? handleAdd(item, item.prices[0])
                               : setVariantModal(item)
                           }
-                          className="bg-zinc-900 text-white px-4 py-2 rounded text-xs font-bold"
+                          className="bg-orange-600 text-white px-4 py-2 rounded text-xs font-bold"
                         >
                           Add
                         </button>

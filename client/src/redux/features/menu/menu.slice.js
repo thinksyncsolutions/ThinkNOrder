@@ -15,6 +15,7 @@ import {
 const initialState = {
   sections: [],
   items: [],
+  place: null, // For user menu context
   loading: false,
   error: null,
 };
@@ -194,7 +195,8 @@ const menuSlice = createSlice({
       })
       .addCase(fetchFullMenuForUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.sections = action.payload.data; // sections WITH items
+        state.sections = action.payload.data.menu; // sections WITH items
+        state.place = action.payload.data.place; // place details for user context
       })
       .addCase(fetchFullMenuForUser.rejected, (state, action) => {
         state.loading = false;

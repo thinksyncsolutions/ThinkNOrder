@@ -1,4 +1,6 @@
 const Section = require("../../database/models/Section");
+const Place = require("../../database/models/Place");
+const mongoose = require("mongoose");
 
 exports.getFullMenu = async (req, res, next) => {
 
@@ -42,9 +44,16 @@ exports.getFullMenu = async (req, res, next) => {
 
 exports.getFullMenuForUser = async (req, res, next) => {
   try {
-    const { restaurantId, branchId } = req.params;
+    // const { restaurantId, branchId } = req.params;
+     const { placeCode } = req.params;
 
-    const mongoose = require("mongoose");
+    const place = await Place.findOne({ placeCode }).lean();
+
+    if (!place) {
+      return res.status(404).json({ message: "Invalid place code" });
+    }
+
+    const { restaurantId, branchId } = place;
 
     const restaurantObjectId = new mongoose.Types.ObjectId(restaurantId);
     const branchObjectId = branchId
@@ -82,8 +91,7 @@ exports.getFullMenuForUser = async (req, res, next) => {
       },
       { $sort: { order: 1 } }
     ]);
-
-    res.json({ success: true, data: menu });
+    res.json({ success: true, data: {menu, place} });
 
   } catch (err) {
     next(err);

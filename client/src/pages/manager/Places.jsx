@@ -32,7 +32,7 @@ const Places = () => {
 
   // ✅ FIXED: Proper QR download logic without UI rendering
   const handleDownloadQR = (place) => {
-    const url = `${qrurl}/${restaurantId}/${branchId}/${place._id}/${place.floor}/${place.type}/${place.number}`; // Adjust as needed
+    const url = `${qrurl}/${place.placeCode}`; // Adjust as needed
     const qrCode = new QRCodeStyling({
       width: 300,
       height: 300,

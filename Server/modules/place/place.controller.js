@@ -1,14 +1,15 @@
 const Place = require("../../database/models/Place");
+const { nanoid } = require("nanoid");
 
 // ➕ CREATE PLACE
 exports.createPlace = async (req, res, next) => {
   try {
     const { type, number, floor, capacity } = req.body;
-    const { branchId } = req.user; // optional branchId
+    const { branchId, restaurantId } = req.user; // optional branchId
 
     // already exist 
     const existingPlace = await Place.findOne({
-      restaurantId: req.user.restaurantId,
+      restaurantId: restaurantId,
       branchId: branchId,
       floor: floor,
       number: number
@@ -23,7 +24,8 @@ exports.createPlace = async (req, res, next) => {
       floor,
       capacity,
       branchId,
-      restaurantId: req.user.restaurantId
+      restaurantId,
+      placeCode: nanoid(10) // Generate a unique QR code string
     });
     await place.save();
 

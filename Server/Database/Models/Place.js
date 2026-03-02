@@ -41,7 +41,7 @@ const placeSchema = new mongoose.Schema({
     default: "AVAILABLE",
   },
 
-  qrCodeUrl: String,
+  placeCode: String,
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 

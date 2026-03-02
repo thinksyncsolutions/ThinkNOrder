@@ -18,6 +18,6 @@ router.put("/items/:id", auth, itemCtrl.updateItem);
 router.delete("/items/:id", auth, itemCtrl.deleteItem);
 
 router.get("/full-menu", auth, require("./menu.controller").getFullMenu);
-router.get("/public/:restaurantId/:branchId", require("./menu.controller").getFullMenuForUser); // For user menu with params
+router.get("/public/:placeCode", require("./menu.controller").getFullMenuForUser); // For user menu with params
 
 module.exports = router;
