@@ -104,11 +104,11 @@ useEffect(() => {
           THINK<span className="text-orange-600 italic">N</span>ORDER
         </div>
 
-        <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(251,146,60,0.15)] border border-orange-100 p-10 relative overflow-hidden">
+        <div className="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(251,146,60,0.15)] border border-orange-100 px-8 py-6 relative overflow-hidden">
           {/* Subtle Decorative Gradient */}
           <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[4rem] z-0" />
 
-          <div className="relative z-10 text-center mb-10">
+          <div className="relative z-10 text-center mb-4">
             <h1 className="text-3xl font-black text-orange-950 tracking-tight">Admin Portal</h1>
             <p className="text-orange-900/40 text-sm font-bold uppercase tracking-widest mt-2">Secure Kitchen Access</p>
           </div>
@@ -158,7 +158,7 @@ useEffect(() => {
             <button
   type="submit"
   disabled={loading}
-  className="w-full flex items-center justify-center gap-3 bg-orange-600 hover:bg-orange-700 text-white py-5 rounded-2xl font-black text-lg transition-all shadow-xl shadow-orange-600/20 active:scale-95 disabled:opacity-60"
+  className="w-full flex items-center justify-center gap-3 bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-2xl font-black text-lg transition-all shadow-xl shadow-orange-600/20 active:scale-95 disabled:opacity-60"
 >
   <LogIn size={20} />
   {loading ? "Opening Terminal..." : "Open Terminal"}
@@ -167,7 +167,7 @@ useEffect(() => {
           </form>
 
           {/* "Crowded" Professional Details */}
-          <div className="mt-10 pt-8 border-t border-orange-50 space-y-4">
+          <div className="mt-4 pt-6 border-t border-orange-50 space-y-4">
              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-[10px] font-black text-orange-900/30 uppercase tracking-widest">
                    <ShieldCheck size={12} /> Encrypted Session
@@ -176,14 +176,14 @@ useEffect(() => {
                    <Zap size={12} fill="currentColor" /> System Ready
                 </div>
              </div>
-             <p className="text-[9px] text-center text-orange-900/20 font-bold uppercase tracking-widest leading-relaxed">
+             <p className="text-[9px] text-center text-orange-900/30 font-bold uppercase tracking-widest leading-relaxed">
                Access restricted to authorized restaurant personnel only. <br />
                IP Logging Active: {new Date().toLocaleDateString()}
              </p>
           </div>
         </div>
         
-        <p className="text-[10px] text-center text-orange-900/20 font-black uppercase tracking-[0.4em] mt-8">
+        <p className="text-[10px] text-center text-orange-900/50 font-black uppercase tracking-[0.4em] mt-4">
           Product of ThinkSync Solutions
         </p>
       </div>
