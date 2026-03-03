@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchOrdersForTable,
-  createOrder,
+  createOrderByAdminItself,
   closeSession,
 } from "../../redux/features/order/order.thunk";
 import {
@@ -18,6 +18,7 @@ import {
   Plus,
   Minus,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const BillManagement = ({
   tableCart,
@@ -29,12 +30,19 @@ const BillManagement = ({
   const dispatch = useDispatch();
 
   // Redux State
-  const { tableOrders, loading, sessionClosing } = useSelector(
+  const { tableOrders, loading, sessionClosing, error } = useSelector(
     (state) => state.order,
   );
 
   const [paymentMode, setPaymentMode] = useState("Cash");
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+ 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   // Auto-open cart when items are added
   useEffect(() => {
@@ -44,6 +52,7 @@ const BillManagement = ({
   // Fetch orders on load
   useEffect(() => {
     if (tableId) {
+      console.log("Fetching orders for table:", tableId); // Debug log
       dispatch(fetchOrdersForTable(tableId));
     }
   }, [tableId, dispatch]);
@@ -65,14 +74,19 @@ const BillManagement = ({
 
   // Actions
   const handleCreateOrder = async () => {
-    if (!tableCart.length) return;
+    console.log("Creating order with items:", tableCart); // Debug log
+    if (!tableCart.length) return toast.error("No items in cart to place order.");
+
+    if(!tableId) {
+      return toast.error("Invalid table. Cannot place order.");
+    }
 
     const result = await dispatch(
-      createOrder({
+      createOrderByAdminItself({
         placeId: tableId,
         items: tableCart.map((item) => ({
-          itemId: item.itemId,
-          size: item.selectedSize,
+          itemId: item._id,
+          size: item.selectedPrice.label,
           quantity: item.quantity,
         })),
       }),
@@ -80,6 +94,7 @@ const BillManagement = ({
 
     if (result.meta.requestStatus === "fulfilled") {
       clearTableCart();
+      toast.success("Order placed successfully!");
     }
   };
 
@@ -205,42 +220,47 @@ const BillManagement = ({
               <div className="p-3 border-t border-slate-100 bg-white">
                 <div className="space-y-2 max-h-40 overflow-y-auto mb-3">
                   {tableCart.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex justify-between items-center bg-slate-50 p-2 rounded-md"
-                    >
-                      <div>
-                        <p className="text-xs font-bold text-slate-700">
-                          {item.itemname}
-                        </p>
-                        <p className="text-[10px] text-slate-500 uppercase">
-                          {item.selectedSize}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() =>
-                            removeFromTableCart(
-                              item.itemId,
-                              item.selectedPrice?._id,
-                            )
-                          }
-                          className="p-1 bg-red-50 text-red-500 rounded-full"
-                        >
-                          <Minus size={14} />
-                        </button>
-                        <span className="text-sm font-bold">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() => addToTableCart(item)}
-                          className="p-1 bg-green-50 text-green-500 rounded-full"
-                        >
-                          <Plus size={14} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+  <div
+    key={`${item._id}-${item.selectedPrice.label}`}
+    className="flex justify-between items-center bg-slate-50 p-2 rounded-md"
+  >
+    <div>
+      <p className="text-xs font-bold text-slate-700">
+        {item.name}
+      </p>
+      <p className="text-xs text-slate-500">
+        {item.selectedPrice.label} - ₹{item.selectedPrice.price}
+      </p>
+    </div>
+
+    <div className="flex items-center gap-3">
+      <button
+        onClick={() =>
+          removeFromTableCart(
+            item._id,
+            item.selectedPrice.label
+          )
+        }
+        className="p-1 bg-red-50 text-red-500 rounded-full"
+      >
+        <Minus size={14} />
+      </button>
+
+      <span className="text-sm font-bold">
+        {item.qty}
+      </span>
+
+      <button
+        onClick={() =>
+          addToTableCart(item, item.selectedPrice)
+        }
+        className="p-1 bg-green-50 text-green-500 rounded-full"
+      >
+        <Plus size={14} />
+      </button>
+    </div>
+  </div>
+))}
                 </div>
                 <button
                   onClick={handleCreateOrder}

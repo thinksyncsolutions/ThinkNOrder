@@ -5,12 +5,17 @@ const OrderSession = require("../../database/models/OrderSession"); // adjust th
 const Restaurant = require("../../database/models/Restaurant"); // to get place details
 const Branch = require("../../database/models/Branch"); // to get branch details
 
+const getBranchRoom = (restaurantId, branchId) => `restaurant:${restaurantId}:branch:${branchId}`;
+
 exports.createOrder = async (req, res) => {
+  console.log("Create Order Request Body:", req.body); // Debug log
+  console.log("Authenticated User:", req.user); // Debug log
   try {
     const { placeId, items } = req.body;
     const { restaurantId, branchId } = req.user || req.body;
 
     if (!restaurantId || !branchId || !placeId || !items?.length) {
+      console.warn("Missing required fields:", { restaurantId, branchId, placeId, items });
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -34,8 +39,17 @@ exports.createOrder = async (req, res) => {
     let totalAmount = 0;
     const detailedItems = [];
 
+    const itemIds = items.map(i => i.itemId);
+
+const itemDocs = await Item.find({ _id: { $in: itemIds } });
+
+const itemMap = {};
+itemDocs.forEach(doc => {
+  itemMap[doc._id.toString()] = doc;
+});
+
     for (const item of items) {
-      const itemDoc = await Item.findById(item.itemId);
+      const itemDoc = itemMap[item.itemId];
       if (!itemDoc) {
         return res.status(404).json({ message: "Item not found" });
       }
@@ -74,17 +88,17 @@ exports.createOrder = async (req, res) => {
 
     // 🔥 Emit only to THAT branch
     const io = req.app.get("io");
-    io.to(`restaurant:${restaurantId}:branch:${branchId}`)
+    io.to(getBranchRoom(restaurantId, branchId))
       .emit("newOrder", order);
 
     res.status(201).json({
       message: "Order created successfully",
       order
     });
-
+console.log("Order created successfully:", order); // Debug log
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error while creating order" });
   }
 };
 
@@ -100,7 +114,7 @@ exports.getOrdersByBranch = async (req, res) => {
     res.json(orders);
 
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error while fetching orders" });
   }
 };
 
@@ -113,7 +127,7 @@ exports.getOrdersForKitchen = async (req, res) => {
     const orders = await Order.find({
       restaurantId,
       branchId,
-      status: { $in: ["Pending", "Accepted", "Preparing"] }
+      status: { $in: ["Pending", "Accepted", "Preparing", "Ready", "Cancelled"] }
     }).sort({ createdAt: 1 });
 
     // 🔥 Important: do NOT return 404 for empty list
@@ -176,12 +190,14 @@ exports.changeOrderStatus = async (req, res) => {
     // 🔥 Emit only to THAT branch
     const io = req.app.get("io");
 
-    const roomName = `restaurant:${restaurantId}:branch:${branchId}`;
+    const roomName = getBranchRoom(restaurantId, branchId);
 
-    io.to(roomName).emit("orderStatusChanged", {
-      _id: order._id,
-      status: newStatus
-    });
+    // io.to(roomName).emit("orderStatusChanged", {
+    //   _id: order._id,
+    //   status: newStatus
+    // });
+
+    io.to(roomName).emit("orderStatusChanged", order);
 
     res.status(200).json({
       message: "Order status updated successfully"
@@ -225,6 +241,8 @@ exports.getOrdersForTable = async (req, res) => {
       status: "Served"
     }).sort({ createdAt: 1 });
 
+    console.log(`Fetched ${orders.length} orders for table ${tableId}`); // Debug log
+
     res.status(200).json({
       orders,
       message: "Orders fetched successfully"
@@ -240,13 +258,14 @@ exports.getOrdersForTable = async (req, res) => {
 // controllers/orderController.js
 exports.closeSession = async (req, res) => {
   try {
+    const { restaurantId, branchId } = req.user;
     const { placeId, paymentMode } = req.body;
-    const session = await OrderSession.findOne({ placeId, isClosed: false });
+    const session = await OrderSession.findOne({ placeId, restaurantId, branchId, isClosed: false });
     if (!session) {
       return res.status(404).json({ message: "No open session found" });
     }
 
-    const orders = await Order.find({ orderSessionId: session._id });
+    const orders = await Order.find({ orderSessionId: session._id, status: "Served", restaurantId, branchId });
     const billAmount = orders.reduce((sum, o) => sum + o.totalAmount, 0);
 
     session.billAmount = billAmount;

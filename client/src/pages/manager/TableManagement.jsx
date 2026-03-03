@@ -2,52 +2,31 @@ import React, { useState } from "react";
 import Menu from "./Menu";
 import BillManagement from "./BillManagement";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Optional: Icons for the arrow
+import { addToCart, removeFromCart } from "../../utils/cartUtils";
 
 const TableManagement = ({ placeId }) => {
   const [tableCart, setTableCart] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false); // New state for full-screen toggle
 
-  const handleAddToTableCart = (item) => {
-    setTableCart((prev) => {
-      const existingIndex = prev.findIndex(
-        (e) => e.itemId === (item.itemId || item._id) && e.selectedPrice._id === item.selectedPrice._id
-      );
-      if (existingIndex !== -1) {
-        const updated = [...prev];
-        updated[existingIndex].quantity += 1;
-        return updated;
-      }
-      return [
-        ...prev,
-        {
-          itemId: item.itemId || item._id,
-          itemname: item.name,
-          selectedPrice: item.selectedPrice,
-          selectedSize: item.selectedPrice.size,
-          price: item.selectedPrice.price,
-          quantity: 1,
-        },
-      ];
-    });
-  };
+ const handleAddToTableCart = (item) => {
+  setTableCart((prev) =>
+    addToCart(
+      prev,
+      { ...item, _id: item.itemId || item._id },
+      item.selectedPrice,
+      { idKey: "_id", qtyKey: "quantity" }
+    )
+  );
+};
 
-  const handleRemoveFromTableCart = (itemId, selectedPriceId) => {
-    setTableCart((prev) => {
-      const existingItem = prev.find(
-        (e) => e.itemId === itemId && e.selectedPrice._id === selectedPriceId
-      );
-      if (existingItem?.quantity === 1) {
-        return prev.filter(
-          (item) => item.itemId !== itemId || item.selectedPrice._id !== selectedPriceId
-        );
-      }
-      return prev.map((item) =>
-        item.itemId === itemId && item.selectedPrice._id === selectedPriceId
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      );
-    });
-  };
+const handleRemoveFromTableCart = (itemId, label) => {
+  setTableCart((prev) =>
+    removeFromCart(prev, itemId, label, {
+      idKey: "_id",
+      qtyKey: "quantity",
+    })
+  );
+};
 
   const handleClearCart = () => {
     setTableCart([]);

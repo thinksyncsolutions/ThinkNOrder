@@ -8,10 +8,9 @@ import { handleAxiosError } from "../../../utils/handleErrors";
 export const fetchOrdersForTable = createAsyncThunk(
   "order/fetchOrdersForTable",
   async (tableId, thunkAPI) => {
-    console.log("Fetching orders for table:", tableId);
     try {
       const response = await api.get(`/orders/${tableId}`);
-      console.log("Fetched orders for table:", response.data);
+      console.log("Fetched skfahjorders for table:", response.data);
       return response.data.orders || [];
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
@@ -44,9 +43,10 @@ export const createOrderByAdminItself = createAsyncThunk(
         `/orders/create-orderByAdminItself`,
         { placeId, items }
       );
-
+      console.log("Order created by admin response:", response.data); // Debug log
       return response.data.order;
     } catch (error) {
+      console.error("Error creating order by admin:", error); // Debug log
       return handleAxiosError(error, thunkAPI);
     }
   }

@@ -5,6 +5,7 @@ import { ShoppingBag, Plus, Minus, X } from "lucide-react";
 import { fetchFullMenuForUser } from "../../redux/features/menu/menu.thunk";
 import { createOrder } from "../../redux/features/order/order.thunk";
 import { toast } from "react-hot-toast";
+import { addToCart, removeFromCart } from "../../utils/cartUtils";
 
 const UserPage = () => {
   const dispatch = useDispatch();
@@ -66,35 +67,16 @@ const UserPage = () => {
      ADD ITEM WITH SELECTED PRICE
   ================================ */
   const handleAdd = (item, selectedPrice) => {
-    setCartItems((prev) => {
-      const existing = prev.find(
-        (i) =>
-          i._id === item._id && i.selectedPrice.label === selectedPrice.label,
-      );
+  setCartItems((prev) =>
+    addToCart(prev, item, selectedPrice)
+  );
+};
 
-      if (existing) {
-        return prev.map((i) =>
-          i._id === item._id && i.selectedPrice.label === selectedPrice.label
-            ? { ...i, qty: i.qty + 1 }
-            : i,
-        );
-      }
-
-      return [...prev, { ...item, selectedPrice, qty: 1 }];
-    });
-  };
-
-  const handleRemove = (itemId, label) => {
-    setCartItems((prev) =>
-      prev
-        .map((i) =>
-          i._id === itemId && i.selectedPrice.label === label
-            ? { ...i, qty: i.qty - 1 }
-            : i,
-        )
-        .filter((i) => i.qty > 0),
-    );
-  };
+const handleRemove = (itemId, label) => {
+  setCartItems((prev) =>
+    removeFromCart(prev, itemId, label)
+  );
+};
 
   const cartTotal = cartItems.reduce(
     (acc, item) => acc + item.selectedPrice.price * item.qty,

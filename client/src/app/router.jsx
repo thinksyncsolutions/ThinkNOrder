@@ -97,7 +97,7 @@ export const router = createBrowserRouter([
       { path: "menu", element: <MenuManagement /> },
       { path: "staff", element: <Staff /> },
       {path: "kitchen", element: <KitchenOrders />},
-       { path: "table/:id", element: <TableManagement /> },
+       { path: "table/:tableId", element: <TableManagement /> },
     ],
   },
   // 🟢 WAITER

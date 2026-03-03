@@ -16,10 +16,13 @@ export default function KitchenOrders() {
   // Custom sorting function for orders
   const sortOrdersByPriorityAndTime = (orders) => {
     const statusPriority = {
-      'pending': 1,
-      'accepted': 2,
-      'delivered': 3,
-    };
+  pending: 1,
+  accepted: 2,
+  preparing: 3,
+  ready: 4,
+  served: 5,
+  cancelled: 6,
+};
 
     return [...orders].sort((a, b) => {
       const statusA = statusPriority[a.status?.toLowerCase()] || 4;
@@ -41,14 +44,14 @@ export default function KitchenOrders() {
   };
 
 useEffect(() => {
-  dispatch(fetchOrdersForKitchen());
   if (!user?.restaurantId || !user?.branchId) return;
+
+  dispatch(fetchOrdersForKitchen());
 
   const socket = io(socketURL);
 
   socket.on("connect", () => {
     socket.emit("joinRoom", user.restaurantId, user.branchId);
-    // console.log(`Joining Room: restaurant:${user.restaurantId}:branch:${user.branchId}`);
   });
 
   socket.on("newOrder", () => {
@@ -62,17 +65,21 @@ useEffect(() => {
   return () => {
     socket.disconnect();
   };
+}, [user?.restaurantId, user?.branchId, dispatch]);
 
-}, [user]);
+console.log(sortedOrders); // Debug log
 
   const getStatusPillClass = (status) => {
-    switch (status?.toLowerCase()) {
-      case "pending": return "bg-yellow-100 text-yellow-800";
-      case "accepted": return "bg-blue-100 text-blue-800";
-      case "delivered": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
+  switch (status?.toLowerCase()) {
+    case "pending": return "bg-yellow-100 text-yellow-800";
+    case "accepted": return "bg-blue-100 text-blue-800";
+    case "preparing": return "bg-purple-100 text-purple-800";
+    case "ready": return "bg-indigo-100 text-indigo-800";
+    case "served": return "bg-green-100 text-green-800";
+    case "cancelled": return "bg-red-100 text-red-800";
+    default: return "bg-gray-100 text-gray-800";
+  }
+};
   
   const formatTime = (dateString) => {
     const date = new Date(dateString);
@@ -114,7 +121,8 @@ useEffect(() => {
             <div className="bg-white px-4 py-2 rounded-lg border border-gray-200">
               <span className="text-sm text-gray-600">Active Orders: </span>
               <span className="font-bold text-gray-900">
-                {sortedOrders.filter(o => o.status?.toLowerCase() !== 'delivered').length}
+                {sortedOrders.filter(o => o.status?.toLowerCase() !== 'served' &&
+o.status?.toLowerCase() !== 'cancelled').length}
               </span>
             </div>
           </div>
@@ -190,29 +198,59 @@ useEffect(() => {
                     </div>
 
                     <div className="col-span-6 md:col-span-2 text-right">
-                      {order.status?.toLowerCase() === 'pending' && (
-                        <button
-                          onClick={() => handleStatusChange(order._id, 'Accepted')}
-                          className="w-full text-sm bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200"
-                        >
-                          Accept
-                        </button>
-                      )}
-                      {order.status?.toLowerCase() === 'accepted' && (
-                        <button
-                          onClick={() => handleStatusChange(order._id, 'Delivered')}
-                          className="w-full text-sm bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition-all duration-200"
-                        >
-                          Deliver
-                        </button>
-                      )}
-                       {order.status?.toLowerCase() === 'delivered' && (
-                        <div className="flex items-center justify-end gap-2 text-green-600">
-                          <CheckCircleIcon className="h-5 w-5" />
-                          <span className="text-sm font-semibold">Delivered</span>
-                        </div>
-                      )}
-                    </div>
+  {order.status?.toLowerCase() === 'pending' && (
+    <button
+      onClick={() => handleStatusChange(order._id, 'Accepted')}
+      className="w-full md:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
+    >
+      Accept Order
+    </button>
+  )}
+
+  {order.status?.toLowerCase() === 'accepted' && (
+    <button
+      onClick={() => handleStatusChange(order._id, 'Preparing')}
+      className="w-full md:w-auto px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
+    >
+      Start Preparing
+    </button>
+  )}
+
+  {order.status?.toLowerCase() === 'preparing' && (
+    <button
+      onClick={() => handleStatusChange(order._id, 'Ready')}
+      className="w-full md:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
+    >
+      Mark Ready
+    </button>
+  )}
+
+  {order.status?.toLowerCase() === 'ready' && (
+    <button
+      onClick={() => handleStatusChange(order._id, 'Served')}
+      className="w-full md:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
+    >
+      Mark Served
+    </button>
+  )}
+
+  {order.status?.toLowerCase() === 'served' && (
+    <div className="flex items-center justify-end gap-2 text-green-600 font-bold">
+      <CheckCircleIcon className="h-5 w-5" />
+      <span className="text-sm">Served</span>
+    </div>
+  )}
+  
+  {/* Optional: Add a Cancel button for Pending orders */}
+  {order.status?.toLowerCase() === 'pending' && (
+    <button
+      onClick={() => handleStatusChange(order._id, 'Cancelled')}
+      className="mt-2 block w-full text-right text-xs text-red-500 hover:text-red-700 underline"
+    >
+      Reject Order
+    </button>
+  )}
+</div>
                   </div>
                 </div>
               ))}
