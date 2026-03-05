@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Plus, Trash2 } from "lucide-react";
+import { X, Plus, Trash2, Utensils, IndianRupee, Clock, FileText, Leaf } from "lucide-react";
 
 const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
   const isEditing = !!initialData;
@@ -14,15 +14,11 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
     isAvailable: true,
   });
 
-  // Sync edit data
   useEffect(() => {
     if (initialData) {
       setForm({
         name: initialData.name || "",
-        prices:
-          initialData.prices?.length > 0
-            ? initialData.prices
-            : [{ label: "", price: "" }],
+        prices: initialData.prices?.length > 0 ? initialData.prices : [{ label: "", price: "" }],
         image: initialData.image || "",
         description: initialData.description || "",
         preparationTime: initialData.preparationTime || "",
@@ -32,7 +28,6 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
     }
   }, [initialData]);
 
-  // Normal input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -41,17 +36,12 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
     }));
   };
 
-  // Price change
   const handlePriceChange = (index, field, value) => {
     const updatedPrices = [...form.prices];
     updatedPrices[index][field] = value;
-    setForm((prev) => ({
-      ...prev,
-      prices: updatedPrices,
-    }));
+    setForm((prev) => ({ ...prev, prices: updatedPrices }));
   };
 
-  // Add new price row
   const addPrice = () => {
     setForm((prev) => ({
       ...prev,
@@ -59,22 +49,16 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
     }));
   };
 
-  // Remove price row
   const removePrice = (index) => {
     const updatedPrices = form.prices.filter((_, i) => i !== index);
     setForm((prev) => ({
       ...prev,
-      prices: updatedPrices.length
-        ? updatedPrices
-        : [{ label: "", price: "" }],
+      prices: updatedPrices.length ? updatedPrices : [{ label: "", price: "" }],
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!form.name.trim()) return alert("Item name required");
-
     const payload = {
       ...form,
       prices: form.prices.map((p) => ({
@@ -83,71 +67,74 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
       })),
       preparationTime: Number(form.preparationTime),
     };
-
     onSubmit(payload);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl w-full max-w-md relative shadow-xl"
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute right-3 top-3"
-        >
-          <X size={20} />
-        </button>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      {/* Glassmorphism Backdrop */}
+      <div 
+        className="absolute inset-0 bg-orange-950/40 backdrop-blur-sm animate-in fade-in duration-300" 
+        onClick={onClose} 
+      />
 
-        <h2 className="text-xl font-bold mb-4">
-          {isEditing ? "Edit Item" : "Add New Item"}
-        </h2>
-
-        <div className="space-y-3">
-          {/* Item Name */}
-          <input
-            name="name"
-            placeholder="Item name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            required
-          />
-
-          {/* Prices Section */}
+      <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-orange-100 max-h-[90vh] flex flex-col">
+        
+        {/* Header */}
+        <div className="bg-orange-950 p-8 text-white flex justify-between items-center shrink-0">
           <div>
-            <label className="text-sm font-semibold">Prices</label>
+            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-orange-500">Menu Master</h2>
+            <p className="text-2xl font-black italic uppercase tracking-tight">
+              {isEditing ? "Modify Dish" : "New Recipe"}
+            </p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-xl transition-colors text-orange-200">
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Scrollable Form Body */}
+        <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto custom-scrollbar">
+          
+          {/* Dish Name */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
+              <Utensils size={12} className="text-orange-600" /> Dish Title
+            </label>
+            <input
+              name="name"
+              placeholder="e.g. Butter Chicken"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full bg-orange-50/50 border-2 border-transparent focus:border-orange-600 rounded-2xl px-4 py-3 outline-none font-bold text-orange-950 transition-all"
+            />
+          </div>
+
+          {/* Dynamic Prices Section */}
+          <div className="space-y-3 p-5 bg-orange-50/30 rounded-3xl border border-orange-100">
+            <label className="text-[10px] font-black uppercase tracking-widest text-orange-950 flex items-center gap-2">
+              <IndianRupee size={12} className="text-orange-600" /> Pricing Options
+            </label>
 
             {form.prices.map((priceObj, index) => (
-              <div key={index} className="flex gap-2 mt-2 items-center">
+              <div key={index} className="flex gap-2 items-center animate-in slide-in-from-left-2 duration-200">
                 <input
-                  placeholder="Label (half/full)"
+                  placeholder="Portion (Full/Half)"
                   value={priceObj.label}
-                  onChange={(e) =>
-                    handlePriceChange(index, "label", e.target.value)
-                  }
-                  className="flex-1 p-2 border rounded"
+                  onChange={(e) => handlePriceChange(index, "label", e.target.value)}
+                  className="flex-1 bg-white border border-orange-100 rounded-xl px-4 py-2 text-sm font-bold text-orange-950 focus:border-orange-600 outline-none"
                 />
-
                 <input
                   type="number"
-                  placeholder="Price"
+                  placeholder="₹"
                   value={priceObj.price}
-                  onChange={(e) =>
-                    handlePriceChange(index, "price", e.target.value)
-                  }
-                  className="w-24 p-2 border rounded"
+                  onChange={(e) => handlePriceChange(index, "price", e.target.value)}
+                  className="w-24 bg-white border border-orange-100 rounded-xl px-4 py-2 text-sm font-black text-orange-600 focus:border-orange-600 outline-none"
                   required
                 />
-
                 {form.prices.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removePrice(index)}
-                    className="text-red-500"
-                  >
+                  <button type="button" onClick={() => removePrice(index)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors">
                     <Trash2 size={18} />
                   </button>
                 )}
@@ -157,54 +144,73 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
             <button
               type="button"
               onClick={addPrice}
-              className="flex items-center gap-1 text-sm text-green-600 mt-2"
+              className="flex items-center gap-2 text-[10px] font-black uppercase text-orange-600 hover:text-orange-700 pt-2 transition-colors"
             >
-              <Plus size={16} /> Add Price
+              <Plus size={14} strokeWidth={3} /> Add Variation
             </button>
           </div>
 
-          {/* Description */}
-          <input
-            name="description"
-            placeholder="Description"
-            value={form.description}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
+          {/* Description & Prep Time */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                <FileText size={12} className="text-orange-600" /> Description
+              </label>
+              <input
+                name="description"
+                placeholder="Brief details..."
+                value={form.description}
+                onChange={handleChange}
+                className="w-full bg-orange-50/50 border-2 border-transparent focus:border-orange-600 rounded-2xl px-4 py-3 outline-none font-bold text-orange-950 transition-all text-sm"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
+                <Clock size={12} className="text-orange-600" /> Wait Time (Min)
+              </label>
+              <input
+                name="preparationTime"
+                type="number"
+                placeholder="15"
+                value={form.preparationTime}
+                onChange={handleChange}
+                className="w-full bg-orange-50/50 border-2 border-transparent focus:border-orange-600 rounded-2xl px-4 py-3 outline-none font-bold text-orange-950 transition-all text-sm"
+              />
+            </div>
+          </div>
 
-          {/* Prep Time */}
-          <input
-            name="preparationTime"
-            type="number"
-            placeholder="Prep Time (min)"
-            value={form.preparationTime}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
+          {/* Veg Toggle Styled as a Switch */}
+          <div className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-100 transition-all">
+            <div className="flex items-center gap-3">
+              <div className={`p-2 rounded-xl ${form.isVeg ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                <Leaf size={18} />
+              </div>
+              <span className="text-xs font-black uppercase tracking-widest text-orange-950">Vegetarian Dish</span>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" name="isVeg" checked={form.isVeg} onChange={handleChange} className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+            </label>
+          </div>
 
-          {/* Veg Toggle */}
-          <label className="flex items-center gap-2 py-2">
-            <input
-              type="checkbox"
-              name="isVeg"
-              checked={form.isVeg}
-              onChange={handleChange}
-            />
-            <span className="text-sm font-medium">Veg Item</span>
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          className={`w-full mt-4 py-2 rounded text-white font-bold ${
-            isEditing
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
-          {isEditing ? "Update Item" : "Create Item"}
-        </button>
-      </form>
+          {/* Footer Actions */}
+          <div className="flex flex-col gap-3 pt-4 shrink-0">
+            <button
+              type="submit"
+              className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-95"
+            >
+              {isEditing ? "Save Changes" : "Publish to Menu"}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full py-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-orange-950 transition-colors"
+            >
+              Discard
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

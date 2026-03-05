@@ -9,6 +9,7 @@ import SuperAdminDashboard from "../pages/superadmin/SuperAdminDashboard";
 import OwnerLayout from "../layouts/OwnerLayout";
 
 import CreateRestaurant from "../pages/superadmin/CreateRestaurant";
+import Settings from "../pages/superadmin/Settings";
 
 import OwnerDashboard from "../pages/owner/OwnerDashboard";
 import BranchPage from "../pages/owner/BranchPage";
@@ -37,6 +38,8 @@ import SelectBranchScreen from "../components/SelectBranchScreen"
 import UserPage from "../pages/user/UserPage";
 
 import RoleLayout from "../layouts/RoleLayout";
+import SystemUsers from "../pages/superadmin/SystemUsers";
+// import { Settings } from "lucide-react";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Login /> },
@@ -63,6 +66,8 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <SuperAdminDashboard /> },
       { path: "restaurants", element: <CreateRestaurant /> },
+      { path: "users", element: <SystemUsers /> },
+      { path: "settings", element: <Settings /> },
     ],
   },
 
@@ -79,6 +84,7 @@ export const router = createBrowserRouter([
     { path: "dashboard", element: <OwnerDashboard /> },
     { path: "branches", element: <BranchPage /> },
     { path: "staff", element: <StaffPage /> },
+    // { path: "menu", element: <MenuManagement /> },
   ],
 },
   // 🟡 MANAGER
