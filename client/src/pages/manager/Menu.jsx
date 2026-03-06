@@ -57,121 +57,93 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
     return <p className="text-red-500 text-center">{error}</p>;
   }
 
-  return (
-    <div className="bg-gray-50 h-full flex flex-col">
-      {/* Header */}
-      <div className="p-4 bg-white shadow">
-        <h2 className="text-2xl font-bold mb-4 text-center">Table Menu</h2>
+  // inside Menu.jsx
+return (
+  <div className="bg-white h-full flex flex-col">
+    <div className="p-6 bg-white border-b border-orange-100">
+      <div className="relative group">
+        <Search className="absolute left-4 top-3.5 w-5 h-5 text-orange-400 group-focus-within:text-orange-600 transition-colors" />
+        <input
+          type="text"
+          placeholder="Search for dishes..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 bg-orange-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-600 outline-none font-medium transition-all"
+        />
+      </div>
 
-        {/* Search */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search item..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border rounded"
-          />
-        </div>
-
-        {/* Categories */}
-        <div className="flex gap-2 overflow-x-auto">
+      <div className="flex gap-2 mt-6 overflow-x-auto pb-2 no-scrollbar">
+        <button
+          onClick={() => setActiveCategory("All")}
+          className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+            activeCategory === "All" ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20" : "bg-orange-50 text-orange-900 hover:bg-orange-100"
+          }`}
+        >
+          All Items
+        </button>
+        {sections.map((section) => (
           <button
-            onClick={() => setActiveCategory("All")}
-            className={`px-4 py-1 rounded ${
-              activeCategory === "All"
-                ? "bg-purple-600 text-white"
-                : "bg-gray-200"
+            key={section._id}
+            onClick={() => setActiveCategory(section.name)}
+            className={`px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all ${
+              activeCategory === section.name ? "bg-orange-600 text-white shadow-lg shadow-orange-600/20" : "bg-orange-50 text-orange-900 hover:bg-orange-100"
             }`}
           >
-            All
+            {section.name}
           </button>
-
-          {sections.map((section) => (
-            <button
-              key={section._id}
-              onClick={() => setActiveCategory(section.name)}
-              className={`px-4 py-1 rounded whitespace-nowrap ${
-                activeCategory === section.name
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              {section.name}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Menu Items */}
-      <div className="p-6 overflow-y-auto flex-1 space-y-8">
-        {filteredSections.length > 0 ? (
-          filteredSections.map((section) => (
-            <div key={section._id}>
-              <h3 className="text-xl font-bold mb-4 text-purple-700">
-                {section.name}
-              </h3>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {section.items.map((item) => (
-                  <div key={item._id} className="bg-white p-4 rounded shadow">
-                    <h4 className="font-semibold mb-2">{item.name}</h4>
-
-                    {item.prices?.map((p) => {
-                      const itemInCart = tableCart.find(
-                        (cartItem) =>
-                          cartItem.itemId === item._id &&
-                          cartItem.selectedPrice._id === p._id,
-                      );
-
-                      const quantity = itemInCart ? itemInCart.quantity : 0;
-
-                      return (
-                        <div key={p._id} className="mt-2 border-t pt-2">
-                          <div className="flex justify-between">
-                            <span>{p.size}</span>
-                            <span className="font-bold">₹ {p.price}</span>
-                          </div>
-
-                          {quantity === 0 ? (
-                            <button
-                              onClick={() => handleAddItem(item, p)}
-                              className="mt-2 w-full bg-purple-500 text-white py-1 rounded"
-                            >
-                              Add
-                            </button>
-                          ) : (
-                            <div className="flex justify-center items-center gap-3 mt-2">
-                              <button
-                                onClick={() =>
-                                  removeFromTableCart(item._id, p._id)
-                                }
-                              >
-                                <MinusCircle size={20} />
-                              </button>
-
-                              <span>{quantity}</span>
-
-                              <button onClick={() => handleAddItem(item, p)}>
-                                <PlusCircle size={20} />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No items found</p>
-        )}
+        ))}
       </div>
     </div>
-  );
+
+    <div className="p-6 overflow-y-auto flex-1 space-y-10 custom-scrollbar">
+      {filteredSections.map((section) => (
+        <div key={section._id}>
+          <h3 className="text-sm font-black uppercase tracking-[0.2em] text-orange-950 mb-6 flex items-center gap-2">
+            <span className="w-8 h-[2px] bg-orange-600"></span>
+            {section.name}
+          </h3>
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+            {section.items.map((item) => (
+              <div key={item._id} className="bg-white border border-orange-100 p-5 rounded-3xl hover:shadow-xl hover:shadow-orange-900/5 transition-all group">
+                <h4 className="font-bold text-orange-950 text-lg group-hover:text-orange-600 transition-colors">{item.name}</h4>
+                {item.prices?.map((p) => {
+                  const itemInCart = tableCart.find(c => c.itemId === item._id && c.selectedPrice._id === p._id);
+                  const quantity = itemInCart ? itemInCart.quantity : 0;
+                  return (
+                    <div key={p._id} className="mt-4 pt-4 border-t border-orange-50 flex flex-col gap-3">
+                      <div className="flex justify-between items-center font-bold">
+                        <span className="text-xs text-orange-400 uppercase tracking-tighter">{p.size}</span>
+                        <span className="text-orange-900">₹{p.price}</span>
+                      </div>
+                      {quantity === 0 ? (
+                        <button
+                          onClick={() => handleAddItem(item, p)}
+                          className="w-full flex items-center justify-center gap-2 bg-orange-50 text-orange-600 py-2.5 rounded-xl font-bold hover:bg-orange-600 hover:text-white transition-all active:scale-95"
+                        >
+                          <PlusCircle size={18} /> Add
+                        </button>
+                      ) : (
+                        <div className="flex justify-between items-center bg-orange-600 p-1 rounded-xl text-white shadow-lg shadow-orange-600/30">
+                          <button onClick={() => removeFromTableCart(item._id, p._id)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+                            <MinusCircle size={20} />
+                          </button>
+                          <span className="font-black text-sm">{quantity}</span>
+                          <button onClick={() => handleAddItem(item, p)} className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
+                            <PlusCircle size={20} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 };
 
 export default Menu;

@@ -1,263 +1,206 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux"; // Added Redux hooks
+import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import { CheckCircleIcon } from "lucide-react";
-import { fetchOrdersForKitchen, changeOrderStatus } from "../../redux/features/order/order.thunk"; // Adjust path as needed
+import { CheckCircle2, Clock, UtensilsCrossed, AlertCircle, ChefHat } from "lucide-react";
+import { fetchOrdersForKitchen, changeOrderStatus } from "../../redux/features/order/order.thunk";
 
-const socketURL = import.meta.env.VITE_SOCKET_URL; // Ensure this is set in your .env file
+const socketURL = import.meta.env.VITE_SOCKET_URL;
 
 export default function KitchenOrders() {
   const dispatch = useDispatch();
-  
-  // Get state from Redux
   const { kitchenOrders: allOrders, loading } = useSelector((state) => state.order);
-  const {user} = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
-  // Custom sorting function for orders
   const sortOrdersByPriorityAndTime = (orders) => {
     const statusPriority = {
-  pending: 1,
-  accepted: 2,
-  preparing: 3,
-  ready: 4,
-  served: 5,
-  cancelled: 6,
-};
+      pending: 1,
+      accepted: 2,
+      preparing: 3,
+      ready: 4,
+      served: 5,
+      cancelled: 6,
+    };
 
     return [...orders].sort((a, b) => {
       const statusA = statusPriority[a.status?.toLowerCase()] || 4;
       const statusB = statusPriority[b.status?.toLowerCase()] || 4;
-
-      if (statusA !== statusB) {
-        return statusA - statusB;
-      }
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      if (statusA !== statusB) return statusA - statusB;
+      return new Date(a.createdAt) - new Date(b.createdAt); // Oldest first (FIFO)
     });
   };
 
-  // Memoize sorted orders for display
   const sortedOrders = sortOrdersByPriorityAndTime(allOrders);
 
   const handleStatusChange = (orderId, newStatus) => {
-    // Redux handles the optimistic/state update via changeOrderStatus.fulfilled
     dispatch(changeOrderStatus({ orderId, newStatus }));
   };
 
-useEffect(() => {
-  if (!user?.restaurantId || !user?.branchId) return;
-
-  dispatch(fetchOrdersForKitchen());
-
-  const socket = io(socketURL);
-
-  socket.on("connect", () => {
-    socket.emit("joinRoom", user.restaurantId, user.branchId);
-  });
-
-  socket.on("newOrder", () => {
+  useEffect(() => {
+    if (!user?.restaurantId || !user?.branchId) return;
     dispatch(fetchOrdersForKitchen());
-  });
 
-  socket.on("orderStatusChanged", () => {
-    dispatch(fetchOrdersForKitchen());
-  });
+    const socket = io(socketURL);
+    socket.on("connect", () => socket.emit("joinRoom", user.restaurantId, user.branchId));
+    socket.on("newOrder", () => dispatch(fetchOrdersForKitchen()));
+    socket.on("orderStatusChanged", () => dispatch(fetchOrdersForKitchen()));
 
-  return () => {
-    socket.disconnect();
+    return () => { socket.disconnect(); };
+  }, [user?.restaurantId, user?.branchId, dispatch]);
+
+  const getStatusStyle = (status) => {
+    switch (status?.toLowerCase()) {
+      case "pending": return "bg-orange-600 text-white animate-pulse";
+      case "accepted": return "bg-black text-white";
+      case "preparing": return "bg-orange-100 text-orange-700 border-2 border-orange-600";
+      case "ready": return "bg-green-600 text-white";
+      case "served": return "bg-gray-100 text-gray-400";
+      default: return "bg-gray-100 text-gray-800";
+    }
   };
-}, [user?.restaurantId, user?.branchId, dispatch]);
 
-console.log(sortedOrders); // Debug log
-
-  const getStatusPillClass = (status) => {
-  switch (status?.toLowerCase()) {
-    case "pending": return "bg-yellow-100 text-yellow-800";
-    case "accepted": return "bg-blue-100 text-blue-800";
-    case "preparing": return "bg-purple-100 text-purple-800";
-    case "ready": return "bg-indigo-100 text-indigo-800";
-    case "served": return "bg-green-100 text-green-800";
-    case "cancelled": return "bg-red-100 text-red-800";
-    default: return "bg-gray-100 text-gray-800";
-  }
-};
-  
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleString("en-IN", {
-      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true,
-    });
-  };
-
-  const isNewOrder = (order) => {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    return order.status?.toLowerCase() === 'pending' && new Date(order.createdAt) > fiveMinutesAgo;
+    return date.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true });
   };
 
   if (loading && sortedOrders.length === 0) {
     return (
-      <div className="h-full bg-gray-100 flex justify-center items-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+      <div className="h-[80vh] flex flex-col justify-center items-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"></div>
+        <p className="mt-4 font-black uppercase tracking-widest text-orange-950">Syncing Kitchen...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-full bg-gray-100 p-4 sm:p-4 lg:p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Kitchen Orders</h1>
-            <p className="text-gray-600 mt-1">Manage and track all incoming kitchen orders in real-time.</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </div>
-              <span className="text-sm font-medium text-gray-700">Live</span>
-            </div>
-            <div className="bg-white px-4 py-2 rounded-lg border border-gray-200">
-              <span className="text-sm text-gray-600">Active Orders: </span>
-              <span className="font-bold text-gray-900">
-                {sortedOrders.filter(o => o.status?.toLowerCase() !== 'served' &&
-o.status?.toLowerCase() !== 'cancelled').length}
-              </span>
-            </div>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      {/* KDS Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-4xl font-black text-black uppercase tracking-tight flex items-center gap-3">
+            Kitchen <span className="text-orange-600 italic underline">Live</span>
+          </h1>
+          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
+            Real-time Order Processing
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
+             <ChefHat size={20} className="text-orange-500" />
+             <span className="text-sm font-black uppercase tracking-widest">
+               Orders: {sortedOrders.filter(o => !['served', 'cancelled'].includes(o.status.toLowerCase())).length}
+             </span>
           </div>
         </div>
+      </div>
 
-        {/* Orders List */}
-        {sortedOrders.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-xl border border-gray-200 shadow-sm">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Orders Found</h3>
-            <p className="text-gray-600">New orders will appear here automatically.</p>
-          </div>
-        ) : (
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            {/* Table Header */}
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 hidden md:block">
-              <div className="grid grid-cols-12 gap-x-6 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <div className="col-span-1">Table</div>
-                <div className="col-span-2">Time</div>
-                <div className="col-span-5">Items</div>
-                <div className="col-span-2">Status</div>
-                <div className="col-span-2 text-right">Actions</div>
-              </div>
-            </div>
-
-            {/* Orders */}
-            <div className="divide-y divide-gray-200">
-              {sortedOrders.map((order) => (
-                <div
-                  key={order._id}
-                  className={`p-6 transition-colors duration-200 hover:bg-gray-50 ${
-                    isNewOrder(order) ? "bg-yellow-50 border-l-4 border-yellow-400" : ""
-                  }`}
-                >
-                  <div className="grid grid-cols-12 gap-x-6 gap-y-4 items-center">
-                    <div className="col-span-4 md:col-span-1 uppercase">
-                      <div className="text-xs text-gray-500 md:hidden">Table</div>
-                      {order.floor ? <div className="text-xs text-gray-900">{order.floor} Floor</div> : null}
-                      <div className="text-xs text-gray-900">{order.table}</div>
+      {/* Orders Grid */}
+      {sortedOrders.length === 0 ? (
+        <div className="text-center py-32 bg-white rounded-[2.5rem] border-4 border-dashed border-gray-100">
+          <UtensilsCrossed size={48} className="mx-auto text-gray-200 mb-4" />
+          <h3 className="text-xl font-black text-gray-300 uppercase tracking-widest">No Active Tickets</h3>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {sortedOrders.map((order) => (
+            <div
+              key={order._id}
+              className={`relative flex flex-col bg-white rounded-[2rem] border-2 transition-all duration-300 overflow-hidden shadow-sm
+                ${order.status?.toLowerCase() === 'pending' ? 'border-orange-500 shadow-orange-600/20 shadow-xl' : 'border-gray-100'}
+              `}
+            >
+              {/* Card Header */}
+              <div className={`p-5 flex justify-between items-center ${getStatusStyle(order.status)}`}>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center font-black text-xl">
+                    {order.table}
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest opacity-80">{order.floor || 'Main'} Floor</p>
+                    <div className="flex items-center gap-1 text-xs font-bold">
+                      <Clock size={12} /> {formatTime(order.createdAt)}
                     </div>
-
-                    <div className="col-span-8 md:col-span-2 text-right md:text-left">
-                       <div className="text-xs text-gray-500 md:hidden">Time</div>
-                      <div className="text-sm text-gray-700">{formatTime(order.createdAt)}</div>
-                    </div>
-
-                    <div className="col-span-12 md:col-span-5 space-y-2">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center text-sm">
-                          <span className="text-gray-800">
-                            {item.quantity} × {item.itemname}{" "}
-                            {item.selectedSize && `(${item.selectedSize})`}
-                          </span>
-                          <span className="font-mono text-gray-600">
-                            ₹{(item.price * item.quantity).toFixed(2)}
-                          </span>
-                        </div>
-                      ))}
-                       <div className="border-t pt-2 mt-2 flex justify-between font-bold text-gray-800">
-                         <span>Total</span>
-                         <span>₹{order.totalAmount}</span>
-                       </div>
-                    </div>
-
-                    <div className="col-span-6 md:col-span-2">
-                       <div className="text-xs text-gray-500 md:hidden mb-1">Status</div>
-                      <span
-                        className={`inline-block px-3 py-1 text-xs font-semibold rounded-full capitalize ${getStatusPillClass(
-                          order.status
-                        )}`}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
-
-                    <div className="col-span-6 md:col-span-2 text-right">
-  {order.status?.toLowerCase() === 'pending' && (
-    <button
-      onClick={() => handleStatusChange(order._id, 'Accepted')}
-      className="w-full md:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
-    >
-      Accept Order
-    </button>
-  )}
-
-  {order.status?.toLowerCase() === 'accepted' && (
-    <button
-      onClick={() => handleStatusChange(order._id, 'Preparing')}
-      className="w-full md:w-auto px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
-    >
-      Start Preparing
-    </button>
-  )}
-
-  {order.status?.toLowerCase() === 'preparing' && (
-    <button
-      onClick={() => handleStatusChange(order._id, 'Ready')}
-      className="w-full md:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
-    >
-      Mark Ready
-    </button>
-  )}
-
-  {order.status?.toLowerCase() === 'ready' && (
-    <button
-      onClick={() => handleStatusChange(order._id, 'Served')}
-      className="w-full md:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg shadow-sm transition-all"
-    >
-      Mark Served
-    </button>
-  )}
-
-  {order.status?.toLowerCase() === 'served' && (
-    <div className="flex items-center justify-end gap-2 text-green-600 font-bold">
-      <CheckCircleIcon className="h-5 w-5" />
-      <span className="text-sm">Served</span>
-    </div>
-  )}
-  
-  {/* Optional: Add a Cancel button for Pending orders */}
-  {order.status?.toLowerCase() === 'pending' && (
-    <button
-      onClick={() => handleStatusChange(order._id, 'Cancelled')}
-      className="mt-2 block w-full text-right text-xs text-red-500 hover:text-red-700 underline"
-    >
-      Reject Order
-    </button>
-  )}
-</div>
                   </div>
                 </div>
-              ))}
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">{order.status}</span>
+              </div>
+
+              {/* Items List */}
+              <div className="p-6 flex-1 space-y-3">
+                {order.items.map((item, index) => (
+                  <div key={index} className="flex justify-between items-start gap-4">
+                    <div className="flex gap-3">
+                      <span className="h-6 w-6 flex items-center justify-center bg-orange-50 text-orange-600 font-black rounded-lg text-xs">
+                        {item.quantity}
+                      </span>
+                      <div>
+                        <p className="font-black text-orange-950 uppercase text-sm leading-tight">{item.itemname}</p>
+                        {item.selectedSize && <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{item.selectedSize}</p>}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Footer Actions */}
+              <div className="p-6 pt-0 mt-auto">
+                <div className="border-t border-gray-100 pt-4">
+                  {order.status?.toLowerCase() === 'pending' && (
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => handleStatusChange(order._id, 'Accepted')}
+                        className="w-full bg-black text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all active:scale-95"
+                      >
+                        Accept & Print KOT
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(order._id, 'Cancelled')}
+                        className="text-[10px] font-bold text-red-400 uppercase tracking-widest hover:text-red-600"
+                      >
+                        Reject Ticket
+                      </button>
+                    </div>
+                  )}
+
+                  {order.status?.toLowerCase() === 'accepted' && (
+                    <button
+                      onClick={() => handleStatusChange(order._id, 'Preparing')}
+                      className="w-full bg-orange-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-orange-700 transition-all active:scale-95 shadow-lg shadow-orange-600/30"
+                    >
+                      Start Cooking
+                    </button>
+                  )}
+
+                  {order.status?.toLowerCase() === 'preparing' && (
+                    <button
+                      onClick={() => handleStatusChange(order._id, 'Ready')}
+                      className="w-full border-2 border-green-600 text-green-600 py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-green-600 hover:text-white transition-all active:scale-95"
+                    >
+                      Ready for Pick-up
+                    </button>
+                  )}
+
+                  {order.status?.toLowerCase() === 'ready' && (
+                    <button
+                      onClick={() => handleStatusChange(order._id, 'Served')}
+                      className="w-full bg-green-600 text-white py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-green-700 transition-all active:scale-95"
+                    >
+                      Mark as Served
+                    </button>
+                  )}
+
+                  {order.status?.toLowerCase() === 'served' && (
+                    <div className="flex items-center justify-center gap-2 py-4 text-gray-400 font-black uppercase text-xs tracking-widest">
+                      <CheckCircle2 size={16} /> Order Completed
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

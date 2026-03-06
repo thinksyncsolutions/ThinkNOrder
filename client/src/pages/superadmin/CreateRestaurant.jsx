@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import {
   Eye,
   EyeOff,
-  UserPlus,
   Store,
-  BadgeCheck,
   Globe,
   ChevronRight,
+  ShieldCheck,
+  Server,
+  Activity
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { createRestaurantThunk } from "../../redux/features/restaurant/restaurant.thunk";
@@ -14,9 +15,7 @@ import toast from "react-hot-toast";
 
 const CreateRestaurant = () => {
   const dispatch = useDispatch();
-  const { restaurant, loading, error } = useSelector(
-    (state) => state.restaurant,
-  );
+  const { loading } = useSelector((state) => state.restaurant);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
     restaurantName: "",
@@ -31,71 +30,77 @@ const CreateRestaurant = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Owner Register Data:", form);
     dispatch(createRestaurantThunk(form))
       .unwrap()
       .then((data) => {
-  toast.success(data.message || "Restaurant created successfully!");
-})
+        toast.success(data.message || "Enterprise Instance Deployed!");
+        setForm({ restaurantName: "", ownerName: "", email: "", password: "" });
+      })
       .catch((error) => {
-        toast.error(error.message || "Failed to create restaurant");
+        toast.error(error.message || "Deployment Failed");
       });
   };
 
   return (
-    <div className="p-6 lg:p-10 bg-slate-50 min-h-full">
-      {/* Breadcrumbs / Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+    <div className="p-8 lg:p-12 bg-[#F8FAFC] min-h-screen animate-in fade-in duration-700">
+      {/* HEADER SECTION */}
+      <div className="mb-10">
+        <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3">
           <span>SuperAdmin</span>
-          <ChevronRight size={12} />
-          <span className="text-orange-600">Inventory & Tenants</span>
+          <ChevronRight size={10} className="text-orange-600" />
+          <span className="text-orange-600">Enterprise Onboarding</span>
         </div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-          Onboard New Restaurant
+        <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase italic">
+          Provision <span className="text-orange-600">New Tenant</span>
         </h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Deploy a new instance to the ThinknOrder multi-tenant ecosystem.
+        <p className="text-slate-500 text-sm mt-2 font-medium max-w-2xl leading-relaxed">
+          Initialize a dedicated cloud instance for a new restaurant enterprise within the ThinkNOrder ecosystem.
         </p>
       </div>
 
-      <div className="max-w-5xl">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row">
-          {/* Left Panel: Status & Info */}
-          <div className="md:w-72 bg-slate-900 p-8 text-white flex flex-col justify-between">
-            <div>
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-orange-600 mb-6 shadow-lg shadow-orange-600/20">
-                <Store size={22} />
+      <div className="max-w-6xl">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden flex flex-col lg:row md:flex-row min-h-[600px]">
+          
+          {/* LEFT PANEL: INFRASTRUCTURE STATUS */}
+          <div className="md:w-80 bg-slate-900 p-10 text-white flex flex-col justify-between relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-600 mb-8 shadow-xl shadow-orange-600/30 ring-4 ring-white/10">
+                <Server size={26} />
               </div>
-              <h3 className="text-xl font-bold leading-tight">
-                Instance Configuration
+              <h3 className="text-xl font-black uppercase tracking-tight leading-tight italic">
+                Instance <br /> Configuration
               </h3>
-              <p className="text-slate-400 text-xs mt-3 leading-relaxed">
-                You are creating a top-level administrative account for a new
-                tenant.
+              <div className="h-1 w-12 bg-orange-600 mt-4 rounded-full" />
+              <p className="text-slate-400 text-xs mt-6 leading-relaxed font-medium">
+                Generating unique UUIDs and assigning dedicated database clusters for the target enterprise.
               </p>
             </div>
 
-            <div className="space-y-4 mt-10">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                System Ready
+            <div className="relative z-10 space-y-6 pt-10">
+              <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]" />
+                Hypervisor Active
               </div>
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                <Globe size={14} className="text-orange-500" /> Auto-Scaling
-                Enabled
+              <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <Activity size={14} className="text-orange-500" /> API Gateway: Stable
+              </div>
+              <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <ShieldCheck size={14} className="text-orange-500" /> End-to-End SSL
               </div>
             </div>
+
+            {/* Background Decorative Icon */}
+            <Globe className="absolute -bottom-16 -left-16 w-64 h-64 text-white/5 rotate-12" />
           </div>
 
-          {/* Right Panel: Form */}
-          <div className="flex-1 p-8 lg:p-12">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* RIGHT PANEL: FORM */}
+          <div className="flex-1 p-8 lg:p-16">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Restaurant Name */}
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
-                    Establishment Name
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    Establishment Brand
                   </label>
                   <input
                     type="text"
@@ -103,15 +108,15 @@ const CreateRestaurant = () => {
                     value={form.restaurantName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all"
-                    placeholder="e.g. The Gourmet Hub"
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent text-slate-900 text-sm font-bold focus:outline-none focus:border-orange-600 focus:bg-white transition-all shadow-sm"
+                    placeholder="e.g. Skyline Brasserie"
                   />
                 </div>
 
                 {/* Owner Name */}
                 <div className="space-y-2">
-                  <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
-                    Primary Owner
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                    Account Principal
                   </label>
                   <input
                     type="text"
@@ -119,16 +124,16 @@ const CreateRestaurant = () => {
                     value={form.ownerName}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all"
-                    placeholder="John Doe"
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent text-slate-900 text-sm font-bold focus:outline-none focus:border-orange-600 focus:bg-white transition-all shadow-sm"
+                    placeholder="Owner Full Name"
                   />
                 </div>
               </div>
 
               {/* Email */}
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
-                  Administrative Email
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                  Root Admin Email
                 </label>
                 <input
                   type="email"
@@ -136,15 +141,15 @@ const CreateRestaurant = () => {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all"
+                  className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent text-slate-900 text-sm font-bold focus:outline-none focus:border-orange-600 focus:bg-white transition-all shadow-sm"
                   placeholder="admin@tenant.com"
                 />
               </div>
 
               {/* Password */}
               <div className="space-y-2">
-                <label className="text-[11px] font-black uppercase text-slate-500 tracking-wider ml-1">
-                  Temporary Password
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] ml-1">
+                  Master Access Key
                 </label>
                 <div className="relative">
                   <input
@@ -153,34 +158,34 @@ const CreateRestaurant = () => {
                     value={form.password}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-600 transition-all pr-12"
+                    className="w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent text-slate-900 text-sm font-bold focus:outline-none focus:border-orange-600 focus:bg-white transition-all shadow-sm pr-14"
                     placeholder="••••••••"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-600 transition-colors"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="pt-4 flex flex-col sm:flex-row gap-4">
+              {/* ACTION BUTTONS */}
+              <div className="pt-6 flex flex-col sm:flex-row items-center gap-6">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 flex items-center justify-center gap-3 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest transition-all shadow-lg shadow-orange-600/20 active:scale-[0.98]"
+                  className="w-full sm:w-auto px-12 py-5 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all shadow-2xl shadow-orange-600/30 active:scale-95"
                 >
-                  {loading ? "Creating..." : "Provision Account"}
+                  {loading ? "Initializing..." : "Provision Instance"}
                 </button>
 
                 <button
                   type="button"
-                  className="px-8 py-4 rounded-xl font-bold text-sm uppercase tracking-widest text-slate-500 hover:bg-slate-100 transition-all"
+                  className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 transition-colors"
                 >
-                  Cancel
+                  Discard Setup
                 </button>
               </div>
             </form>
@@ -188,17 +193,13 @@ const CreateRestaurant = () => {
         </div>
 
         {/* System Footer Metadata */}
-        <div className="mt-6 flex justify-between items-center px-2">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            ThinknOrder V3.0 • Node Cluster: US-EAST-1
+        <div className="mt-8 flex flex-col sm:row justify-between items-center px-4 gap-4">
+          <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">
+            ThinknOrder V3.0 • Cloud-Native Architecture • Secure Provisioning
           </p>
-          <div className="flex gap-4">
-            <span className="text-[10px] font-bold text-slate-400 uppercase">
-              Security Policy
-            </span>
-            <span className="text-[10px] font-bold text-slate-400 uppercase">
-              SLA Docs
-            </span>
+          <div className="flex gap-6">
+            <span className="text-[9px] font-black text-slate-300 uppercase hover:text-orange-600 cursor-help transition-colors">Compliance Shield</span>
+            <span className="text-[9px] font-black text-slate-300 uppercase hover:text-orange-600 cursor-help transition-colors">SLA Registry</span>
           </div>
         </div>
       </div>

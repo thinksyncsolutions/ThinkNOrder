@@ -33,39 +33,32 @@ const handleRemoveFromTableCart = (itemId, label) => {
   };
 
   return (
-    <div className="flex w-full h-screen overflow-hidden relative">
-      {/* Left side (Menu) - Hidden when expanded */}
+    <div className="flex w-full h-[calc(100vh-80px)] overflow-hidden bg-white">
+      {/* Left side (Menu) */}
       <div 
         className={`${
-          isExpanded ? "w-0 opacity-0" : "w-[70%]"
-        } border-r h-full overflow-y-auto transition-all duration-300 ease-in-out`}
+          isExpanded ? "w-0 opacity-0 invisible" : "w-[65%]"
+        } h-full overflow-y-auto transition-all duration-500 ease-in-out border-r border-orange-100`}
       >
-        {!isExpanded && (
-          <Menu
-            addToTableCart={handleAddToTableCart}
-            removeFromTableCart={handleRemoveFromTableCart}
-            tableCart={tableCart}
-          />
-        )}
+        <Menu
+          addToTableCart={handleAddToTableCart}
+          removeFromTableCart={handleRemoveFromTableCart}
+          tableCart={tableCart}
+        />
       </div>
 
       {/* Right side (Bill Management) */}
       <div 
         className={`${
-          isExpanded ? "w-full" : "w-[30%]"
-        } h-full flex flex-col overflow-y-auto transition-all duration-300 ease-in-out relative`}
+          isExpanded ? "w-full" : "w-[35%]"
+        } h-full flex flex-col transition-all duration-500 ease-in-out relative bg-orange-50/30`}
       >
-        {/* Toggle Arrow Button */}
+        {/* Toggle Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white border shadow-md p-1 rounded-r-lg hover:bg-gray-100"
-          title={isExpanded ? "Show Menu" : "Full Screen Bill"}
+          className="absolute -left-4 top-1/2 -translate-y-1/2 z-20 bg-orange-600 text-white shadow-xl p-2 rounded-full hover:bg-orange-700 transition-transform active:scale-90"
         >
-          {isExpanded ? (
-            <ChevronRight className="w-6 h-6 text-gray-600" />
-          ) : (
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
-          )}
+          {isExpanded ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>
 
         <BillManagement

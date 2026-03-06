@@ -17,6 +17,7 @@ import {
   ArrowDown,
   Plus,
   Minus,
+  Receipt,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -29,39 +30,24 @@ const BillManagement = ({
   const { tableId } = useParams();
   const dispatch = useDispatch();
 
-  // Redux State
-  const { tableOrders, loading, sessionClosing, error } = useSelector(
-    (state) => state.order,
-  );
-
+  const { tableOrders, loading, sessionClosing, error } = useSelector((state) => state.order);
   const [paymentMode, setPaymentMode] = useState("Cash");
   const [isCartOpen, setIsCartOpen] = useState(false);
 
- 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
+    if (error) toast.error(error);
   }, [error]);
 
-  // Auto-open cart when items are added
   useEffect(() => {
     if (tableCart.length > 0) setIsCartOpen(true);
   }, [tableCart.length]);
 
-  // Fetch orders on load
   useEffect(() => {
-    if (tableId) {
-      console.log("Fetching orders for table:", tableId); // Debug log
-      dispatch(fetchOrdersForTable(tableId));
-    }
+    if (tableId) dispatch(fetchOrdersForTable(tableId));
   }, [tableId, dispatch]);
 
   // Calculations
-  const grandTotal = tableOrders.reduce(
-    (acc, order) => acc + order.totalAmount,
-    0,
-  );
+  const grandTotal = tableOrders.reduce((acc, order) => acc + order.totalAmount, 0);
   const taxRate = 0.18;
   const subtotal = grandTotal / (1 + taxRate);
   const tax = grandTotal - subtotal;
@@ -72,319 +58,224 @@ const BillManagement = ({
     { name: "Card", icon: <CreditCard size={20} /> },
   ];
 
-  // Actions
   const handleCreateOrder = async () => {
-    console.log("Creating order with items:", tableCart); // Debug log
-    if (!tableCart.length) return toast.error("No items in cart to place order.");
-
-    if(!tableId) {
-      return toast.error("Invalid table. Cannot place order.");
-    }
-
+    if (!tableCart.length) return toast.error("Queue is empty.");
     const result = await dispatch(
       createOrderByAdminItself({
         placeId: tableId,
         items: tableCart.map((item) => ({
           itemId: item._id,
           size: item.selectedPrice.label,
-          quantity: item.quantity,
+          quantity: item.qty,
         })),
-      }),
+      })
     );
-
     if (result.meta.requestStatus === "fulfilled") {
       clearTableCart();
-      toast.success("Order placed successfully!");
+      toast.success("Order punched to kitchen!");
     }
   };
 
   const handleSettleAndPrint = async () => {
-    const result = await dispatch(
-      closeSession({ placeId: tableId, paymentMode }),
-    );
-
+    const result = await dispatch(closeSession({ placeId: tableId, paymentMode }));
     if (result.meta.requestStatus === "fulfilled") {
-      // Small timeout to ensure state reflects if needed before print
-      setTimeout(() => {
-        window.print();
-      }, 500);
+      setTimeout(() => { window.print(); }, 500);
     }
   };
 
   return (
-    <div className="bg-slate-50 h-full flex flex-col shadow-lg font-sans rounded-xl overflow-hidden border border-slate-200">
-      {/* CSS for Thermal Printing */}
+    <div className="h-full flex flex-col bg-white border-l border-orange-100 overflow-hidden">
+      {/* CSS FOR PRINTING - AUTHENTIC THERMAL STYLE */}
       <style>{`
         @media print {
           .no-print { display: none !important; }
           #thermal-bill { 
             display: block !important; 
             width: 58mm; 
-            font-family: 'Courier New', monospace; 
-            padding: 5px;
+            padding: 4mm;
+            color: #000;
+            background: #fff;
+            margin: 0;
           }
           body { background: white; }
-          .printable-area { border: none; shadow: none; }
         }
         @media screen {
           #thermal-bill { display: none; }
         }
       `}</style>
 
-      <header className="p-4 border-b border-slate-200 text-center no-print bg-white">
-        <h2 className="text-xl font-bold text-slate-800">Bill Details</h2>
-        {tableOrders.length > 0 && (
-          <p className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-            Table: {tableOrders[0].table || tableId}
-          </p>
-        )}
+      {/* SCREEN HEADER */}
+      <header className="p-6 bg-orange-950 text-white no-print">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-[10px] font-black uppercase tracking-widest text-orange-500">Billing Logic</h2>
+            <p className="text-2xl font-black italic uppercase tracking-tighter">Table {tableOrders[0]?.table || "..."}</p>
+          </div>
+          <div className="bg-orange-600 p-3 rounded-2xl shadow-lg shadow-orange-600/30">
+            <Receipt size={24} />
+          </div>
+        </div>
       </header>
 
-      <main className="grow overflow-y-auto p-4 md:p-6 bg-white no-print">
+      {/* SCREEN BODY */}
+      <main className="grow overflow-y-auto p-6 space-y-4 custom-scrollbar no-print bg-white">
         {loading ? (
-          <div className="flex flex-col items-center justify-center h-full text-slate-400">
-            <Loader size={40} className="mb-4 animate-spin text-purple-500" />
-            <p className="font-semibold text-slate-500">Loading Bill...</p>
+          <div className="flex flex-col items-center justify-center h-full text-orange-400">
+            <Loader className="animate-spin mb-4" size={32} />
+            <p className="font-black uppercase text-[10px] tracking-widest">Syncing Bill...</p>
           </div>
         ) : tableOrders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-slate-400 text-center">
-            <ShoppingCart size={40} className="mb-4" />
-            <p className="font-semibold text-slate-600">No active orders</p>
+          <div className="flex flex-col items-center justify-center h-full opacity-20">
+            <ShoppingCart size={48} className="mb-2" />
+            <p className="font-black uppercase text-xs tracking-widest">No Active Orders</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {tableOrders.map((order) => (
-              <div key={order._id} className="border-b border-slate-50 pb-2">
-                <p className="text-xs text-slate-400 mb-2 font-semibold uppercase">
-                  Order @ {new Date(order.createdAt).toLocaleTimeString()}
-                </p>
-                <div className="space-y-3">
-                  {order.items.map((item, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <div className="shrink-0 bg-slate-100 text-purple-600 font-bold w-8 h-8 flex items-center justify-center rounded-full text-xs">
-                        {item.quantity}x
-                      </div>
-                      <div className="grow">
-                        <p className="font-semibold text-sm text-slate-700">
-                          {item.itemname}
-                        </p>
-                        <p className="text-xs text-slate-500 capitalize">
-                          {item.selectedSize}
-                        </p>
-                      </div>
-                      <p className="font-semibold text-right text-slate-700">
-                        ₹{(item.price * item.quantity).toFixed(2)}
-                      </p>
+          tableOrders.map((order) => (
+            <div key={order._id} className="border-b border-orange-50 pb-4">
+              <p className="text-[10px] text-gray-400 mb-3 font-black uppercase tracking-tighter">Ordered @ {new Date(order.createdAt).toLocaleTimeString()}</p>
+              {order.items.map((item, i) => (
+                <div key={i} className="flex justify-between items-center mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="h-6 w-6 flex items-center justify-center bg-orange-50 text-orange-600 font-black rounded text-[10px]">{item.quantity}</span>
+                    <div>
+                      <p className="font-bold text-orange-950 text-xs uppercase">{item.itemname}</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{item.selectedSize}</p>
                     </div>
-                  ))}
+                  </div>
+                  <p className="font-black text-xs text-orange-950">₹{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ))
         )}
       </main>
 
-      <footer className="p-4 md:p-6 border-t-2 border-dashed bg-slate-50 no-print">
-        <div className="space-y-2 mb-4 text-sm">
-          <div className="flex justify-between text-slate-600">
+      {/* SCREEN FOOTER */}
+      <footer className="p-6 bg-white border-t-2 border-dashed border-orange-100 no-print">
+        <div className="space-y-2 mb-6">
+          <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
             <span>Subtotal</span>
-            <span className="font-medium text-slate-800">
-              ₹{subtotal.toFixed(2)}
-            </span>
+            <span className="text-orange-950">₹{subtotal.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between text-slate-600">
-            <span>GST ({taxRate * 100}%)</span>
-            <span className="font-medium text-slate-800">
-              ₹{tax.toFixed(2)}
-            </span>
+          <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <span>GST (18%)</span>
+            <span className="text-orange-950">₹{tax.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between font-bold text-lg text-slate-900 border-t border-slate-300 pt-2 mt-2">
-            <span>Grand Total</span>
-            <span>₹{grandTotal.toFixed(2)}</span>
+          <div className="flex justify-between text-2xl font-black text-orange-950 uppercase italic pt-4 border-t border-orange-50">
+            <span>Total</span>
+            <span className="text-orange-600 tracking-tighter">₹{grandTotal.toFixed(2)}</span>
           </div>
         </div>
 
-        {/* Current Cart Section */}
+        {/* PENDING CART UI */}
         {tableCart.length > 0 && (
-          <div className="border border-slate-200 rounded-lg mb-4 bg-white shadow-sm overflow-hidden">
-            <button
-              onClick={() => setIsCartOpen(!isCartOpen)}
-              className="w-full flex justify-between items-center p-3 font-semibold text-purple-700"
-            >
-              <span className="flex items-center gap-2">
-                <ShoppingCart size={18} /> Pending Items ({tableCart.length})
-              </span>
-              {isCartOpen ? <ArrowDown size={18} /> : <ArrowUp size={18} />}
-            </button>
+          <div className="bg-black rounded-3xl p-5 mb-6 shadow-xl animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <ShoppingCart size={16} className="text-orange-600" />
+                <span className="text-[10px] font-black text-white uppercase tracking-widest">Queue ({tableCart.length} Items)</span>
+              </div>
+              <button onClick={() => setIsCartOpen(!isCartOpen)} className="text-white/50">
+                {isCartOpen ? <ArrowDown size={16} /> : <ArrowUp size={16} />}
+              </button>
+            </div>
             {isCartOpen && (
-              <div className="p-3 border-t border-slate-100 bg-white">
-                <div className="space-y-2 max-h-40 overflow-y-auto mb-3">
-                  {tableCart.map((item, idx) => (
-  <div
-    key={`${item._id}-${item.selectedPrice.label}`}
-    className="flex justify-between items-center bg-slate-50 p-2 rounded-md"
-  >
-    <div>
-      <p className="text-xs font-bold text-slate-700">
-        {item.name}
-      </p>
-      <p className="text-xs text-slate-500">
-        {item.selectedPrice.label} - ₹{item.selectedPrice.price}
-      </p>
-    </div>
-
-    <div className="flex items-center gap-3">
-      <button
-        onClick={() =>
-          removeFromTableCart(
-            item._id,
-            item.selectedPrice.label
-          )
-        }
-        className="p-1 bg-red-50 text-red-500 rounded-full"
-      >
-        <Minus size={14} />
-      </button>
-
-      <span className="text-sm font-bold">
-        {item.qty}
-      </span>
-
-      <button
-        onClick={() =>
-          addToTableCart(item, item.selectedPrice)
-        }
-        className="p-1 bg-green-50 text-green-500 rounded-full"
-      >
-        <Plus size={14} />
-      </button>
-    </div>
-  </div>
-))}
-                </div>
-                <button
-                  onClick={handleCreateOrder}
-                  className="w-full py-2 bg-purple-600 text-white rounded-lg font-bold text-sm hover:bg-purple-700"
-                >
-                  Place Order
-                </button>
+              <div className="space-y-3 mb-4 max-h-40 overflow-y-auto">
+                {tableCart.map((item) => (
+                  <div key={`${item._id}-${item.selectedPrice.label}`} className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div>
+                      <p className="text-[11px] font-bold text-white uppercase tracking-tight">{item.name}</p>
+                      <p className="text-[9px] text-orange-500 font-bold uppercase">{item.selectedPrice.label}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button onClick={() => removeFromTableCart(item._id, item.selectedPrice.label)} className="p-1 hover:text-orange-600 transition-colors"><Minus size={14}/></button>
+                      <span className="text-xs font-black text-white">{item.qty}</span>
+                      <button onClick={() => addToTableCart(item, item.selectedPrice)} className="p-1 hover:text-orange-600 transition-colors"><Plus size={14}/></button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
+            <button onClick={handleCreateOrder} className="w-full bg-orange-600 text-white py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] active:scale-95 transition-all">
+              Punch to Kitchen
+            </button>
           </div>
         )}
 
-        {/* Payment Selection */}
-        <div className="mb-4">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
-            Payment
-          </h4>
-          <div className="grid grid-cols-3 gap-2">
-            {paymentOptions.map((opt) => (
-              <button
-                key={opt.name}
-                onClick={() => setPaymentMode(opt.name)}
-                className={`flex flex-col items-center justify-center gap-1 p-2 rounded-xl border-2 transition-all ${
-                  paymentMode === opt.name
-                    ? "border-purple-600 bg-purple-50 text-purple-700"
-                    : "border-transparent bg-white text-slate-400 hover:bg-slate-100"
-                }`}
-              >
-                {opt.icon}
-                <span className="text-[10px] font-bold">{opt.name}</span>
-              </button>
-            ))}
-          </div>
+        {/* PAYMENT SELECTION */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {paymentOptions.map((opt) => (
+            <button
+              key={opt.name}
+              onClick={() => setPaymentMode(opt.name)}
+              className={`p-3 rounded-2xl border-2 flex flex-col items-center gap-1 transition-all ${
+                paymentMode === opt.name ? "border-orange-600 bg-orange-50 text-orange-600 shadow-inner" : "border-transparent bg-gray-50 text-gray-400"
+              }`}
+            >
+              {opt.icon}
+              <span className="text-[9px] font-black uppercase tracking-widest">{opt.name}</span>
+            </button>
+          ))}
         </div>
 
         <button
           onClick={handleSettleAndPrint}
           disabled={tableOrders.length === 0 || sessionClosing}
-          className="w-full flex items-center justify-center gap-2 py-4 bg-slate-900 text-white rounded-xl font-bold hover:bg-black transition-all disabled:bg-slate-200"
+          className="w-full bg-orange-950 hover:bg-orange-600 text-white py-5 rounded-[2rem] flex justify-center items-center gap-3 font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50"
         >
-          {sessionClosing ? (
-            <Loader className="animate-spin" size={18} />
-          ) : (
-            <Printer size={18} />
-          )}
-          Settle & Print Bill
+          {sessionClosing ? <Loader className="animate-spin" /> : <Printer />}
+          Finalize & Print
         </button>
       </footer>
 
-      {/* Hidden Thermal Bill for Printing */}
+      {/* ========================================================
+          THE THERMAL BILL (HIDDEN FROM SCREEN, SHOWN ONLY IN PRINT)
+          ======================================================== */}
       <div id="thermal-bill">
-        <div style={{ textAlign: "center", marginBottom: "10px" }}>
-          <h2 style={{ fontSize: "16px", margin: "0" }}>MY RESTAURANT</h2>
-          <p style={{ fontSize: "10px" }}>
-            Table: {tableOrders[0]?.table || tableId}
-          </p>
-          <p style={{ fontSize: "10px" }}>
-            Date: {new Date().toLocaleString()}
-          </p>
+        <div style={{ textAlign: "center", textTransform: "uppercase" }}>
+          <h2 style={{ fontSize: "18px", fontWeight: "900", margin: "0 0 4px 0" }}>ThinkNOrder</h2>
+          <p style={{ fontSize: "10px", fontWeight: "700", margin: "0" }}>Smart Dining Experience</p>
+          <div style={{ borderTop: "1px dashed #000", margin: "10px 0" }} />
+          <p style={{ fontSize: "11px", fontWeight: "700", margin: "0" }}>TABLE: {tableOrders[0]?.table || tableId}</p>
+          <p style={{ fontSize: "9px", margin: "2px 0" }}>{new Date().toLocaleString()}</p>
         </div>
-        <div style={{ borderTop: "1px dashed #000", paddingTop: "5px" }}>
-          {tableOrders
-            .flatMap((o) => o.items)
-            .map((item, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "11px",
-                  marginBottom: "2px",
-                }}
-              >
-                <span>
-                  {item.itemname} x{item.quantity}
-                </span>
-                <span>₹{(item.price * item.quantity).toFixed(2)}</span>
-              </div>
-            ))}
+
+        <div style={{ margin: "10px 0", fontSize: "11px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "900", borderBottom: "1px solid #000", paddingBottom: "4px" }}>
+            <span>ITEM</span>
+            <span>AMT</span>
+          </div>
+          {tableOrders.flatMap((o) => o.items).map((item, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", margin: "6px 0", lineHeight: "1.2" }}>
+              <span style={{ flex: 1, paddingRight: "4px" }}>
+                {item.itemname} <br />
+                <span style={{ fontSize: "9px", fontWeight: "normal" }}>({item.selectedSize}) x{item.quantity}</span>
+              </span>
+              <span style={{ fontWeight: "bold" }}>₹{(item.price * item.quantity).toFixed(2)}</span>
+            </div>
+          ))}
         </div>
-        <div
-          style={{
-            borderTop: "1px dashed #000",
-            marginTop: "5px",
-            paddingTop: "5px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "11px",
-            }}
-          >
-            <span>Subtotal:</span>
+
+        <div style={{ borderTop: "1px dashed #000", paddingTop: "10px", fontSize: "11px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+            <span>SUBTOTAL:</span>
             <span>₹{subtotal.toFixed(2)}</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "11px",
-            }}
-          >
-            <span>GST:</span>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+            <span>GST (18%):</span>
             <span>₹{tax.toFixed(2)}</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              fontSize: "13px",
-              fontWeight: "bold",
-            }}
-          >
-            <span>Total:</span>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontWeight: "900", marginTop: "6px", borderTop: "1px solid #000", paddingTop: "6px" }}>
+            <span>TOTAL:</span>
             <span>₹{grandTotal.toFixed(2)}</span>
           </div>
         </div>
-        <div
-          style={{ textAlign: "center", marginTop: "10px", fontSize: "10px" }}
-        >
-          <p>Payment: {paymentMode}</p>
-          <p>Thank You! Visit Again</p>
+
+        <div style={{ textAlign: "center", marginTop: "20px", fontSize: "10px" }}>
+          <p style={{ margin: "2px 0", fontWeight: "bold" }}>PAID VIA: {paymentMode.toUpperCase()}</p>
+          <div style={{ borderTop: "1px dashed #000", margin: "10px 0" }} />
+          <p style={{ margin: "0" }}>THANKS FOR DINING WITH US!</p>
+          <p style={{ margin: "0", fontSize: "8px" }}>thinknorder.io</p>
         </div>
       </div>
     </div>

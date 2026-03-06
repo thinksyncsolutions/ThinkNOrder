@@ -1,22 +1,21 @@
-import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
 import Navbar from "../components/common/Navbar";
+import { useSelector } from "react-redux";
 
 const RoleLayout = () => {
   const { user } = useSelector((state) => state.auth);
 
-  // 🔐 If not logged in
   if (!user) return <Navigate to="/login" replace />;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      {/* Navbar auto role */}
-      <Navbar role={user.role} title={`${user.role} Panel`} />
-
-      {/* Page Content */}
-      <main className="flex-1">
-        <Outlet />
+    <div className="min-h-screen bg-[#F8FAFC]">
+      <Navbar role={user.role} user={user} />
+      
+      <main className="mx-auto max-w-full p-6">
+        {/* This adds a subtle fade-in effect to all sub-pages */}
+        <div className="animate-in fade-in duration-500">
+          <Outlet />
+        </div>
       </main>
     </div>
   );
