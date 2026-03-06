@@ -34,121 +34,242 @@ import RoleLayout from "../layouts/RoleLayout";
 import SystemUsers from "../pages/superadmin/SystemUsers";
 // import { Settings } from "lucide-react";
 
-export const router = createBrowserRouter([
-  { path: "/", element: <Login /> },
-  // { path: "/register", element: <RegisterOwner /> },
+const host = window.location.hostname;
+const isQRDomain = host === "qr.thinknorder.in";
 
-  {
-  path: "/select-branch",
-  element: (
-    <ProtectedRoute>
-      <SelectBranchScreen />
-    </ProtectedRoute>
-  )
-},
+export const router = createBrowserRouter(
+  isQRDomain
+    ? [
+        {
+          path: "/:placeCode",
+          element: <UserPage />,
+        },
+        {
+          path: "*",
+          element: <Navigate to="/" />,
+        },
+      ]
+    : [
+        { path: "/", element: <Login /> },
 
-  // 🔴 SUPER ADMIN
-  {
-    path: "/superadmin",
-    element: (
-      <ProtectedRoute roles={["SUPERADMIN"]}>
-        <RoleLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard", element: <SuperAdminDashboard /> },
-      { path: "restaurants", element: <CreateRestaurant /> },
-      { path: "users", element: <SystemUsers /> },
-      { path: "settings", element: <Settings /> },
-    ],
-  },
+        {
+          path: "/select-branch",
+          element: (
+            <ProtectedRoute>
+              <SelectBranchScreen />
+            </ProtectedRoute>
+          ),
+        },
 
-  // 🟠 OWNER
-  {
-  path: "/owner",
-  element: (
-    <ProtectedRoute roles={["OWNER"]}>
-      <RoleLayout />
-    </ProtectedRoute>
-  ),
-  children: [
-    { index: true, element: <Navigate to="dashboard" replace /> },
-    { path: "dashboard", element: <OwnerDashboard /> },
-    { path: "branches", element: <BranchPage /> },
-    { path: "staff", element: <StaffPage /> },
-    // { path: "menu", element: <MenuManagement /> },
-  ],
-},
-  // 🟡 MANAGER
-  {
-    path: "/manager",
-    element: (
-      <ProtectedRoute roles={["MANAGER"]}>
-        <RoleLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <Navigate to="dashboard" replace /> }, // redirect
-      { path: "dashboard", element: <ManagerDashboard /> },
-      { path: "orders", element: <Orders /> },
-      { path: "tables", element: <Tables /> },
-      { path: "menu", element: <MenuManagement /> },
-      { path: "staff", element: <Staff /> },
-      {path: "kitchen", element: <KitchenOrders />},
-       { path: "table/:tableId", element: <TableManagement /> },
-    ],
-  },
-  // 🟢 WAITER
-  {
-    path: "/waiter",
-    element: (
-      <ProtectedRoute roles={["WAITER"]}>
-        <RoleLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard", element: <WaiterDashboard /> },
+        {
+          path: "/superadmin",
+          element: (
+            <ProtectedRoute roles={["SUPERADMIN"]}>
+              <RoleLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <SuperAdminDashboard /> },
+            { path: "restaurants", element: <CreateRestaurant /> },
+            { path: "users", element: <SystemUsers /> },
+            { path: "settings", element: <Settings /> },
+          ],
+        },
 
-    ],
-  },
-  // 🔵 CASHIER
-  {
-    path: "/cashier",
-    element: (
-      <ProtectedRoute roles={["CASHIER"]}>
-        <RoleLayout />
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard", element: <CashierDashboard /> },
-    ],
-  },
-  // 🟣 KITCHEN
-  {
-    path: "/kitchen",
-    element: (
-      <ProtectedRoute roles={["KITCHEN"]}>
-        <RoleLayout />
+        {
+          path: "/owner",
+          element: (
+            <ProtectedRoute roles={["OWNER"]}>
+              <RoleLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <OwnerDashboard /> },
+            { path: "branches", element: <BranchPage /> },
+            { path: "staff", element: <StaffPage /> },
+          ],
+        },
 
-      </ProtectedRoute>
-    ),
-    children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard", element: <KitchenDashboard /> },
-      { path: "orders", element: <KitchenOrders /> },
-    ],
-  },
+        {
+          path: "/manager",
+          element: (
+            <ProtectedRoute roles={["MANAGER"]}>
+              <RoleLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <ManagerDashboard /> },
+            { path: "orders", element: <Orders /> },
+            { path: "tables", element: <Tables /> },
+            { path: "menu", element: <MenuManagement /> },
+            { path: "staff", element: <Staff /> },
+            { path: "kitchen", element: <KitchenOrders /> },
+            { path: "table/:tableId", element: <TableManagement /> },
+          ],
+        },
 
-  // user menu page
-  {
-    path: "/:placeCode",
-    element: (
-        <UserPage />
-    ),
-  },
+        {
+          path: "/waiter",
+          element: (
+            <ProtectedRoute roles={["WAITER"]}>
+              <RoleLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <WaiterDashboard /> },
+          ],
+        },
 
-  { path: "*", element: <Unauthorized /> },
-]);
+        {
+          path: "/cashier",
+          element: (
+            <ProtectedRoute roles={["CASHIER"]}>
+              <RoleLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <CashierDashboard /> },
+          ],
+        },
+
+        {
+          path: "/kitchen",
+          element: (
+            <ProtectedRoute roles={["KITCHEN"]}>
+              <RoleLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { index: true, element: <Navigate to="dashboard" replace /> },
+            { path: "dashboard", element: <KitchenDashboard /> },
+            { path: "orders", element: <KitchenOrders /> },
+          ],
+        },
+
+        { path: "*", element: <Unauthorized /> },
+      ]
+);
+
+// export const router = createBrowserRouter([
+//   { path: "/", element: <Login /> },
+//   // { path: "/register", element: <RegisterOwner /> },
+
+//   {
+//   path: "/select-branch",
+//   element: (
+//     <ProtectedRoute>
+//       <SelectBranchScreen />
+//     </ProtectedRoute>
+//   )
+// },
+
+//   // 🔴 SUPER ADMIN
+//   {
+//     path: "/superadmin",
+//     element: (
+//       <ProtectedRoute roles={["SUPERADMIN"]}>
+//         <RoleLayout />
+//       </ProtectedRoute>
+//     ),
+//     children: [
+//       { index: true, element: <Navigate to="dashboard" replace /> },
+//       { path: "dashboard", element: <SuperAdminDashboard /> },
+//       { path: "restaurants", element: <CreateRestaurant /> },
+//       { path: "users", element: <SystemUsers /> },
+//       { path: "settings", element: <Settings /> },
+//     ],
+//   },
+
+//   // 🟠 OWNER
+//   {
+//   path: "/owner",
+//   element: (
+//     <ProtectedRoute roles={["OWNER"]}>
+//       <RoleLayout />
+//     </ProtectedRoute>
+//   ),
+//   children: [
+//     { index: true, element: <Navigate to="dashboard" replace /> },
+//     { path: "dashboard", element: <OwnerDashboard /> },
+//     { path: "branches", element: <BranchPage /> },
+//     { path: "staff", element: <StaffPage /> },
+//     // { path: "menu", element: <MenuManagement /> },
+//   ],
+// },
+//   // 🟡 MANAGER
+//   {
+//     path: "/manager",
+//     element: (
+//       <ProtectedRoute roles={["MANAGER"]}>
+//         <RoleLayout />
+//       </ProtectedRoute>
+//     ),
+//     children: [
+//       { index: true, element: <Navigate to="dashboard" replace /> }, // redirect
+//       { path: "dashboard", element: <ManagerDashboard /> },
+//       { path: "orders", element: <Orders /> },
+//       { path: "tables", element: <Tables /> },
+//       { path: "menu", element: <MenuManagement /> },
+//       { path: "staff", element: <Staff /> },
+//       {path: "kitchen", element: <KitchenOrders />},
+//        { path: "table/:tableId", element: <TableManagement /> },
+//     ],
+//   },
+//   // 🟢 WAITER
+//   {
+//     path: "/waiter",
+//     element: (
+//       <ProtectedRoute roles={["WAITER"]}>
+//         <RoleLayout />
+//       </ProtectedRoute>
+//     ),
+//     children: [
+//       { index: true, element: <Navigate to="dashboard" replace /> },
+//       { path: "dashboard", element: <WaiterDashboard /> },
+
+//     ],
+//   },
+//   // 🔵 CASHIER
+//   {
+//     path: "/cashier",
+//     element: (
+//       <ProtectedRoute roles={["CASHIER"]}>
+//         <RoleLayout />
+//       </ProtectedRoute>
+//     ),
+//     children: [
+//       { index: true, element: <Navigate to="dashboard" replace /> },
+//       { path: "dashboard", element: <CashierDashboard /> },
+//     ],
+//   },
+//   // 🟣 KITCHEN
+//   {
+//     path: "/kitchen",
+//     element: (
+//       <ProtectedRoute roles={["KITCHEN"]}>
+//         <RoleLayout />
+
+//       </ProtectedRoute>
+//     ),
+//     children: [
+//       { index: true, element: <Navigate to="dashboard" replace /> },
+//       { path: "dashboard", element: <KitchenDashboard /> },
+//       { path: "orders", element: <KitchenOrders /> },
+//     ],
+//   },
+
+//   // user menu page
+//   {
+//     path: "/:placeCode",
+//     element: (
+//         <UserPage />
+//     ),
+//   },
+
+//   { path: "*", element: <Unauthorized /> },
+// ]);
