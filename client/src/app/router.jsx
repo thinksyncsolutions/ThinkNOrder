@@ -3,10 +3,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Unauthorized from "../components/Unauthorized";
 
 import Login from "../pages/auth/Login";
-import SuperAdminLayout from "../layouts/SuperAdminLayout";
 import SuperAdminDashboard from "../pages/superadmin/SuperAdminDashboard";
-
-import OwnerLayout from "../layouts/OwnerLayout";
 
 import CreateRestaurant from "../pages/superadmin/CreateRestaurant";
 import Settings from "../pages/superadmin/Settings";
@@ -15,7 +12,6 @@ import OwnerDashboard from "../pages/owner/OwnerDashboard";
 import BranchPage from "../pages/owner/BranchPage";
 import StaffPage from "../pages/owner/StaffPage";
 
-import ManagerLayout from "../layouts/ManagerLayout";
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
 import Orders from "../pages/manager/Orders";
 import Tables from "../pages/manager/Places";
@@ -23,13 +19,10 @@ import MenuManagement from "../pages/manager/MenuManagement";
 import Staff from "../pages/manager/Staff";
 import TableManagement from "../pages/manager/TableManagement";
 
-import WaiterLayout from "../layouts/WaiterLayout";
 import WaiterDashboard from "../pages/waiter/WaiterDashboard";
 
-import CashierLayout from "../layouts/CashierLayout";
 import CashierDashboard from "../pages/cashier/CashierDashboard";
 
-import KitchenLayout from "../layouts/KitchenLayout";
 import KitchenDashboard from "../pages/kitchen/KitchenDashboard";
 import KitchenOrders from "../pages/kitchen/KitchenOrders";
 
