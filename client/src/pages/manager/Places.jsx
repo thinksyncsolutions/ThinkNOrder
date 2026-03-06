@@ -10,7 +10,7 @@ import {
 } from "../../redux/features/place/place.thunk";
 
 import CreatePlaceModal from "../../components/manager/CreatePlaceModal";
-const qrurl = import.meta.env.VITE_QR_BASE_URL;
+const qrurl = window.location.origin;
 
 const Places = () => {
   const dispatch = useDispatch();
