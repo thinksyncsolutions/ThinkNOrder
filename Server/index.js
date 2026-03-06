@@ -51,11 +51,11 @@ io.on("connection", (socket) => {
 
 // Routes
 
-app.get("/", (req, res) => res.send("Server is Alive!"));
+app.get("/", (req, res) => res.send("THINKNORDER is Alive!"));
 app.use("/api", require("./routes")); // 🔥 ONLY THIS
 
 // Start server (ONLY this)
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`THINKNORDER is running on port ${port}`);
 });
