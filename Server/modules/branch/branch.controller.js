@@ -1,5 +1,5 @@
-const Branch = require("../../database/models/Branch");
-const User = require("../../database/models/User");
+const Branch = require("../../db/models/Branch");
+const User = require("../../db/models/User");
 const jwt = require("jsonwebtoken");
 
 exports.fetchBranches = async (req, res) => {

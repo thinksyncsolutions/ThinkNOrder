@@ -1,4 +1,4 @@
-const User = require("../../database/models/User");
+const User = require("../../db/models/User");
 
 exports.createUserByManager = async (req, res) => {
   const { name, email, role } = req.body;

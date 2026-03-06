@@ -1,5 +1,5 @@
 // item.controller.js
-const Item = require("../../database/models/Item");
+const Item = require("../../db/models/Item");
 
 exports.createItem = async (req, res, next) => {
   try {

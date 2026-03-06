@@ -1,6 +1,6 @@
 // middlewares/auth.js
 const jwt = require("jsonwebtoken");
-const User = require("../database/models/User");
+const User = require("../db/models/User");
 const mongoose = require("mongoose");
 
 module.exports = async (req, res, next) => {

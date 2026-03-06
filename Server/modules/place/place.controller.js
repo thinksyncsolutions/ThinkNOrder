@@ -1,4 +1,4 @@
-const Place = require("../../database/models/Place");
+const Place = require("../../db/models/Place");
 const { nanoid } = require("nanoid");
 
 // ➕ CREATE PLACE

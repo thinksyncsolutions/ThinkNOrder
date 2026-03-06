@@ -1,5 +1,5 @@
 // section.controller.js
-const Section = require("../../database/models/Section");
+const Section = require("../../db/models/Section");
 
 exports.createSection = async (req, res, next) => {
   const { restaurantId, branchId } = req.user;

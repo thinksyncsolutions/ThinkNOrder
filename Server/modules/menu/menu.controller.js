@@ -1,5 +1,5 @@
-const Section = require("../../database/models/Section");
-const Place = require("../../database/models/Place");
+const Section = require("../../db/models/Section");
+const Place = require("../../db/models/Place");
 const mongoose = require("mongoose");
 
 exports.getFullMenu = async (req, res, next) => {

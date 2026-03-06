@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const User = require("../../database/models/User");
-const Restaurant = require("../../database/models/Restaurant");
-const Branch = require("../../database/models/Branch");
+const User = require("../../db/models/User");
+const Restaurant = require("../../db/models/Restaurant");
+const Branch = require("../../db/models/Branch");
 
 exports.registerRestaurant = async (req, res) => {
   const session = await mongoose.startSession();

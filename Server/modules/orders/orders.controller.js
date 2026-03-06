@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const Order = require("../../database/models/Order"); // adjust the path as needed
-const Item = require("../../database/models/Item"); // to get item details
-const OrderSession = require("../../database/models/OrderSession"); // adjust the path as needed
-const Restaurant = require("../../database/models/Restaurant"); // to get place details
-const Branch = require("../../database/models/Branch"); // to get branch details
+const Order = require("../../db/models/Order"); // adjust the path as needed
+const Item = require("../../db/models/Item"); // to get item details
+const OrderSession = require("../../db/models/OrderSession"); // adjust the path as needed
+const Restaurant = require("../../db/models/Restaurant"); // to get place details
+const Branch = require("../../db/models/Branch"); // to get branch details
 
 const getBranchRoom = (restaurantId, branchId) => `restaurant:${restaurantId}:branch:${branchId}`;
 
