@@ -4,6 +4,8 @@ const Item = require("../../db/models/Item"); // to get item details
 const OrderSession = require("../../db/models/OrderSession"); // adjust the path as needed
 const Restaurant = require("../../db/models/Restaurant"); // to get place details
 const Branch = require("../../db/models/Branch"); // to get branch details
+const Customer = require("../../db/models/Customer"); // to get customer details
+const Counter = require("../../db/models/Counter"); // for order number generation
 
 const getBranchRoom = (restaurantId, branchId) => `restaurant:${restaurantId}:branch:${branchId}`;
 
@@ -69,11 +71,31 @@ itemDocs.forEach(doc => {
         quantity: item.quantity,
         price: priceObj.price
       });
-
     }
+
+    // Generate sequential order number
+const today = new Date().toISOString().slice(0, 10);
+
+const counter = await Counter.findOneAndUpdate(
+  { branchId, date: today },
+  {
+    $inc: { orderCounter: 1 },
+    $setOnInsert: { orderCounter: 99 }
+  },
+  { new: true, upsert: true }
+);
+
+// const counter = await Counter.findOneAndUpdate(
+//   { branchId, date: today },
+//   { $inc: { orderCounter: 1 } },
+//   { new: true, upsert: true }
+// );
+
+const orderNumber = counter.orderCounter;
 
     const order = await Order.create({
       restaurantId,
+      orderNumber,
       branchId,
       orderSessionId: session._id,
       placeId,
@@ -255,18 +277,78 @@ exports.getOrdersForTable = async (req, res) => {
   }
 };
 
-// controllers/orderController.js
 exports.closeSession = async (req, res) => {
   try {
     const { restaurantId, branchId } = req.user;
-    const { placeId, paymentMode } = req.body;
-    const session = await OrderSession.findOne({ placeId, restaurantId, branchId, isClosed: false });
+    const { placeId, paymentMode, customerName, customerPhone } = req.body;
+
+    if (!customerPhone) {
+      return res.status(400).json({
+        message: "Customer phone number is required"
+      });
+    }
+
+    if (!/^[6-9]\d{9}$/.test(customerPhone)) {
+      return res.status(400).json({
+        message: "Invalid phone number"
+      });
+    }
+
+
+    const session = await OrderSession.findOne({
+      placeId,
+      restaurantId,
+      branchId,
+      isClosed: false
+    });
+
     if (!session) {
       return res.status(404).json({ message: "No open session found" });
     }
 
-    const orders = await Order.find({ orderSessionId: session._id, status: "Served", restaurantId, branchId });
+    const orders = await Order.find({
+      orderSessionId: session._id,
+      status: "Served",
+      restaurantId,
+      branchId
+    });
+
     const billAmount = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+
+    let customer = null;
+
+    // 🔹 Create or update customer
+    if (customerPhone) {
+      customer = await Customer.findOne({
+        restaurantId,
+        branchId,
+        phone: customerPhone
+      });
+
+      if (!customer) {
+        customer = await Customer.create({
+          restaurantId,
+          branchId,
+          phone: customerPhone,
+          name: customerName || null,
+          totalOrders: 1,
+          totalSpent: billAmount,
+        });
+      } else {
+        customer.totalOrders += 1;
+        customer.totalSpent += billAmount;
+        customer.lastVisit = new Date();
+
+        if (customerName && !customer.name) {
+          customer.name = customerName;
+        }
+
+        await customer.save();
+      }
+
+      // attach customer to session
+      session.customerId = customer._id;
+    }
 
     session.billAmount = billAmount;
     session.isClosed = true;
@@ -276,8 +358,39 @@ exports.closeSession = async (req, res) => {
 
     await session.save();
 
-    res.status(200).json({ message: "Session closed", session });
+    res.status(200).json({
+      message: "Session closed",
+      session,
+      customer
+    });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
+// exports.closeSession = async (req, res) => {
+//   try {
+//     const { restaurantId, branchId } = req.user;
+//     const { placeId, paymentMode, customerName, customerPhone } = req.body;
+//     const session = await OrderSession.findOne({ placeId, restaurantId, branchId, isClosed: false });
+//     if (!session) {
+//       return res.status(404).json({ message: "No open session found" });
+//     }
+
+//     const orders = await Order.find({ orderSessionId: session._id, status: "Served", restaurantId, branchId });
+//     const billAmount = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+
+//     session.billAmount = billAmount;
+//     session.isClosed = true;
+//     session.endedAt = new Date();
+//     session.paid = true;
+//     session.paymentMode = paymentMode;
+
+//     await session.save();
+
+//     res.status(200).json({ message: "Session closed", session });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };

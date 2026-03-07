@@ -16,6 +16,12 @@ const orderSessionSchema = new mongoose.Schema({
     index: true
   },
 
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Customer",
+    default: null
+  },
+
   placeId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -34,7 +40,8 @@ const orderSessionSchema = new mongoose.Schema({
 
   paymentMode: {
     type: String,
-    enum: ["Cash", "UPI", "Card"]
+    enum: ["Cash", "UPI", "Card", "Pay Later"],
+    default: "Cash"
   },
 
   paid: { type: Boolean, default: false }

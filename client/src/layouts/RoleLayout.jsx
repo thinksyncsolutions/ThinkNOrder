@@ -11,7 +11,7 @@ const RoleLayout = () => {
     <div className="min-h-screen bg-[#F8FAFC]">
       <Navbar role={user.role} user={user} />
       
-      <main className="mx-auto max-w-full p-6">
+      <main className="mx-auto max-w-full">
         {/* This adds a subtle fade-in effect to all sub-pages */}
         <div className="animate-in fade-in duration-500">
           <Outlet />

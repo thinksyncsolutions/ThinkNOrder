@@ -16,6 +16,12 @@ const orderSchema = new mongoose.Schema({
     index: true
   },
 
+   customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Customer",
+    default: null
+  },
+
   orderSessionId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "OrderSession",
@@ -42,7 +48,12 @@ const orderSchema = new mongoose.Schema({
       itemname: { type: String, required: true },
       selectedSize: { type: String, required: true },
       quantity: { type: Number, required: true, min: 1 },
-      price: { type: Number, required: true, min: 0 }
+      price: { type: Number, required: true, min: 0 },
+//       status: {
+//  type: String,
+//  enum: ["Pending","Preparing","Ready","Served"],
+//  default: "Pending"
+// }
     }
   ],
 
@@ -60,7 +71,12 @@ const orderSchema = new mongoose.Schema({
     ],
     default: "Pending",
     index: true
-  }
+  },
+  orderNumber: {
+  type: Number,
+  required: true,
+  index: true
+},
 
 }, { timestamps: true });
 

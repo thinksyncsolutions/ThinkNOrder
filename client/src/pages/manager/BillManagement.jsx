@@ -18,6 +18,7 @@ import {
   Plus,
   Minus,
   Receipt,
+  Clock,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -33,6 +34,7 @@ const BillManagement = ({
   const { tableOrders, loading, sessionClosing, error } = useSelector((state) => state.order);
   const [paymentMode, setPaymentMode] = useState("Cash");
   const [isCartOpen, setIsCartOpen] = useState(false);
+
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -53,12 +55,14 @@ const BillManagement = ({
   const tax = grandTotal - subtotal;
 
   const paymentOptions = [
-    { name: "Cash", icon: <Wallet size={20} /> },
-    { name: "UPI", icon: <ScanLine size={20} /> },
-    { name: "Card", icon: <CreditCard size={20} /> },
+    { name: "Cash", icon: <Wallet size={14} /> },
+    { name: "UPI", icon: <ScanLine size={14} /> },
+    { name: "Card", icon: <CreditCard size={14} /> },
+     { name: "Pay Later", icon: <Clock size={14} /> },
   ];
 
   const handleCreateOrder = async () => {
+    console.log("Creating order with cart items:", tableCart); // Debug log
     if (!tableCart.length) return toast.error("Queue is empty.");
     const result = await dispatch(
       createOrderByAdminItself({
@@ -66,7 +70,7 @@ const BillManagement = ({
         items: tableCart.map((item) => ({
           itemId: item._id,
           size: item.selectedPrice.label,
-          quantity: item.qty,
+          quantity: item.quantity,
         })),
       })
     );
@@ -105,20 +109,20 @@ const BillManagement = ({
       `}</style>
 
       {/* SCREEN HEADER */}
-      <header className="p-6 bg-orange-950 text-white no-print">
+      <header className="px-4 py-2 bg-orange-950 text-white no-print">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-[10px] font-black uppercase tracking-widest text-orange-500">Billing Logic</h2>
+            {/* <h2 className="text-[10px] font-black uppercase tracking-widest text-orange-500">Billing Logic</h2> */}
             <p className="text-2xl font-black italic uppercase tracking-tighter">Table {tableOrders[0]?.table || "..."}</p>
           </div>
           <div className="bg-orange-600 p-3 rounded-2xl shadow-lg shadow-orange-600/30">
-            <Receipt size={24} />
+            <Receipt size={16} />
           </div>
         </div>
       </header>
 
       {/* SCREEN BODY */}
-      <main className="grow overflow-y-auto p-6 space-y-4 custom-scrollbar no-print bg-white">
+      <main className="grow overflow-y-auto p-4 space-y-2 custom-scrollbar no-print bg-white">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full text-orange-400">
             <Loader className="animate-spin mb-4" size={32} />
@@ -131,7 +135,7 @@ const BillManagement = ({
           </div>
         ) : (
           tableOrders.map((order) => (
-            <div key={order._id} className="border-b border-orange-50 pb-4">
+            <div key={order._id} className="border-b border-orange-50 pb-2">
               <p className="text-[10px] text-gray-400 mb-3 font-black uppercase tracking-tighter">Ordered @ {new Date(order.createdAt).toLocaleTimeString()}</p>
               {order.items.map((item, i) => (
                 <div key={i} className="flex justify-between items-center mb-2">
@@ -151,8 +155,8 @@ const BillManagement = ({
       </main>
 
       {/* SCREEN FOOTER */}
-      <footer className="p-6 bg-white border-t-2 border-dashed border-orange-100 no-print">
-        <div className="space-y-2 mb-6">
+      <footer className="p-4 bg-white border-t-2 border-dashed border-orange-100 no-print">
+        <div className="space-y-1 mb-4">
           <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
             <span>Subtotal</span>
             <span className="text-orange-950">₹{subtotal.toFixed(2)}</span>
@@ -161,7 +165,7 @@ const BillManagement = ({
             <span>GST (18%)</span>
             <span className="text-orange-950">₹{tax.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between text-2xl font-black text-orange-950 uppercase italic pt-4 border-t border-orange-50">
+          <div className="flex justify-between text-2xl font-black text-orange-950 uppercase italic pt-2 border-t border-orange-50">
             <span>Total</span>
             <span className="text-orange-600 tracking-tighter">₹{grandTotal.toFixed(2)}</span>
           </div>
@@ -189,7 +193,7 @@ const BillManagement = ({
                     </div>
                     <div className="flex items-center gap-3">
                       <button onClick={() => removeFromTableCart(item._id, item.selectedPrice.label)} className="p-1 hover:text-orange-600 transition-colors"><Minus size={14}/></button>
-                      <span className="text-xs font-black text-white">{item.qty}</span>
+                      <span className="text-xs font-black text-white">{item.quantity}</span>
                       <button onClick={() => addToTableCart(item, item.selectedPrice)} className="p-1 hover:text-orange-600 transition-colors"><Plus size={14}/></button>
                     </div>
                   </div>
@@ -203,12 +207,12 @@ const BillManagement = ({
         )}
 
         {/* PAYMENT SELECTION */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
+        <div className="grid grid-cols-4 gap-2 mb-4">
           {paymentOptions.map((opt) => (
             <button
               key={opt.name}
               onClick={() => setPaymentMode(opt.name)}
-              className={`p-3 rounded-2xl border-2 flex flex-col items-center gap-1 transition-all ${
+              className={`p-1 rounded-2xl border-2 flex flex-col items-center gap-1 transition-all ${
                 paymentMode === opt.name ? "border-orange-600 bg-orange-50 text-orange-600 shadow-inner" : "border-transparent bg-gray-50 text-gray-400"
               }`}
             >
@@ -221,7 +225,7 @@ const BillManagement = ({
         <button
           onClick={handleSettleAndPrint}
           disabled={tableOrders.length === 0 || sessionClosing}
-          className="w-full bg-orange-950 hover:bg-orange-600 text-white py-5 rounded-[2rem] flex justify-center items-center gap-3 font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50"
+          className="w-full bg-orange-950 hover:bg-orange-600 text-white py-4 rounded-[2rem] flex justify-center items-center gap-3 font-black uppercase tracking-widest text-xs transition-all active:scale-95 disabled:opacity-50"
         >
           {sessionClosing ? <Loader className="animate-spin" /> : <Printer />}
           Finalize & Print

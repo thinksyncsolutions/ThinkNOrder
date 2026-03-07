@@ -3,6 +3,7 @@ const ctrl = require("./place.controller");
 const auth = require("../../middleware/auth");
 
 
+router.get("/running-tables", auth, ctrl.getRunningTables);
 // CRUD
 router.post("/", auth, ctrl.createPlace);
 router.get("/", auth, ctrl.getPlaces);
@@ -11,8 +12,6 @@ router.put("/:id", auth, ctrl.updatePlace);
 router.delete("/:id", auth, ctrl.deletePlace);
 
 // Status
-router.patch("/:id/status", ctrl.updatePlaceStatus);
-
-router.get("/running-tables", auth, ctrl.getRunningTables);
+router.patch("/:id/status", auth, ctrl.updatePlaceStatus);
 
 module.exports = router;

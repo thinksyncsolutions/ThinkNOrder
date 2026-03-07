@@ -6,7 +6,7 @@ import { addToCart, removeFromCart } from "../../utils/cartUtils";
 
 const TableManagement = ({ placeId }) => {
   const [tableCart, setTableCart] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false); // New state for full-screen toggle
+  const [isExpanded, setIsExpanded] = useState(true); // New state for full-screen toggle
 
  const handleAddToTableCart = (item) => {
   setTableCart((prev) =>
@@ -37,7 +37,7 @@ const handleRemoveFromTableCart = (itemId, label) => {
       {/* Left side (Menu) */}
       <div 
         className={`${
-          isExpanded ? "w-0 opacity-0 invisible" : "w-[65%]"
+          isExpanded ? "w-0 opacity-0 invisible" : "w-[60%]"
         } h-full overflow-y-auto transition-all duration-500 ease-in-out border-r border-orange-100`}
       >
         <Menu
@@ -50,7 +50,7 @@ const handleRemoveFromTableCart = (itemId, label) => {
       {/* Right side (Bill Management) */}
       <div 
         className={`${
-          isExpanded ? "w-full" : "w-[35%]"
+          isExpanded ? "w-full" : "w-[40%]"
         } h-full flex flex-col transition-all duration-500 ease-in-out relative bg-orange-50/30`}
       >
         {/* Toggle Button */}

@@ -1,10 +1,9 @@
-// SidebarConfig.js
 import { 
   LayoutDashboard, Users, Settings, Store, 
   ClipboardList, UtensilsCrossed, BarChart3, CreditCard, ChefHat 
 } from "lucide-react";
 
-export const SidebarConfig = {
+export const NavbarConfig = {
   SUPERADMIN: [
     { to: "/superadmin/dashboard", label: "Overview", icon: LayoutDashboard },
     { to: "/superadmin/restaurants", label: "Restaurants", icon: Store },
@@ -21,8 +20,8 @@ export const SidebarConfig = {
     { to: "/manager/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/manager/orders", label: "Live Bills", icon: CreditCard },
     { to: "/manager/tables", label: "Floor Plan", icon: UtensilsCrossed },
-    { to: "/manager/staff", label: "Attendance", icon: Users },
-    { to: "/manager/menu", label: "Menu Management", icon: ClipboardList },
+    { to: "/manager/staff", label: "Staff", icon: Users },
+    { to: "/manager/menu", label: "Menu Master", icon: ClipboardList },
     { to: "/manager/kitchen", label: "Kitchen Orders", icon: ChefHat },
   ],
   WAITER: [

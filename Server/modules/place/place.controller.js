@@ -1,4 +1,5 @@
 const Place = require("../../db/models/Place");
+const OrderSession = require("../../db/models/OrderSession");
 const { nanoid } = require("nanoid");
 
 // ➕ CREATE PLACE
@@ -134,14 +135,29 @@ exports.updatePlaceStatus = async (req, res, next) => {
 
 
 exports.getRunningTables = async (req, res) => {
-  const restaurantId = req.user.restaurantId;
+  console.log("Received request to fetch running tables"); // Debug log
+  console.log("User info:", req.user); // Debug log to check user details
+  try {
+    const { restaurantId, branchId } = req.user;
 
-  const sessions = await OrderSession.find({
-    restaurantId,
-    branchId: req.user.branchId,
-    isClosed: false,
-  }).select("placeId startedAt");
+    const sessions = await OrderSession.find({
+      restaurantId,
+      branchId,
+      isClosed: false,
+    }).select("placeId startedAt");
 
-  res.json(sessions);
+    res.status(200).json({
+      success: true,
+      data: sessions,
+    });
+    console.log("Fetched running tables:", sessions); // Debug log
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch running tables",
+      error: error.message,
+    });
+  }
 };
 

@@ -81,9 +81,11 @@ export const getRunningTablesThunk = createAsyncThunk(
   "place/getRunningTables",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/place/running-tables");
+      const res = await api.get("/places/running-tables");
+      console.log("Fetched running tables:", res.data); // Debug log
       return res.data.data;
     } catch (err) {
+      console.error("Error fetching running tables:", err); // Debug log
       return rejectWithValue(handleAxiosError(err));
     }
   }
