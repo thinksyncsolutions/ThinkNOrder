@@ -44,6 +44,25 @@ io.on("connection", (socket) => {
     socket.join(roomName);
   });
 
+
+  // 🔔 CALL WAITER EVENT
+  socket.on("callWaiter", (data) => {
+
+  const { restaurantId, branchId, floorName, tableNumber, tableType } = data;
+  console.log("Received callWaiter event:", data);
+
+  const roomName = `restaurant:${restaurantId}:branch:${branchId}`;
+
+  io.to(roomName).emit("waiterCalled", {
+    floorName,
+    tableNumber,
+    tableType,
+    message: `${tableType} ${tableNumber} on ${floorName} needs waiter`,
+    time: new Date()
+  });
+
+});
+
   socket.on("disconnect", () => {
     console.log("Client disconnected", socket.id);
   });

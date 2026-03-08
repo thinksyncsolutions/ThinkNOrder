@@ -6,6 +6,10 @@ import { fetchFullMenuForUser } from "../../redux/features/menu/menu.thunk";
 import { createOrder } from "../../redux/features/order/order.thunk";
 import { toast } from "react-hot-toast";
 import { addToCart, removeFromCart } from "../../utils/cartUtils";
+import { io } from "socket.io-client";
+
+const socketURL = import.meta.env.VITE_SOCKET_URL;
+const socket = io(socketURL);
 
 const UserPage = () => {
   const dispatch = useDispatch();
@@ -20,6 +24,23 @@ const UserPage = () => {
   useEffect(() => {
     if (placeCode) dispatch(fetchFullMenuForUser({ placeCode }));
   }, [dispatch, placeCode]);
+
+  const handleCallWaiter = () => {
+    if (!place) return toast.error("Table information not found");
+
+    socket.emit("callWaiter", {
+      restaurantId: place.restaurantId,
+      branchId: place.branchId,
+      tableNumber: place.number,
+      floorName: place.floor,
+      tableType: place.type
+    });
+
+    toast.success("Waiter notified! Someone will be with you shortly.", {
+      icon: '🔔',
+      style: { borderRadius: '1rem', background: '#333', color: '#fff' }
+    });
+  };
 
   const scrollToSection = (id) => {
     const element = sectionRefs.current[id];
@@ -90,11 +111,24 @@ const UserPage = () => {
               </h1>
               <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Digital Menu</p>
             </div>
-            <div className="flex flex-col items-end">
-              <span className="bg-orange-950 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-950/20">
-                Table {place?.number}
-              </span>
-              <span className="text-[9px] font-bold text-orange-600 mt-1 uppercase italic">{place?.floor}</span>
+
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={handleCallWaiter}
+                className="flex flex-col items-center justify-center bg-orange-50 border border-orange-100 px-3 py-2 rounded-2xl active:scale-90 transition-all group"
+              >
+                <div className="text-orange-600 group-hover:animate-bounce">
+                  <Utensils size={16} strokeWidth={3} />
+                </div>
+                <span className="text-[8px] font-black uppercase text-orange-950 mt-1 tracking-tighter">Call Waiter</span>
+              </button>
+
+              <div className="flex flex-col items-end border-l border-zinc-100 pl-3">
+                <span className="bg-orange-950 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-950/20">
+                  Table {place?.number}
+                </span>
+                <span className="text-[9px] font-bold text-orange-600 mt-1 uppercase italic">{place?.floor}</span>
+              </div>
             </div>
           </div>
 

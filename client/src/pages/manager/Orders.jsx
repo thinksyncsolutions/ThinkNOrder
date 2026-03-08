@@ -6,16 +6,43 @@ import {
   getPlacesThunk,
   getRunningTablesThunk,
 } from "../../redux/features/place/place.thunk";
+import { io } from "socket.io-client";
+
+const socketURL = import.meta.env.VITE_SOCKET_URL;
+const socket = io(socketURL);
 
 const Orders = () => {
   const dispatch = useDispatch();
   const { places, runningTables, loadingPlaces, loadingRunningTables } = useSelector((state) => state.place);
   const [, setTick] = useState(0);
+  const { restaurantId, branchId } = useSelector((state) => state.auth.user); 
 
   useEffect(() => {
     dispatch(getPlacesThunk());
     dispatch(getRunningTablesThunk());
   }, [dispatch]);
+
+   useEffect(() => {
+    // 2. Join the room as soon as the component mounts
+    if (restaurantId && branchId) {
+      socket.emit("joinRoom", restaurantId, branchId);
+      console.log(`Joined room: restaurant:${restaurantId}:branch:${branchId}`);
+    }
+
+    // 3. Define the listener
+    const handleWaiterCalled = (data) => {
+      // console.log("🔔 Waiter Requested:", data);
+      alert(`🔔 ${data.message}`);
+    };
+
+    // 4. Attach the listener
+    socket.on("waiterCalled", handleWaiterCalled);
+
+    // 5. CLEANUP: This is CRITICAL to prevent duplicate listeners
+    return () => {
+      socket.off("waiterCalled", handleWaiterCalled);
+    };
+  }, [restaurantId, branchId]); 
 
   const groupedPlaces = useMemo(() => {
     return places.reduce((acc, place) => {
