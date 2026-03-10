@@ -71,9 +71,27 @@ const Places = () => {
     return <div className="p-8 text-gray-500 italic">Loading places...</div>;
 
   return (
-    <div className="p-8 bg-white min-h-screen">
+    <div className="bg-white min-h-screen space-y-10">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-8">
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-black text-black uppercase tracking-tight">
+            Sitting<span className="text-orange-600"> Management</span>
+          </h1>
+          <p className="text-sm font-bold text-gray-500 mt-1 uppercase tracking-widest">
+            Manage Tables And Floor Mapping
+          </p>
+        </div>
+        <button
+          onClick={() => setOpenModal(true)}
+          className="bg-indigo-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-indigo-700 transition shadow-sm"
+        >
+          + Add New Place
+        </button>
+      </div>
+
+      {/* <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
             Place Management
@@ -88,7 +106,7 @@ const Places = () => {
         >
           + Add New Place
         </button>
-      </div>
+      </div> */}
 
       {/* TABLE */}
       <div className="overflow-x-auto border border-gray-200 rounded-xl shadow-sm">

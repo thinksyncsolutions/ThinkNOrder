@@ -19,8 +19,11 @@ import {
   Minus,
   Receipt,
   Clock,
+  User,
+  Phone
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import ThermalBill from "../../components/common/ThermalBill";
 
 const BillManagement = ({
   tableCart,
@@ -34,7 +37,11 @@ const BillManagement = ({
   const { tableOrders, loading, sessionClosing, error } = useSelector((state) => state.order);
   const [paymentMode, setPaymentMode] = useState("Cash");
   const [isCartOpen, setIsCartOpen] = useState(false);
-
+  
+  // New States for Customer Info
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [billSnapshot, setBillSnapshot] = useState(null);
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -48,7 +55,6 @@ const BillManagement = ({
     if (tableId) dispatch(fetchOrdersForTable(tableId));
   }, [tableId, dispatch]);
 
-  // Calculations
   const grandTotal = tableOrders.reduce((acc, order) => acc + order.totalAmount, 0);
   const taxRate = 0.18;
   const subtotal = grandTotal / (1 + taxRate);
@@ -58,11 +64,10 @@ const BillManagement = ({
     { name: "Cash", icon: <Wallet size={14} /> },
     { name: "UPI", icon: <ScanLine size={14} /> },
     { name: "Card", icon: <CreditCard size={14} /> },
-     { name: "Pay Later", icon: <Clock size={14} /> },
+    { name: "Pay Later", icon: <Clock size={14} /> },
   ];
 
   const handleCreateOrder = async () => {
-    console.log("Creating order with cart items:", tableCart); // Debug log
     if (!tableCart.length) return toast.error("Queue is empty.");
     const result = await dispatch(
       createOrderByAdminItself({
@@ -80,39 +85,54 @@ const BillManagement = ({
     }
   };
 
-  const handleSettleAndPrint = async () => {
-    const result = await dispatch(closeSession({ placeId: tableId, paymentMode }));
-    if (result.meta.requestStatus === "fulfilled") {
-      setTimeout(() => { window.print(); }, 500);
+const handleSettleAndPrint = async () => {
+  try {
+
+    if (!customerPhone || customerPhone.length !== 10) {
+      return toast.error("Please enter a valid phone number");
     }
-  };
+
+    const snapshot = {
+      tableOrders,
+      tableId,
+      customerName,
+      customerPhone,
+      paymentMode,
+      subtotal,
+      tax,
+      grandTotal
+    };
+
+    setBillSnapshot(snapshot);
+
+    // PRINT FIRST
+    setTimeout(() => {
+      window.print();
+    }, 300);
+
+    // CLOSE SESSION AFTER
+    await dispatch(
+      closeSession({
+        placeId: tableId,
+        paymentMode,
+        customerName,
+        customerPhone
+      })
+    ).unwrap();
+
+    toast.success("Bill Settled");
+
+  } catch (err) {
+    toast.error("Failed to settle bill");
+  }
+};
 
   return (
     <div className="h-full flex flex-col bg-white border-l border-orange-100 overflow-hidden">
-      {/* CSS FOR PRINTING - AUTHENTIC THERMAL STYLE */}
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          #thermal-bill { 
-            display: block !important; 
-            width: 58mm; 
-            padding: 4mm;
-            color: #000;
-            background: #fff;
-            margin: 0;
-          }
-          body { background: white; }
-        }
-        @media screen {
-          #thermal-bill { display: none; }
-        }
-      `}</style>
-
       {/* SCREEN HEADER */}
       <header className="px-4 py-2 bg-orange-950 text-white no-print">
         <div className="flex justify-between items-center">
           <div>
-            {/* <h2 className="text-[10px] font-black uppercase tracking-widest text-orange-500">Billing Logic</h2> */}
             <p className="text-2xl font-black italic uppercase tracking-tighter">Table {tableOrders[0]?.table || "..."}</p>
           </div>
           <div className="bg-orange-600 p-3 rounded-2xl shadow-lg shadow-orange-600/30">
@@ -134,28 +154,56 @@ const BillManagement = ({
             <p className="font-black uppercase text-xs tracking-widest">No Active Orders</p>
           </div>
         ) : (
-          tableOrders.map((order) => (
-            <div key={order._id} className="border-b border-orange-50 pb-2">
-              <p className="text-[10px] text-gray-400 mb-3 font-black uppercase tracking-tighter">Ordered @ {new Date(order.createdAt).toLocaleTimeString()}</p>
-              {order.items.map((item, i) => (
-                <div key={i} className="flex justify-between items-center mb-2">
-                  <div className="flex items-center gap-3">
-                    <span className="h-6 w-6 flex items-center justify-center bg-orange-50 text-orange-600 font-black rounded text-[10px]">{item.quantity}</span>
-                    <div>
-                      <p className="font-bold text-orange-950 text-xs uppercase">{item.itemname}</p>
-                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{item.selectedSize}</p>
-                    </div>
-                  </div>
-                  <p className="font-black text-xs text-orange-950">₹{(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-              ))}
+          <>
+            {/* CUSTOMER INFO INPUTS */}
+            <div className="mb-6 space-y-2 border-b border-orange-100 pb-4">
+               <div className="relative">
+                  <Phone size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-400" />
+                  <input 
+                    type="tel" 
+                    maxLength={10}
+                    placeholder="CUSTOMER PHONE (REQ)" 
+                    className="w-full pl-8 pr-3 py-2 bg-gray-50 rounded-xl text-[10px] font-bold focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                  />
+               </div>
+               <div className="relative">
+                  <User size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-orange-400" />
+                  <input 
+                    type="text" 
+                    placeholder="CUSTOMER NAME (OPTIONAL)" 
+                    className="w-full pl-8 pr-3 py-2 bg-gray-50 rounded-xl text-[10px] font-bold focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                  />
+               </div>
             </div>
-          ))
+
+            {tableOrders.map((order) => (
+              <div key={order._id} className="border-b border-orange-50 pb-2">
+                <p className="text-[10px] text-gray-400 mb-3 font-black uppercase tracking-tighter">Ordered @ {new Date(order.createdAt).toLocaleTimeString()}</p>
+                {order.items.map((item, i) => (
+                  <div key={i} className="flex justify-between items-center mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="h-6 w-6 flex items-center justify-center bg-orange-50 text-orange-600 font-black rounded text-[10px]">{item.quantity}</span>
+                      <div>
+                        <p className="font-bold text-orange-950 text-xs uppercase">{item.itemname}</p>
+                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{item.selectedSize}</p>
+                      </div>
+                    </div>
+                    <p className="font-black text-xs text-orange-950">₹{(item.price * item.quantity).toFixed(2)}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </>
         )}
       </main>
 
       {/* SCREEN FOOTER */}
       <footer className="p-4 bg-white border-t-2 border-dashed border-orange-100 no-print">
+        {/* ... (Grand Total & Cart UI remain the same) ... */}
         <div className="space-y-1 mb-4">
           <div className="flex justify-between text-xs font-bold text-gray-400 uppercase tracking-widest">
             <span>Subtotal</span>
@@ -206,7 +254,6 @@ const BillManagement = ({
           </div>
         )}
 
-        {/* PAYMENT SELECTION */}
         <div className="grid grid-cols-4 gap-2 mb-4">
           {paymentOptions.map((opt) => (
             <button
@@ -232,56 +279,20 @@ const BillManagement = ({
         </button>
       </footer>
 
-      {/* ========================================================
-          THE THERMAL BILL (HIDDEN FROM SCREEN, SHOWN ONLY IN PRINT)
-          ======================================================== */}
-      <div id="thermal-bill">
-        <div style={{ textAlign: "center", textTransform: "uppercase" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: "900", margin: "0 0 4px 0" }}>ThinkNOrder</h2>
-          <p style={{ fontSize: "10px", fontWeight: "700", margin: "0" }}>Smart Dining Experience</p>
-          <div style={{ borderTop: "1px dashed #000", margin: "10px 0" }} />
-          <p style={{ fontSize: "11px", fontWeight: "700", margin: "0" }}>TABLE: {tableOrders[0]?.table || tableId}</p>
-          <p style={{ fontSize: "9px", margin: "2px 0" }}>{new Date().toLocaleString()}</p>
-        </div>
+      {/* THERMAL BILL PRINT VERSION */}
+      <div id="thermal-bill-print">
+  <ThermalBill
+  tableOrders={billSnapshot?.tableOrders || []}
+  tableId={billSnapshot?.tableId}
+  customerName={billSnapshot?.customerName}
+  customerPhone={billSnapshot?.customerPhone}
+  paymentMode={billSnapshot?.paymentMode}
+  subtotal={billSnapshot?.subtotal || 0}
+  tax={billSnapshot?.tax || 0}
+  grandTotal={billSnapshot?.grandTotal || 0}
+/>
+</div>
 
-        <div style={{ margin: "10px 0", fontSize: "11px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", fontWeight: "900", borderBottom: "1px solid #000", paddingBottom: "4px" }}>
-            <span>ITEM</span>
-            <span>AMT</span>
-          </div>
-          {tableOrders.flatMap((o) => o.items).map((item, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", margin: "6px 0", lineHeight: "1.2" }}>
-              <span style={{ flex: 1, paddingRight: "4px" }}>
-                {item.itemname} <br />
-                <span style={{ fontSize: "9px", fontWeight: "normal" }}>({item.selectedSize}) x{item.quantity}</span>
-              </span>
-              <span style={{ fontWeight: "bold" }}>₹{(item.price * item.quantity).toFixed(2)}</span>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ borderTop: "1px dashed #000", paddingTop: "10px", fontSize: "11px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-            <span>SUBTOTAL:</span>
-            <span>₹{subtotal.toFixed(2)}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
-            <span>GST (18%):</span>
-            <span>₹{tax.toFixed(2)}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", fontWeight: "900", marginTop: "6px", borderTop: "1px solid #000", paddingTop: "6px" }}>
-            <span>TOTAL:</span>
-            <span>₹{grandTotal.toFixed(2)}</span>
-          </div>
-        </div>
-
-        <div style={{ textAlign: "center", marginTop: "20px", fontSize: "10px" }}>
-          <p style={{ margin: "2px 0", fontWeight: "bold" }}>PAID VIA: {paymentMode.toUpperCase()}</p>
-          <div style={{ borderTop: "1px dashed #000", margin: "10px 0" }} />
-          <p style={{ margin: "0" }}>THANKS FOR DINING WITH US!</p>
-          <p style={{ margin: "0", fontSize: "8px" }}>thinknorder.io</p>
-        </div>
-      </div>
     </div>
   );
 };

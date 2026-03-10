@@ -78,18 +78,9 @@ const today = new Date().toISOString().slice(0, 10);
 
 const counter = await Counter.findOneAndUpdate(
   { branchId, date: today },
-  {
-    $inc: { orderCounter: 1 },
-    $setOnInsert: { orderCounter: 99 }
-  },
+  { $inc: { orderCounter: 1 } },
   { new: true, upsert: true }
 );
-
-// const counter = await Counter.findOneAndUpdate(
-//   { branchId, date: today },
-//   { $inc: { orderCounter: 1 } },
-//   { new: true, upsert: true }
-// );
 
 const orderNumber = counter.orderCounter;
 
@@ -278,6 +269,8 @@ exports.getOrdersForTable = async (req, res) => {
 };
 
 exports.closeSession = async (req, res) => {
+  console.log("Close Session Request Body:", req.body); // Debug log
+  console.log(req.user);
   try {
     const { restaurantId, branchId } = req.user;
     const { placeId, paymentMode, customerName, customerPhone } = req.body;

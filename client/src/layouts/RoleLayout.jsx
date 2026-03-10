@@ -13,7 +13,7 @@ const RoleLayout = () => {
       
       <main className="mx-auto max-w-full">
         {/* This adds a subtle fade-in effect to all sub-pages */}
-        <div className="animate-in fade-in duration-500">
+        <div className="animate-in fade-in duration-500 p-6">
           <Outlet />
         </div>
       </main>

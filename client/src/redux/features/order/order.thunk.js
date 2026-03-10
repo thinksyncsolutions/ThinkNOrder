@@ -72,15 +72,19 @@ export const changeOrderStatus = createAsyncThunk(
 // 🔥 CLOSE SESSION
 export const closeSession = createAsyncThunk(
   "order/closeSession",
-  async ({ placeId, paymentMode }, thunkAPI) => {
+  async ({ placeId, paymentMode, customerName, customerPhone }, thunkAPI) => {
+    console.log("Closing session with data:", { placeId, paymentMode, customerName, customerPhone }); // Debug log
     try {
       const response = await api.post(`/orders/close-session`, {
         placeId,
         paymentMode,
+        customerName,
+        customerPhone
       });
 
       return response.data.session;
     } catch (error) {
+      console.error("Error closing session:", error); // Debug log
       return handleAxiosError(error, thunkAPI);
     }
   }
