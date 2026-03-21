@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
   Users, 
   ShoppingCart, 
@@ -10,26 +10,39 @@ import {
   Plus, 
   FileBarChart 
 } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchDashboardSummary } from "../../redux/features/dashboard/dashboard.thunk";
 
 const ManagerDashboard = () => {
+  const dispatch = useDispatch();
+
+  const {user} = useSelector((state) => state.auth);
+  const {summary, loading, error} = useSelector((state) => state.dashboard);
+
+  console.log(summary)
+
+  useEffect(() => {
+    dispatch(fetchDashboardSummary());
+  }, [dispatch, user]);
+
   const stats = [
     {
       title: "Today's Orders",
-      value: "142",
+      value: summary?.todayOrders || 0,
       change: "+12% vs yesterday",
       icon: <ShoppingCart size={24} />,
       color: "bg-orange-600",
     },
     {
       title: "Net Revenue",
-      value: "₹42,850",
+      value: `₹${summary?.netRevenue?.[0]?.total || 0}`,
       change: "+8% vs yesterday",
       icon: <IndianRupee size={24} />,
       color: "bg-black",
     },
     {
       title: "Active Tables",
-      value: "12/20",
+      value:  summary?.activeTables || "0/0",
       change: "60% Occupancy",
       icon: <Utensils size={24} />,
       color: "bg-orange-950",

@@ -15,6 +15,7 @@ router.use("/", require("./modules/user/user.route"));
 router.use("/menu", require("./modules/menu/menu.routes"));
 router.use("/places", require("./modules/place/place.routes"));
 router.use("/orders", require("./modules/orders/orders.routes"));
+router.use("/dashboard", require("./modules/dashboards/dashboard.routes"));
 // router.use("/tables", auth, tableRoutes);
 
 module.exports = router;

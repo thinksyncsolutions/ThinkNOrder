@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const startPingJob = require("./helpers/pingServer");
 
 // Connect to DB
 const connectDB = require("./db/db.js");
@@ -68,7 +69,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// Routes
+
+// Start cron
+startPingJob();
 
 app.get("/", (req, res) => res.send("THINKNORDER is Alive!"));
 app.use("/api", require("./routes")); // 🔥 ONLY THIS

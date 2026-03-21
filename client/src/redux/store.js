@@ -6,6 +6,8 @@ import userReducer from "./features/user/user.slice";
 import menuReducer from "./features/menu/menu.slice";
 import placeReducer from "./features/place/place.slice";
 import orderReducer from "./features/order/order.slice";
+import dashboardReducer from "./features/dashboard/dashboard.slice";
+import networkReducer from "./features/network/network.slice"
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +17,9 @@ export const store = configureStore({
     users: userReducer,
     menu: menuReducer,
     place: placeReducer,
-    order: orderReducer
+    order: orderReducer,
+    dashboard: dashboardReducer,
+    network: networkReducer,
   }
 });
 

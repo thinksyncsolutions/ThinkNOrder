@@ -7,13 +7,15 @@ import { handleAxiosError } from "../../../utils/handleErrors";
 // 🔥 GET ORDERS FOR TABLE
 export const fetchOrdersForTable = createAsyncThunk(
   "order/fetchOrdersForTable",
-  async (tableId, thunkAPI) => {
+  async (tableId, {rejectWithValue}) => {
     try {
       const response = await api.get(`/orders/${tableId}`);
       console.log("Fetched skfahjorders for table:", response.data);
+      console.log(response.data)
       return response.data.orders || [];
     } catch (error) {
-      return handleAxiosError(error, thunkAPI);
+      console.error("Error fetching orders for table:", error); // Debug log
+      return rejectWithValue(handleAxiosError(error));
     }
   }
 );

@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 // import RegisterOwner from "./pages/auth/RegisterOwner";
 
 function App() {
+
   return (
     <>
       <RouterProvider router={router} />

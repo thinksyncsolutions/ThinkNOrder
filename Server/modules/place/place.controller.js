@@ -52,6 +52,7 @@ exports.getPlaces = async (req, res, next) => {
     if (status) filter.status = status;
 
     const places = await Place.find(filter).sort({ floor: 1, number: 1 });
+    console.log("Fetched places:", places); // Debug log to check fetched data
 
     res.json({ success: true, data: places });
   } catch (err) {

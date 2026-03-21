@@ -47,6 +47,8 @@ const BillManagement = ({
     if (error) toast.error(error);
   }, [error]);
 
+  console.log(error)
+
   useEffect(() => {
     if (tableCart.length > 0) setIsCartOpen(true);
   }, [tableCart.length]);

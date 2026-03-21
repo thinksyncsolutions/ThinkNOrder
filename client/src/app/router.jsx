@@ -34,6 +34,8 @@ import RoleLayout from "../layouts/RoleLayout";
 import SystemUsers from "../pages/superadmin/SystemUsers";
 // import { Settings } from "lucide-react";
 
+import ServerOffline from "../components/ServerOffline";
+
 const host = window.location.hostname;
 const isQRDomain = host === "qr.thinknorder.in";
 
@@ -151,6 +153,7 @@ export const router = createBrowserRouter(
           ],
         },
 
+        { path: "/server-error", element: <ServerOffline /> },
         { path: "*", element: <Unauthorized /> },
       ]
 );

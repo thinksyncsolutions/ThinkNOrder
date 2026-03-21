@@ -1,8 +1,15 @@
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import {useSelector, useDispatch} from "react-redux";
 
 const ProtectedRoute = ({ roles, children }) => {
+  const dispatch = useDispatch();
   const { user, token, requiresBranchSelection } = useSelector(state => state.auth);
+  const {isServerOnline} = useSelector((state) => state.network);
+
+  // 🚨 SERVER OFFLINE
+  if (!isServerOnline) {
+    return <Navigate to="/server-error" replace />;
+  }
 
   // 🔒 Not logged in
   if (!token || !user) {

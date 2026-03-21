@@ -6,6 +6,7 @@ const Restaurant = require("../../db/models/Restaurant"); // to get place detail
 const Branch = require("../../db/models/Branch"); // to get branch details
 const Customer = require("../../db/models/Customer"); // to get customer details
 const Counter = require("../../db/models/Counter"); // for order number generation
+const Place = require("../../db/models/Place"); // to update place status
 
 const getBranchRoom = (restaurantId, branchId) => `restaurant:${restaurantId}:branch:${branchId}`;
 
@@ -36,8 +37,13 @@ exports.createOrder = async (req, res) => {
         branchId,
         placeId
       });
-    }
 
+       await Place.findOneAndUpdate(
+    { _id: placeId, restaurantId, branchId },
+    { status: "OCCUPIED" }
+  );
+}
+    
     let totalAmount = 0;
     const detailedItems = [];
 
@@ -350,6 +356,11 @@ exports.closeSession = async (req, res) => {
     session.paymentMode = paymentMode;
 
     await session.save();
+
+      await Place.findOneAndUpdate(
+    { _id: placeId, restaurantId, branchId },
+    { status: "AVAILABLE" }
+  );
 
     res.status(200).json({
       message: "Session closed",

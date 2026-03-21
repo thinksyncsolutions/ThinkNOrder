@@ -109,6 +109,7 @@ export const fetchFullMenu = createAsyncThunk(
     try {
       const response = await api.get("/menu/full-menu");
       console.log("Full menu response:", response.data); // Debug log
+      console.log("Full menu data:", response.data); // Debug log to check actual menu data
       return response.data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);

@@ -11,7 +11,7 @@ const ThermalBill = ({
   grandTotal 
 }) => {
   return (
-    <div id="thermal-bill-print">
+  <div id="thermal-bill-print">
       <style>{`
         @media screen {
           #thermal-bill-print { display: none; }

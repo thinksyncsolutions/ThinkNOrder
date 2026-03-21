@@ -7,12 +7,12 @@ import { handleAxiosError } from "../../../utils/handleErrors";
 =========================== */
 export const getPlacesThunk = createAsyncThunk(
   "place/getAll",
-  async (params, { rejectWithValue }) => {
+  async (params, thunkAPI) => {
     try {
       const res = await api.get("/places", { params });
       return res.data.data; // backend → { success, data }
     } catch (err) {
-      return rejectWithValue(handleAxiosError(err));
+      return handleAxiosError(err, thunkAPI);
     }
   }
 );
@@ -22,12 +22,12 @@ export const getPlacesThunk = createAsyncThunk(
 =========================== */
 export const createPlaceThunk = createAsyncThunk(
   "place/create",
-  async (payload, { rejectWithValue }) => {
+  async (payload, thunkAPI) => {
     try {
       const res = await api.post("/places", payload);
       return res.data.data;
     } catch (err) {
-      return rejectWithValue(handleAxiosError(err));
+      return handleAxiosError(err, thunkAPI);
     }
   }
 );
@@ -37,12 +37,12 @@ export const createPlaceThunk = createAsyncThunk(
 =========================== */
 export const updatePlaceThunk = createAsyncThunk(
   "place/update",
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }, thunkAPI) => {
     try {
       const res = await api.put(`/places/${id}`, data);
       return res.data.data;
     } catch (err) {
-      return rejectWithValue(handleAxiosError(err));
+      return handleAxiosError(err, thunkAPI);
     }
   }
 );
@@ -52,12 +52,12 @@ export const updatePlaceThunk = createAsyncThunk(
 =========================== */
 export const deletePlaceThunk = createAsyncThunk(
   "place/delete",
-  async (id, { rejectWithValue }) => {
+  async (id, thunkAPI) => {
     try {
       await api.delete(`/places/${id}`);
       return id;
     } catch (err) {
-      return rejectWithValue(handleAxiosError(err));
+      return handleAxiosError(err, thunkAPI);
     }
   }
 );
@@ -72,21 +72,21 @@ export const updatePlaceStatusThunk = createAsyncThunk(
       const res = await api.patch(`/places/${id}/status`, { status });
       return res.data.data;
     } catch (err) {
-      return rejectWithValue(handleAxiosError(err));
+      return handleAxiosError(err, thunkAPI);
     }
   }
 );
 
 export const getRunningTablesThunk = createAsyncThunk(
   "place/getRunningTables",
-  async (_, { rejectWithValue }) => {
+  async (_, thunkAPI) => {
     try {
       const res = await api.get("/places/running-tables");
       console.log("Fetched running tables:", res.data); // Debug log
       return res.data.data;
     } catch (err) {
       console.error("Error fetching running tables:", err); // Debug log
-      return rejectWithValue(handleAxiosError(err));
+      return handleAxiosError(err, thunkAPI);
     }
   }
 );

@@ -20,7 +20,12 @@ const authSlice = createSlice({
       state.token = null;
       state.branches = [];
       state.requiresBranchSelection = false;
-      localStorage.clear();
+      // localStorage.clear();
+
+       localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("branches");
+  localStorage.removeItem("requiresBranchSelection");
     },
     clearBranch(state) {
     state.requiresBranchSelection = true;

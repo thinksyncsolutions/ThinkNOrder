@@ -43,7 +43,7 @@ const orderSlice = createSlice({
     })
     .addCase(fetchOrdersForTable.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.error = action.payload || action.error || "Failed to fetch orders for table.";
       state.tableOrders = [];
     });
 

@@ -81,6 +81,13 @@ const MenuManagement = () => {
     if (!res.error) dispatch(fetchFullMenu());
   };
 
+  if (error)
+    return (
+      <div className="bg-red-50 border-l-4 border-red-500 p-4 text-red-700 font-bold rounded-r-xl uppercase text-xs">
+        Error: {error?.message}
+      </div>
+    );
+
   if (loading && !sections.length)
     return (
       <div className="flex h-96 items-center justify-center">

@@ -53,6 +53,7 @@ const Menu = ({ addToTableCart, removeFromTableCart, tableCart }) => {
     );
   }
 
+  console.log("Menu error state:", error); // Debug log for error state
   if (error) {
     return <p className="text-red-500 text-center">{error}</p>;
   }
