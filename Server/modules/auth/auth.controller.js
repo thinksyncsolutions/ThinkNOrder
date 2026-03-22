@@ -235,7 +235,7 @@ exports.createUser = async (req, res) => {
       restaurantId: admin.restaurantId,
       name,
       email,
-      password,
+      password: "123456789",
       role,
       accessibleBranches: branchIds
     });
