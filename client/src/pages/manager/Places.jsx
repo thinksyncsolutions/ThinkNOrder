@@ -148,7 +148,7 @@ const Places = () => {
                     {place.floor}
                   </td>
                   <td className="px-6 py-4 text-gray-600 font-medium">
-                    {place.capacity} Pax
+                    {place.capacity} Max
                   </td>
                   <td className="px-6 py-4">
                     <select

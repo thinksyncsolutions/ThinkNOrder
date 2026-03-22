@@ -241,9 +241,9 @@ const handleSettleAndPrint = async () => {
                       <p className="text-[11px] font-bold text-white uppercase tracking-tight">{item.name}</p>
                       <p className="text-[9px] text-orange-500 font-bold uppercase">{item.selectedPrice.label}</p>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 text-white">
                       <button onClick={() => removeFromTableCart(item._id, item.selectedPrice.label)} className="p-1 hover:text-orange-600 transition-colors"><Minus size={14}/></button>
-                      <span className="text-xs font-black text-white">{item.quantity}</span>
+                      <span className="text-xs font-black">{item.quantity}</span>
                       <button onClick={() => addToTableCart(item, item.selectedPrice)} className="p-1 hover:text-orange-600 transition-colors"><Plus size={14}/></button>
                     </div>
                   </div>

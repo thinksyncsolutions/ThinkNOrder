@@ -98,7 +98,7 @@ const CreatePlaceModal = ({ isOpen, onClose, types = [], floors = [] }) => {
               <input 
                 name="capacity"
                 type="number"
-                placeholder="Pax"
+                placeholder="Max people"
                 value={form.capacity}
                 onChange={handleChange}
                 required

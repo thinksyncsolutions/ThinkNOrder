@@ -3,7 +3,7 @@ import { X, User, Mail, ShieldCheck, Building2, CheckCircle2, Search } from "luc
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBranchesThunk } from "../../redux/features/branch/branch.thunk";
 
-const roles = ["ADMIN", "MANAGER", "CASHIER", "WAITER", "KITCHEN"];
+const roles = ["MANAGER", "CASHIER","GUARD", "WAITER", "KITCHEN"];
 
 export const CreateStaffModal = ({ onClose, onCreate, editData }) => {
   const dispatch = useDispatch();
