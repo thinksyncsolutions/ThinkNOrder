@@ -107,7 +107,6 @@ exports.createBranch = async (req, res) => {
 
   } catch (err) {
     await session.abortTransaction();
-    console.log("Branch creation error:", err); // Debug log
     res.status(400).json({
       message: err.message
     });

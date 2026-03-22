@@ -22,6 +22,7 @@ const branchSlice = createSlice({
                 state.branches.push(action.payload);
             })
             .addCase(createBranchThunk.rejected, (state, action) => {
+                console.log("Create Branch Error in Slice:", action); // Debug log
                 state.loading = false;
                 state.error = action.payload || "Failed to create branch";
             })

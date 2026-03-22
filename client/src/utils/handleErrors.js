@@ -5,7 +5,6 @@ import {useDispatch} from "react-redux"
 let isLoggingOut = false;
 
 export const handleAxiosError = (error, thunkAPI) => {
-  const dispatch = useDispatch();
   console.log("Axios error:", error);
   const timestamp = Date.now();
 
