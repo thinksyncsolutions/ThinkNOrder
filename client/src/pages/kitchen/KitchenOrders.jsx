@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { CheckCircle2, Clock, UtensilsCrossed, AlertCircle, ChefHat } from "lucide-react";
@@ -10,6 +10,16 @@ export default function KitchenOrders() {
   const dispatch = useDispatch();
   const { kitchenOrders: allOrders, loading } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.auth);
+
+  // 1. Initialize the notification sound
+  // Place a file named 'notification.mp3' in your /public folder
+  const notificationSound = useRef(new Audio("/notification.mp3"));
+
+  const playNotification = () => {
+    notificationSound.current.play().catch(err => {
+      console.log("Audio play blocked: Browser requires user interaction first.");
+    });
+  };
 
   const sortOrdersByPriorityAndTime = (orders) => {
     const statusPriority = {
@@ -41,7 +51,14 @@ export default function KitchenOrders() {
 
     const socket = io(socketURL);
     socket.on("connect", () => socket.emit("joinRoom", user.restaurantId, user.branchId));
-    socket.on("newOrder", () => dispatch(fetchOrdersForKitchen()));
+    // socket.on("newOrder", () => dispatch(fetchOrdersForKitchen()));
+
+    // 2. Play sound when a new order arrives
+    socket.on("newOrder", () => {
+      playNotification(); // <--- Play sound here
+      dispatch(fetchOrdersForKitchen());
+    });
+
     socket.on("orderStatusChanged", () => dispatch(fetchOrdersForKitchen()));
 
     return () => { socket.disconnect(); };
@@ -85,7 +102,20 @@ export default function KitchenOrders() {
           </p>
         </div>
         
+        {/* <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
+             <ChefHat size={20} className="text-orange-500" />
+             <span className="text-sm font-black uppercase tracking-widest">
+               Orders: {sortedOrders.filter(o => !['served', 'cancelled'].includes(o.status.toLowerCase())).length}
+             </span>
+          </div>
+        </div> */}
+
         <div className="flex items-center gap-4">
+           {/* Visual clue that sound is active */}
+           <div className="text-[10px] font-bold text-orange-400 uppercase tracking-widest animate-pulse">
+             Audio Alerts Active
+           </div>
           <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
              <ChefHat size={20} className="text-orange-500" />
              <span className="text-sm font-black uppercase tracking-widest">
