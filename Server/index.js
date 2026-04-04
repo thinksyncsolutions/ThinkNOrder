@@ -1,82 +1,33 @@
 const express = require("express");
-const app = express();
-require("dotenv").config();
+const http = require("http");
+const { initSocket } = require("./socket/socket"); // Import our new helper
+const connectDB = require("./db/db");
 const startPingJob = require("./helpers/pingServer");
-
-// Connect to DB
-const connectDB = require("./db/db.js");
-connectDB();
-
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const http = require("http");
-const socketIO = require("socket.io");
-const server = http.createServer(app); // Attach Express to HTTP server
+require("dotenv").config();
+
+const app = express();
+const server = http.createServer(app);
+
+// Connect DB
+connectDB();
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: "*" }));
 
-app.use(
-  cors({
-    origin: "*",  
-  })
-);
-
-// Initialize Socket.IO
-const io = socketIO(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
-
-// Attach Socket.IO to app so it can be accessed in controllers
+// 🔥 Initialize Socket.io
+const io = initSocket(server);
 app.set("io", io);
 
-// Socket.IO connection
-io.on("connection", (socket) => {
-  console.log("New client connected", socket.id);
-
-  // Join room for a specific restaurant (called from frontend on login)
-  socket.on("joinRoom", (restaurantId, branchId) => {
-    const roomName = `restaurant:${restaurantId}:branch:${branchId}`;
-    socket.join(roomName);
-  });
-
-
-  // 🔔 CALL WAITER EVENT
-  socket.on("callWaiter", (data) => {
-
-  const { restaurantId, branchId, floorName, tableNumber, tableType } = data;
-  console.log("Received callWaiter event:", data);
-
-  const roomName = `restaurant:${restaurantId}:branch:${branchId}`;
-
-  io.to(roomName).emit("waiterCalled", {
-    floorName,
-    tableNumber,
-    tableType,
-    message: `${tableType} ${tableNumber} on ${floorName} needs waiter`,
-    time: new Date()
-  });
-
-});
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected", socket.id);
-  });
-});
-
-
-// Start cron
+// Routes & Cron
 startPingJob();
-
 app.get("/", (req, res) => res.send("THINKNORDER is Alive!"));
-app.use("/api", require("./routes")); // 🔥 ONLY THIS
+app.use("/api", require("./routes"));
 
-// Start server (ONLY this)
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`THINKNORDER is running on port ${port}`);

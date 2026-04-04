@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { getIO } = require("../../socket/socket"); // Import the helpe
 const Order = require("../../db/models/Order"); // adjust the path as needed
 const Item = require("../../db/models/Item"); // to get item details
 const OrderSession = require("../../db/models/OrderSession"); // adjust the path as needed
@@ -8,6 +9,7 @@ const Customer = require("../../db/models/Customer"); // to get customer details
 const Counter = require("../../db/models/Counter"); // for order number generation
 const Place = require("../../db/models/Place"); // to update place status
 
+// Helper for rooms
 const getBranchRoom = (restaurantId, branchId) => `restaurant:${restaurantId}:branch:${branchId}`;
 
 exports.createOrder = async (req, res) => {
@@ -106,7 +108,7 @@ const orderNumber = counter.orderCounter;
     await session.save();
 
     // 🔥 Emit only to THAT branch
-    const io = req.app.get("io");
+    const io = getIO();
     io.to(getBranchRoom(restaurantId, branchId))
       .emit("newOrder", order);
 
@@ -207,7 +209,7 @@ exports.changeOrderStatus = async (req, res) => {
     await order.save();
 
     // 🔥 Emit only to THAT branch
-    const io = req.app.get("io");
+    const io = getIO();
 
     const roomName = getBranchRoom(restaurantId, branchId);
 
