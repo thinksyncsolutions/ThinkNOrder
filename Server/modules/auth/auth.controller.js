@@ -174,7 +174,8 @@ const selectedBranch =
       {
         id: user._id,
         role: user.role,
-        restaurantId: user.restaurantId,
+        restaurantId: user.restaurantId?._id || null,
+        restaurantName: user.restaurantId?.name || null,
         branchId: selectedBranch || user.branchId || user.branchId?._id || user.selectedBranch?._id || null, // null if multiple
         branchName: selectedBranch?.name || null
       },
@@ -192,7 +193,8 @@ const selectedBranch =
         id: user._id,
         name: user.name,
         role: user.role,
-        restaurantId: user.restaurantId,
+        restaurantId: user.restaurantId?._id || null,
+        restaurantName: user.restaurantId?.name || null,
         branchId: selectedBranch ? selectedBranch._id : null,
         branchName: selectedBranch?.name || null,
       }
