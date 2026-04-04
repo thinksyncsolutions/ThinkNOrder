@@ -114,7 +114,7 @@ export default function KitchenOrders() {
         <div className="flex items-center gap-4">
            {/* Visual clue that sound is active */}
            <div className="text-[10px] font-bold text-orange-400 uppercase tracking-widest animate-pulse">
-             Audio Alerts Active
+             Audio Alert Active
            </div>
           <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
              <ChefHat size={20} className="text-orange-500" />
