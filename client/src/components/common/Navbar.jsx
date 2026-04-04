@@ -36,7 +36,7 @@ const Navbar = ({ role, user }) => {
     </div>
     {/* This dynamic line shows the actual Restaurant Name */}
     <span className="text-[11px] uppercase tracking-wider text-orange-400 font-black mt-1 bg-orange-900/30 px-2 py-0.5 rounded">
-      {user?.restaurantId?.name || "By ThinkSync"}
+      {user?.restaurantName || "By ThinkSync"}
     </span>
   </div>
 </div>
