@@ -114,7 +114,7 @@ const Navbar = ({ role, user }) => {
                  onClick={() => { dispatch(clearBranch()); setMobileOpen(false); }} 
                  className="flex items-center gap-4 p-4 text-orange-400 font-bold uppercase tracking-wider text-sm hover:text-orange-200 transition-colors"
                >
-                 <Building2 size={20} /> Switch Branch
+                 <Building2 size={20} /> {user?.branchName || "Select Branch"}
                </button>
                <button 
                  onClick={() => setShowLogoutConfirm(true)} 
