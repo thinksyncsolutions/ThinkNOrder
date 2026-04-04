@@ -117,7 +117,7 @@ const Orders = () => {
               const isRunning = !!runningTableMap[place._id];
 
               return (
-                <Link to={`/manager/table/${place._id}`} key={place._id} className="group">
+                <Link to={`/manager/table/${place._id}`} state={{place}} key={place._id} className="group">
                   <div className={`
                     relative overflow-hidden rounded-3xl p-6 transition-all duration-300
                     ${isRunning 

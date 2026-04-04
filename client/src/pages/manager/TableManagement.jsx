@@ -1,12 +1,19 @@
 import React, { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import Menu from "./Menu";
 import BillManagement from "./BillManagement";
 import { ChevronLeft, ChevronRight } from "lucide-react"; // Optional: Icons for the arrow
 import { addToCart, removeFromCart } from "../../utils/cartUtils";
 
-const TableManagement = ({ placeId }) => {
+const TableManagement = () => {
+  const { tableId } = useParams(); // from URL
+  const location = useLocation();
+  const placeDetails = location.state?.place; // Catch the place object passed from Orders.jsx
+
   const [tableCart, setTableCart] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true); // New state for full-screen toggle
+
+  console.log(placeDetails) 
 
  const handleAddToTableCart = (item) => {
   setTableCart((prev) =>
@@ -63,7 +70,8 @@ const handleRemoveFromTableCart = (itemId, label) => {
 
         <BillManagement
           tableCart={tableCart}
-          placeId={placeId}
+          placeId={tableId}
+          placeDetails={placeDetails} // Pass the full object here
           addToTableCart={handleAddToTableCart}
           removeFromTableCart={handleRemoveFromTableCart}
           clearTableCart={handleClearCart}

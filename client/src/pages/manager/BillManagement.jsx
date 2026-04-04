@@ -30,6 +30,7 @@ const BillManagement = ({
   addToTableCart,
   removeFromTableCart,
   clearTableCart,
+  placeDetails,
 }) => {
   const { tableId } = useParams();
   const dispatch = useDispatch();
@@ -132,13 +133,23 @@ const handleSettleAndPrint = async () => {
   return (
     <div className="h-full flex flex-col bg-white border-l border-orange-100 overflow-hidden">
       {/* SCREEN HEADER */}
-      <header className="px-4 py-2 bg-orange-950 text-white no-print">
+     <header className="px-4 py-3 bg-orange-950 text-white no-print">
         <div className="flex justify-between items-center">
           <div>
-            <p className="text-2xl font-black italic uppercase tracking-tighter">Table {tableOrders[0]?.table || "..."}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-2xl font-black italic uppercase tracking-tighter">
+                Table {placeDetails?.number || "..."}
+              </p>
+              <span className="text-[10px] bg-orange-600 px-2 py-0.5 rounded-full font-bold uppercase">
+                {placeDetails?.type || "Standard"}
+              </span>
+            </div>
+            <p className="text-[9px] font-bold text-orange-400 uppercase tracking-[0.2em]">
+              {placeDetails?.floor || "Main Hall"} • Capacity: {placeDetails?.capacity || 0}
+            </p>
           </div>
-          <div className="bg-orange-600 p-3 rounded-2xl shadow-lg shadow-orange-600/30">
-            <Receipt size={16} />
+          <div className="bg-orange-600 p-2.5 rounded-xl shadow-lg shadow-orange-600/30">
+            <Receipt size={18} />
           </div>
         </div>
       </header>

@@ -124,7 +124,9 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).populate("accessibleBranches", "name");
+    const user = await User.findOne({ email })
+    .populate("accessibleBranches", "name")
+    .populate("restaurantId", "name");
     if (!user) {
       await delay(500); // fake delay to avoid user enumeration
       throw new Error("Invalid credentials");
@@ -173,7 +175,8 @@ const selectedBranch =
         id: user._id,
         role: user.role,
         restaurantId: user.restaurantId,
-        branchId: selectedBranch || user.branchId || user.branchId?._id || user.selectedBranch?._id || null // null if multiple
+        branchId: selectedBranch || user.branchId || user.branchId?._id || user.selectedBranch?._id || null, // null if multiple
+        branchName: selectedBranch?.name || null
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -190,7 +193,8 @@ const selectedBranch =
         name: user.name,
         role: user.role,
         restaurantId: user.restaurantId,
-        branchId: selectedBranch ? selectedBranch._id : null
+        branchId: selectedBranch ? selectedBranch._id : null,
+        branchName: selectedBranch?.name || null,
       }
     });
 

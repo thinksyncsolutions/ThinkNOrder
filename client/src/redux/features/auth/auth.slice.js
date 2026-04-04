@@ -67,6 +67,7 @@ const authSlice = createSlice({
 
           if (state.user) {
     state.user.branchId = action.payload.branchId; // ✅ added inside user
+    state.user.branchName = action.payload.branchName; // ✅ added inside user
   }
 
         localStorage.setItem("token", action.payload.token);

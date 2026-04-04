@@ -11,6 +11,7 @@ const Navbar = ({ role, user }) => {
   const dispatch = useDispatch();
   const links = NavbarConfig[role] || [];
 
+
   const handleLogout = () => {
     dispatch(logout());
     setShowLogoutConfirm(false);
@@ -23,20 +24,22 @@ const Navbar = ({ role, user }) => {
         <div className="mx-auto flex h-20 max-w-full items-center justify-between px-6">
           
           {/* Logo Section */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-600 shadow-lg shadow-orange-600/30 ring-2 ring-orange-500/20">
-              <UtensilsCrossed size={24} className="text-white" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-xl font-black tracking-tight uppercase">
-                Think<span className="text-orange-500">N</span>Order
-              </span>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-orange-400 font-bold mt-1">
-                By ThinkSync
-              </span>
-            </div>
-          </div>
-
+<div className="flex items-center gap-3">
+  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-600 shadow-lg shadow-orange-600/30 ring-2 ring-orange-500/20">
+    <UtensilsCrossed size={24} className="text-white" />
+  </div>
+  <div className="flex flex-col leading-none">
+    <div className="flex items-baseline gap-2">
+      <span className="text-xl font-black tracking-tight uppercase">
+        Think<span className="text-orange-500">N</span>Order
+      </span>
+    </div>
+    {/* This dynamic line shows the actual Restaurant Name */}
+    <span className="text-[11px] uppercase tracking-wider text-orange-400 font-black mt-1 bg-orange-900/30 px-2 py-0.5 rounded">
+      {user?.restaurantId?.name || "By ThinkSync"}
+    </span>
+  </div>
+</div>
           {/* Desktop Navigation */}
           <nav className="hidden items-center gap-1 md:flex">
             {links.map((link) => (
@@ -63,7 +66,7 @@ const Navbar = ({ role, user }) => {
               className="group flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-orange-400 hover:text-orange-100 transition-colors"
             >
               <Building2 size={16} className="group-hover:scale-110 transition-transform" />
-              BRANCH
+              {user?.branchName || "Select Branch"}
             </button>
 
             <div className="h-6 w-[1px] bg-orange-900" />

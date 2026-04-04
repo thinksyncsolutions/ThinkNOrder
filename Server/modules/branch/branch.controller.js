@@ -16,9 +16,10 @@ exports.selectBranch = async (req, res) => {
   try {
     const { branchId } = req.body;
     console.log(branchId)
-    const userId = req.user.id; // from auth middleware
+    const userId = req.user.id;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("restaurantId", "name");
+    const branch = await Branch.findById(branchId);
 
     if (!user.accessibleBranches.includes(branchId)) {
       return res.status(403).json({ message: "Unauthorized branch" });
@@ -29,7 +30,8 @@ exports.selectBranch = async (req, res) => {
         id: user._id,
         role: user.role,
         restaurantId: user.restaurantId,
-        branchId: branchId
+        branchId: branchId,
+        branchName: branch.name
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
@@ -38,7 +40,9 @@ exports.selectBranch = async (req, res) => {
     res.json({
       message: "Branch selected",
       token,
-      branchId
+      branchId,
+      branchName: branch.name,
+      restaurantName: user.restaurantId.name
     });
 
   } catch (err) {

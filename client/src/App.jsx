@@ -10,16 +10,16 @@ function App() {
     <>
       <RouterProvider router={router} />
       <Toaster
-  position="top-right"
+  position="bottom-center"
   toastOptions={{
-    duration: 4000,
+    duration: 2000,
     style: {
       background: '#0c0a09', // Orange-950 (Black)
       color: '#fff',
       borderRadius: '1.5rem',
-      padding: '16px 24px',
+      padding: '10px 20px',
       fontSize: '12px',
-      fontWeight: '900',
+      fontWeight: '800',
       textTransform: 'uppercase',
       letterSpacing: '0.1em',
       border: '1px solid rgba(234, 88, 12, 0.2)', // Subtle Orange-600 border

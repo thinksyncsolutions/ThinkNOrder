@@ -4,6 +4,7 @@ import BillManagement from "./BillManagement";
 
 const AdminTableManagement = ({ placeId }) => {
   const [tableCart, setTableCart] = useState([]);
+  console.log(placeId);
 
   // Add item to table cart
   const handleAddToTableCart = (item) => {
