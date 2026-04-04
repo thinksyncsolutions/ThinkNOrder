@@ -5,6 +5,7 @@ import {
   createPlaceThunk,
   updatePlaceThunk,
   deletePlaceThunk,
+  updatePlaceStatusThunk,
 } from "./place.thunk";
 
 const initialState = {
@@ -62,23 +63,54 @@ const placeSlice = createSlice({
       })
       .addCase(createPlaceThunk.rejected, (state, action) => {
         state.loadingAction = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
       })
 
       /* ================= UPDATE ================= */
+
+        .addCase(updatePlaceThunk.pending, (state) => {
+        state.loadingAction = true;
+      })
       .addCase(updatePlaceThunk.fulfilled, (state, action) => {
         const index = state.places.findIndex(
           (p) => p._id === action.payload._id
         );
         if (index !== -1) state.places[index] = action.payload;
       })
+      .addCase(updatePlaceThunk.rejected, (state, action) => {
+        state.error = action.payload?.message;
+        state.loadingAction = false;
+      })
+
+      /* ================= UPDATE STATUS ================= */
+      .addCase(updatePlaceStatusThunk.pending, (state) => {
+        state.loadingAction = true;
+      })
+      .addCase(updatePlaceStatusThunk.fulfilled, (state, action) => {
+        const index = state.places.findIndex(
+          (p) => p._id === action.payload._id
+        );
+        if (index !== -1) state.places[index] = action.payload;
+      })
+      .addCase(updatePlaceStatusThunk.rejected, (state, action) => {
+        state.error = action.payload?.message;
+        state.loadingAction = false;
+      })
 
       /* ================= DELETE ================= */
+      .addCase(deletePlaceThunk.pending, (state) => {
+        state.loadingAction = true;
+      })
       .addCase(deletePlaceThunk.fulfilled, (state, action) => {
         state.places = state.places.filter(
           (p) => p._id !== action.payload
         );
-      });
+      })
+      .addCase(deletePlaceThunk.rejected, (state, action) => {
+        state.error = action.payload?.message;
+        state.loadingAction = false;
+       })
+       
   },
 });
 

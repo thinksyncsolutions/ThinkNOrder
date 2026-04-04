@@ -4,19 +4,24 @@ const { nanoid } = require("nanoid");
 
 // ➕ CREATE PLACE
 exports.createPlace = async (req, res, next) => {
+  console.log("Creating place with data:", req.body); // Debug log
   try {
     const { type, number, floor, capacity } = req.body;
     const { branchId, restaurantId } = req.user; // optional branchId
 
-    // already exist 
+    // already exist
     const existingPlace = await Place.findOne({
       restaurantId: restaurantId,
       branchId: branchId,
+      type: type,
       floor: floor,
-      number: number
+      number: number,
     });
     if (existingPlace) {
-      return res.status(400).json({ message: "Place number already exists in this branch" });
+      return res.status(400).json({
+        success: false,
+        message: "Place already exists in this branch",
+      });
     }
 
     const place = new Place({
@@ -26,12 +31,14 @@ exports.createPlace = async (req, res, next) => {
       capacity,
       branchId,
       restaurantId,
-      placeCode: nanoid(10) // Generate a unique QR code string
+      placeCode: nanoid(10), // Generate a unique QR code string
     });
     await place.save();
 
     res.status(201).json({ success: true, data: place });
+    console.log("Place created successfully:", place); // Debug log
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
@@ -44,7 +51,7 @@ exports.getPlaces = async (req, res, next) => {
 
     const filter = {
       restaurantId: req.user.restaurantId,
-      isActive: true
+      isActive: true,
     };
 
     if (branchId) filter.branchId = branchId;
@@ -52,7 +59,6 @@ exports.getPlaces = async (req, res, next) => {
     if (status) filter.status = status;
 
     const places = await Place.find(filter).sort({ floor: 1, number: 1 });
-    console.log("Fetched places:", places); // Debug log to check fetched data
 
     res.json({ success: true, data: places });
   } catch (err) {
@@ -67,7 +73,7 @@ exports.getPlaceById = async (req, res, next) => {
     const place = await Place.findOne({
       _id: req.params.id,
       restaurantId: restaurantId,
-      branchId: branchId
+      branchId: branchId,
     });
 
     if (!place) return res.status(404).json({ message: "Place not found" });
@@ -81,15 +87,14 @@ exports.getPlaceById = async (req, res, next) => {
 // ✏️ UPDATE PLACE
 exports.updatePlace = async (req, res, next) => {
   try {
-
     const place = await Place.findOneAndUpdate(
       {
         _id: req.params.id,
         restaurantId: req.user.restaurantId,
-        branchId: req.user.branchId
+        branchId: req.user.branchId,
       },
       req.body,
-      { new: true }
+      { new: true },
     );
 
     if (!place) return res.status(404).json({ message: "Place not found" });
@@ -106,7 +111,7 @@ exports.deletePlace = async (req, res, next) => {
     const { restaurantId, branchId } = req.user;
     await Place.findOneAndUpdate(
       { _id: req.params.id, restaurantId: restaurantId, branchId: branchId },
-      { isActive: false }
+      { isActive: false },
     );
 
     res.json({ success: true, message: "Place removed" });
@@ -121,9 +126,13 @@ exports.updatePlaceStatus = async (req, res, next) => {
     const { status } = req.body;
 
     const place = await Place.findOneAndUpdate(
-      { _id: req.params.id, restaurantId: req.user.restaurantId, branchId: req.user.branchId },
+      {
+        _id: req.params.id,
+        restaurantId: req.user.restaurantId,
+        branchId: req.user.branchId,
+      },
       { status },
-      { new: true }
+      { new: true },
     );
 
     if (!place) return res.status(404).json({ message: "Place not found" });
@@ -133,7 +142,6 @@ exports.updatePlaceStatus = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.getRunningTables = async (req, res) => {
   console.log("Received request to fetch running tables"); // Debug log
@@ -152,7 +160,6 @@ exports.getRunningTables = async (req, res) => {
       data: sessions,
     });
     console.log("Fetched running tables:", sessions); // Debug log
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -161,4 +168,3 @@ exports.getRunningTables = async (req, res) => {
     });
   }
 };
-

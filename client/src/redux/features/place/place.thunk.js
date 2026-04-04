@@ -27,6 +27,7 @@ export const createPlaceThunk = createAsyncThunk(
       const res = await api.post("/places", payload);
       return res.data.data;
     } catch (err) {
+      console.error("Error creating place:", err); // Debug log
       return handleAxiosError(err, thunkAPI);
     }
   }
@@ -67,11 +68,12 @@ export const deletePlaceThunk = createAsyncThunk(
 =========================== */
 export const updatePlaceStatusThunk = createAsyncThunk(
   "place/updateStatus",
-  async ({ id, status }, { rejectWithValue }) => {
+  async ({ id, status }, thunkAPI) => {
     try {
       const res = await api.patch(`/places/${id}/status`, { status });
       return res.data.data;
     } catch (err) {
+      console.error("Error updating place status:", err); // Debug log
       return handleAxiosError(err, thunkAPI);
     }
   }
