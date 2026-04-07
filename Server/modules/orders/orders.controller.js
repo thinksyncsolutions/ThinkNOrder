@@ -112,6 +112,7 @@ const orderNumber = counter.orderCounter;
     io.to(getBranchRoom(restaurantId, branchId))
       .emit("newOrder", order);
 
+
     res.status(201).json({
       message: "Order created successfully",
       order
@@ -213,12 +214,13 @@ exports.changeOrderStatus = async (req, res) => {
 
     const roomName = getBranchRoom(restaurantId, branchId);
 
-    // io.to(roomName).emit("orderStatusChanged", {
-    //   _id: order._id,
-    //   status: newStatus
-    // });
+    io.to(roomName).emit("orderStatusChanged", {
+      orderId: order._id,
+      status: order.status,
+    });
 
-    io.to(roomName).emit("orderStatusChanged", order);
+    // io.to(roomName).emit("orderStatusChanged", order);
+     console.log("✅ User joined room:", roomName);
 
     res.status(200).json({
       message: "Order status updated successfully"
