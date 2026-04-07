@@ -26,9 +26,10 @@ import CashierDashboard from "../pages/cashier/CashierDashboard";
 import KitchenDashboard from "../pages/kitchen/KitchenDashboard";
 import KitchenOrders from "../pages/kitchen/KitchenOrders";
 
-import SelectBranchScreen from "../components/SelectBranchScreen"
+import SelectBranchScreen from "../components/SelectBranchScreen";
 
 import UserPage from "../pages/user/UserPage";
+import UserOrders from "../pages/user/UserOrders";
 
 import RoleLayout from "../layouts/RoleLayout";
 import SystemUsers from "../pages/superadmin/SystemUsers";
@@ -45,6 +46,7 @@ export const router = createBrowserRouter(
         {
           path: "/:placeCode",
           element: <UserPage />,
+          children: [{ path: "/:placeCode/orders", element: <UserOrders /> }],
         },
         {
           path: "*",
@@ -155,7 +157,7 @@ export const router = createBrowserRouter(
 
         { path: "/server-error", element: <ServerOffline /> },
         { path: "*", element: <Unauthorized /> },
-      ]
+      ],
 );
 
 // export const router = createBrowserRouter([
@@ -272,6 +274,9 @@ export const router = createBrowserRouter(
 //     element: (
 //         <UserPage />
 //     ),
+//     children: [
+//       { path: "/:placeCode/orders", element: <UserOrders /> }
+//     ]
 //   },
 
 //   { path: "*", element: <Unauthorized /> },

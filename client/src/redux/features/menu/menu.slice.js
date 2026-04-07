@@ -15,6 +15,8 @@ import {
 const initialState = {
   sections: [],
   items: [],
+  sessionId: null, // For user menu context
+  orders: null, // For user menu context
   place: null, // For user menu context
   loading: false,
   error: null,
@@ -197,6 +199,8 @@ const menuSlice = createSlice({
         state.loading = false;
         state.sections = action.payload.data.menu; // sections WITH items
         state.place = action.payload.data.place; // place details for user context
+        state.sessionId = action.payload.data.sessionId; // active session if exists (for user context)
+        state.orders = action.payload.data.orders; // active orders if exists (for user context)
       })
       .addCase(fetchFullMenuForUser.rejected, (state, action) => {
         state.loading = false;

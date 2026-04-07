@@ -121,9 +121,8 @@ export const fetchFullMenuForUser = createAsyncThunk(
   "menu/getFullMenuForUser",
   async ({ placeCode }, thunkAPI) => {
     try {
-      console.log("Fetching full menu for user with placeCode:", placeCode); // Debug log
       const response = await api.get(`/menu/public/${placeCode}`);
-      console.log("Full menu for user response:", response.data); // Debug log
+      // console.log("Full menu for user response:", response.data); // Debug log
       return response.data;
     } catch (error) {
       return handleAxiosError(error, thunkAPI);
