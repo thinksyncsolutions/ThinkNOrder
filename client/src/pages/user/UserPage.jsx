@@ -63,7 +63,7 @@ const UserPage = () => {
 
     // 🔥 ORDER STATUS UPDATE
     socket.on("orderStatusChanged", (data) => {
-      console.log("🔥 Status Update:", data);
+      // console.log("🔥 Status Update:", data);
       dispatch(fetchFullMenuForUser({ placeCode })); // Refresh menu & orders
       toast.success("Your order is " + data.status, { icon: "🔔" });
     });
