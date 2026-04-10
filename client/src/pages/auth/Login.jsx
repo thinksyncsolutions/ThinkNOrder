@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginThunk } from "../../redux/features/auth/auth.thunk";
@@ -10,8 +10,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const { user, loading, error, requiresBranchSelection } = useSelector(state => state.auth);
-  const hasShownToast = useRef(false);
-  
 
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
@@ -28,18 +26,6 @@ const Login = () => {
     dispatch(loginThunk(form));
   };
 
-  // reset on page load
-useEffect(() => {
-  hasShownToast.current = false;
-}, []);
-
-// reset when user changes
-useEffect(() => {
-  if (!user) {
-    hasShownToast.current = false;
-  }
-}, [user]);
-
   useEffect(() => {
   if (error) {
     toast.error(error, {
@@ -53,35 +39,31 @@ useEffect(() => {
   }
 }, [error]);
 
-
-useEffect(() => {
-  if (user && !hasShownToast.current) {
-    hasShownToast.current = true;
-
+  useEffect(() => {
+    if (user) {
     toast.success("Identity Verified", {
-      icon: "🛡️",
+      icon: '🛡️',
       style: {
-        background: "#ea580c",
-        color: "#fff",
-      },
+        background: '#ea580c', // Switch to orange background for success
+        color: '#fff',
+      }
     });
-
-    if (requiresBranchSelection) {
-      navigate("/select-branch", { replace: true });
-    } else if (user.role) {
-      const roleRoutes = {
-        SUPERADMIN: "/superadmin",
-        OWNER: "/owner",
-        MANAGER: "/manager",
-        WAITER: "/waiter",
-        CASHIER: "/cashier",
-        KITCHEN: "/kitchen",
-      };
-
-      navigate(roleRoutes[user.role] || "/", { replace: true });
+      
+      if (requiresBranchSelection) {
+        navigate("/select-branch", { replace: true });
+      } else if (user.role) {
+        const roleRoutes = {
+          SUPERADMIN: "/superadmin",
+          OWNER: "/owner",
+          MANAGER: "/manager",
+          WAITER: "/waiter",
+          CASHIER: "/cashier",
+          KITCHEN: "/kitchen",
+        };
+        navigate(roleRoutes[user.role] || "/", { replace: true });
+      }
     }
-  }
-}, [user, requiresBranchSelection, navigate]);
+  }, [user, requiresBranchSelection, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#FFF7ED] p-6 selection:bg-orange-600 selection:text-white overflow-hidden">
