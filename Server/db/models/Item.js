@@ -29,6 +29,7 @@ const itemSchema = new mongoose.Schema({
 
   isVeg: Boolean,
   isAvailable: { type: Boolean, default: true },
+  isDeleted: { type: Boolean, default: false },
 
   preparationTime: Number // minutes
 }, { timestamps: true });

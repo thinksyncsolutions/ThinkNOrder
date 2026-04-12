@@ -69,7 +69,7 @@ exports.updateItem = async (req, res, next) => {
 
 exports.deleteItem = async (req, res, next) => {
   try {
-    await Item.findByIdAndUpdate(req.params.id, { isAvailable: false });
+    await Item.findByIdAndUpdate(req.params.id, { isDeleted: true });
     res.json({ success: true, message: "Item removed" });
   } catch (err) {
     next(err);

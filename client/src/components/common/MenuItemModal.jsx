@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Plus, Trash2, Utensils, IndianRupee, Clock, FileText, Leaf } from "lucide-react";
+import { X, Plus, Trash2, Utensils, IndianRupee, Clock, FileText, Leaf, Eye, EyeOff } from "lucide-react";
 
 const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
   const isEditing = !!initialData;
@@ -179,18 +179,35 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
             </div>
           </div>
 
-          {/* Veg Toggle Styled as a Switch */}
-          <div className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-100 transition-all">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-xl ${form.isVeg ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                <Leaf size={18} />
+          {/* Toggles Group */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Veg Toggle */}
+            <div className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-100 transition-all">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-xl ${form.isVeg ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                  <Leaf size={18} />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-orange-950">Veg Only</span>
               </div>
-              <span className="text-xs font-black uppercase tracking-widest text-orange-950">Vegetarian Dish</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="isVeg" checked={form.isVeg} onChange={handleChange} className="sr-only peer" />
+                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
+              </label>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" name="isVeg" checked={form.isVeg} onChange={handleChange} className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-            </label>
+
+            {/* Availability Toggle */}
+            <div className="flex items-center justify-between p-4 bg-orange-50/50 rounded-2xl border border-transparent hover:border-orange-100 transition-all">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-xl ${form.isAvailable ? 'bg-orange-100 text-orange-600' : 'bg-red-100 text-red-600'}`}>
+                  {form.isAvailable ? <Eye size={18} /> : <EyeOff size={18} />}
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-orange-950">In Stock</span>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="isAvailable" checked={form.isAvailable} onChange={handleChange} className="sr-only peer" />
+                <div className="w-10 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-orange-600"></div>
+              </label>
+            </div>
           </div>
 
           {/* Footer Actions */}

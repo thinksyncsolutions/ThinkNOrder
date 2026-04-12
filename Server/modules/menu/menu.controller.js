@@ -27,7 +27,7 @@ exports.getFullMenu = async (req, res, next) => {
               $match: {
                 $expr: { $eq: ["$sectionId", "$$sectionId"] },
                 restaurantId,
-                isAvailable: true,
+                isDeleted: false,
                 $or: [{ branchId: null }, { branchId }]
               }
             }
@@ -132,6 +132,7 @@ exports.getFullMenuForUser = async (req, res, next) => {
                 $expr: { $eq: ["$sectionId", "$$sectionId"] },
                 restaurantId: restaurantObjectId,
                 isAvailable: true,
+                isDeleted: false,
                 ...branchFilter
               }
             }
