@@ -17,6 +17,7 @@ import {
   UserCircle,
   MoreVertical 
 } from "lucide-react";
+import PageHeader from "../../components/common/PageHeader";
 
 const Staff = () => {
   const dispatch = useDispatch();
@@ -65,98 +66,106 @@ const Staff = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight">
-            Team <span className="text-orange-600">Directory</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
-            Manage Staff Permissions & Access
-          </p>
-        </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center justify-center gap-2 bg-black text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-orange-950/10"
-        >
-          <UserPlus size={18} strokeWidth={3} />
-          Add Staff Member
-        </button>
-      </div>
+      <PageHeader 
+        title="Team"
+        highlight="Directory"
+        subtitle="Manage Staff Permissions & Access"
+        buttonText="Add Staff Member"
+        buttonIcon={UserPlus}
+        onButtonClick={() => setShowModal(true)}
+      />
 
       {/* STAFF TABLE */}
-      <div className="bg-white rounded-[2.5rem] border border-orange-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-orange-50/50 border-b border-orange-100">
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950">Employee</th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950">Role & Access</th>
-                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-orange-50">
-              {!users || users.length === 0 ? (
-                <tr>
-                  <td colSpan="3" className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center opacity-20">
-                      <UserCircle size={48} className="mb-2" />
-                      <p className="font-black uppercase tracking-widest text-xs">No Staff Members Found</p>
-                    </div>
-                  </td>
+      {!users || users.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-orange-200 rounded-[3rem] bg-orange-50/30 animate-in fade-in zoom-in duration-500">
+          <div className="h-24 w-24 bg-white text-orange-600 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl shadow-orange-950/5 border border-orange-100">
+            <UserCircle size={44} strokeWidth={1.5} />
+          </div>
+          
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl font-black text-black uppercase italic tracking-tight">
+              Squad <span className="text-orange-600">Offline</span>
+            </h3>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] max-w-xs mx-auto">
+              No staff members have been onboarded to this branch yet.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setShowModal(true)}
+            className="mt-10 flex items-center gap-3 bg-black text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-2xl shadow-orange-950/20 active:scale-95"
+          >
+            <UserPlus size={20} strokeWidth={3} />
+            Onboard First Member
+          </button>
+        </div>
+      ) : (
+        /* ACTUAL TABLE */
+        <div className="bg-white rounded-[2.5rem] border border-orange-100 shadow-sm overflow-hidden shadow-xl shadow-orange-950/5">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-orange-50/50 border-b border-orange-100">
+                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950 text-center w-24">Initial</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950">Employee Detail</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950">Role & Status</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-orange-950 text-right">Control</th>
                 </tr>
-              ) : (
-                users.map((user) => (
+              </thead>
+              <tbody className="divide-y divide-orange-50">
+                {users.map((user) => (
                   <tr key={user._id} className="hover:bg-orange-50/30 transition-colors group">
                     <td className="px-8 py-6">
-                      <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 font-black shadow-inner">
+                       <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-200 group-hover:scale-110 transition-transform">
                           {user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-black text-black uppercase text-sm tracking-tight">{user.name}</p>
-                          <div className="flex items-center gap-1.5 text-gray-400 mt-1">
-                            <Mail size={12} />
-                            <p className="text-[11px] font-medium tracking-tighter">{user.email}</p>
-                          </div>
+                       </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <div>
+                        <p className="font-black text-black uppercase text-base tracking-tight italic">{user.name}</p>
+                        <div className="flex items-center gap-1.5 text-gray-400 mt-0.5">
+                          <Mail size={12} strokeWidth={3} className="text-orange-400" />
+                          <p className="text-[11px] font-bold tracking-widest uppercase">{user.email}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-6">
-                      <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-lg ring-4 ring-orange-50 group-hover:bg-orange-600 transition-all">
+                      <div className="flex flex-col gap-2">
+                        <span className="w-fit px-3 py-1 bg-black text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-lg">
                           {user.role}
                         </span>
-                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" title="System Access Active" />
+                        <div className="flex items-center gap-2">
+                           <div className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                           <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Active Access</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex justify-end items-center gap-3">
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex justify-end items-center gap-2">
                         <button
                           onClick={() => {
                             setEditUser(user);
                             setShowModal(true);
                           }}
-                          className="flex items-center gap-2 bg-orange-50 text-orange-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 hover:text-white transition-all active:scale-95"
+                          className="p-3 bg-white border border-orange-100 text-orange-600 rounded-xl hover:bg-orange-600 hover:text-white transition-all shadow-sm active:scale-90"
                         >
-                          <Edit3 size={14} />
-                          Modify
+                          <Edit3 size={16} strokeWidth={3} />
                         </button>
                         <button
                           onClick={() => handleDelete(user._id)}
-                          className="p-2 text-gray-300 hover:text-red-600 transition-colors"
-                          title="Revoke Access"
+                          className="p-3 bg-white border border-red-50 text-gray-300 hover:text-red-600 hover:border-red-100 rounded-xl transition-all active:scale-90"
                         >
-                          <Trash2 size={20} />
+                          <Trash2 size={16} strokeWidth={3} />
                         </button>
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
 
       {showModal && (
         <CreateStaffModal

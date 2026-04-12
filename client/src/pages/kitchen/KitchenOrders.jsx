@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import { CheckCircle2, Clock, UtensilsCrossed, AlertCircle, ChefHat } from "lucide-react";
+import { CheckCircle2, Clock, UtensilsCrossed, ChefHat } from "lucide-react";
 import { fetchOrdersForKitchen, changeOrderStatus } from "../../redux/features/order/order.thunk";
+import PageHeader from "../../components/common/PageHeader";
 
 const socketURL = import.meta.env.VITE_SOCKET_URL;
 
@@ -11,8 +12,6 @@ export default function KitchenOrders() {
   const { kitchenOrders: allOrders, loading } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.auth);
 
-  // 1. Initialize the notification sound
-  // Place a file named 'notification.mp3' in your /public folder
   const notificationSound = useRef(new Audio("/notification.mp3"));
 
   const playNotification = () => {
@@ -35,7 +34,7 @@ export default function KitchenOrders() {
       const statusA = statusPriority[a.status?.toLowerCase()] || 4;
       const statusB = statusPriority[b.status?.toLowerCase()] || 4;
       if (statusA !== statusB) return statusA - statusB;
-      return new Date(a.createdAt) - new Date(b.createdAt); // Oldest first (FIFO)
+      return new Date(a.createdAt) - new Date(b.createdAt);
     });
   };
 
@@ -51,11 +50,9 @@ export default function KitchenOrders() {
 
     const socket = io(socketURL);
     socket.on("connect", () => socket.emit("joinRoom", user.restaurantId, user.branchId));
-    // socket.on("newOrder", () => dispatch(fetchOrdersForKitchen()));
 
-    // 2. Play sound when a new order arrives
     socket.on("newOrder", () => {
-      playNotification(); // <--- Play sound here
+      playNotification();
       dispatch(fetchOrdersForKitchen());
     });
 
@@ -91,45 +88,47 @@ export default function KitchenOrders() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      {/* KDS Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight flex items-center gap-3">
-            Kitchen <span className="text-orange-600 italic underline">Live</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
-            Real-time Order Processing
-          </p>
-        </div>
-        
-        {/* <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
-             <ChefHat size={20} className="text-orange-500" />
-             <span className="text-sm font-black uppercase tracking-widest">
-               Orders: {sortedOrders.filter(o => !['served', 'cancelled'].includes(o.status.toLowerCase())).length}
-             </span>
+      
+      {/* INTEGRATED SHARED HEADER */}
+      <PageHeader 
+        title="Kitchen"
+        highlight="Live"
+        subtitle="Real-time Order Processing"
+        extraPill={
+          <div className="flex items-center gap-4">
+             <div className="text-[10px] font-bold text-orange-400 uppercase tracking-widest animate-pulse">
+               Audio Alert Active
+             </div>
+             <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
+                <ChefHat size={20} className="text-orange-500" />
+                <span className="text-sm font-black uppercase tracking-widest">
+                  Orders: {sortedOrders.filter(o => !['served', 'cancelled'].includes(o.status.toLowerCase())).length}
+                </span>
+             </div>
           </div>
-        </div> */}
+        }
+      />
 
-        <div className="flex items-center gap-4">
-           {/* Visual clue that sound is active */}
-           <div className="text-[10px] font-bold text-orange-400 uppercase tracking-widest animate-pulse">
-             Audio Alert Active
-           </div>
-          <div className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl shadow-xl">
-             <ChefHat size={20} className="text-orange-500" />
-             <span className="text-sm font-black uppercase tracking-widest">
-               Orders: {sortedOrders.filter(o => !['served', 'cancelled'].includes(o.status.toLowerCase())).length}
-             </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Orders Grid */}
+      {/* ORDERS GRID OR EMPTY STATE */}
       {sortedOrders.length === 0 ? (
-        <div className="text-center py-32 bg-white rounded-[2.5rem] border-4 border-dashed border-gray-100">
-          <UtensilsCrossed size={48} className="mx-auto text-gray-200 mb-4" />
-          <h3 className="text-xl font-black text-gray-300 uppercase tracking-widest">No Active Tickets</h3>
+        <div className="flex flex-col items-center justify-center py-14 px-4 border-2 border-dashed border-orange-200 rounded-[3rem] bg-orange-50/30 animate-in fade-in zoom-in duration-500">
+          <div className="h-24 w-24 bg-white text-orange-600 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl border border-orange-100">
+            <UtensilsCrossed size={40} strokeWidth={1.5} />
+          </div>
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl font-black text-black uppercase italic tracking-tight">
+              Kitchen <span className="text-orange-600">Cleared</span>
+            </h3>
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] max-w-xs mx-auto">
+              No active tickets in the queue. Everything is served!
+            </p>
+          </div>
+          <div className="mt-10 flex items-center gap-2 bg-white px-6 py-3 rounded-2xl border border-orange-100 shadow-sm">
+            <div className="h-2 w-2 rounded-full bg-green-500 animate-ping" />
+            <span className="text-[10px] font-black text-orange-950 uppercase tracking-widest">
+              Standing by for new orders
+            </span>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

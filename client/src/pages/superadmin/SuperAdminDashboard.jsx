@@ -12,6 +12,7 @@ import {
   Plus,
   ArrowUpRight
 } from "lucide-react";
+import PageHeader from "../../components/common/PageHeader";
 
 const SuperAdminDashboard = () => {
   const platformStats = [
@@ -30,22 +31,14 @@ const SuperAdminDashboard = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight flex items-center gap-3">
-            System <span className="text-orange-600 underline">Nexus</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
-            Global Infrastructure & Client Oversight
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 bg-orange-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-700 transition-all active:scale-95 shadow-xl shadow-orange-600/20">
-            <Plus size={18} strokeWidth={3} />
-            Onboard Enterprise
-          </button>
-        </div>
-      </div>
+      <PageHeader 
+        title="System"
+        highlight="Nexus"
+        subtitle="Global Infrastructure & Client Oversight"
+        buttonText="Onboard Enterprise"
+        buttonIcon={Plus}
+        onButtonClick={() => {/* Onboarding Logic */}}
+      />
 
       {/* SYSTEM CRITICAL ALERTS (Simulated) */}
       <div className="bg-orange-50 border-2 border-orange-200 p-4 rounded-3xl flex items-center justify-between">

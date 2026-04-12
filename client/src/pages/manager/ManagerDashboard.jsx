@@ -12,9 +12,13 @@ import {
 } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardSummary } from "../../redux/features/dashboard/dashboard.thunk";
+import PageHeader from "../../components/common/PageHeader";
+import { useNavigate } from "react-router-dom";
+
 
 const ManagerDashboard = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {user} = useSelector((state) => state.auth);
   const {summary, loading, error} = useSelector((state) => state.dashboard);
@@ -59,26 +63,21 @@ const ManagerDashboard = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight">
-            Branch <span className="text-orange-600">Analytics</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
-            ThinkNOrder Command Center
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-orange-950/10">
-            <Plus size={16} strokeWidth={3} />
-            New Order
-          </button>
-          <button className="flex items-center gap-2 bg-orange-50 text-orange-600 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-orange-100 transition-all active:scale-95">
+      {/* SHARED HEADER IMPLEMENTATION */}
+      <PageHeader 
+        title="Branch"
+        highlight="Analytics"
+        subtitle="ThinkNOrder Command Center"
+        buttonText="New Order"
+        buttonIcon={Plus}
+        onButtonClick={() => {navigate("/manager/orders")}}
+        extraPill={
+          <button className="hidden md:flex items-center gap-2 bg-orange-50 text-orange-600 px-6 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-orange-100 transition-all active:scale-95 border border-orange-100">
             <FileBarChart size={16} />
             Export Report
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* STATS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

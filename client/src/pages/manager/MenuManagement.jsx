@@ -20,6 +20,7 @@ import {
   LayoutGrid,
   ChevronRight,
 } from "lucide-react";
+import PageHeader from "../../components/common/PageHeader";
 
 const MenuManagement = () => {
   const dispatch = useDispatch();
@@ -98,23 +99,14 @@ const MenuManagement = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight">
-            Menu <span className="text-orange-600">Master</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
-            Build and Organize Your Offerings
-          </p>
-        </div>
-        <button
-          onClick={() => setShowCreateSection(true)}
-          className="flex items-center justify-center gap-2 bg-black text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all active:scale-95 shadow-xl shadow-orange-950/10"
-        >
-          <LayoutGrid size={18} strokeWidth={3} />
-          Create New Section
-        </button>
-      </div>
+      <PageHeader 
+  title="Menu"
+  highlight="Master"
+  subtitle="Build and Organize Your Offerings"
+  buttonText="Create New Section"
+  buttonIcon={LayoutGrid}
+  onButtonClick={() => setShowCreateSection(true)}
+/>
 
       {error && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 text-red-700 font-bold rounded-r-xl uppercase text-xs">
@@ -123,6 +115,24 @@ const MenuManagement = () => {
       )}
 
       {/* SECTIONS GRID */}
+      {sections.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-18 px-4 border-2 border-dashed border-orange-200 rounded-[3rem] bg-orange-50/30">
+          <div className="h-20 w-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-6">
+            <Utensils size={40} strokeWidth={1.5} />
+          </div>
+          <h3 className="text-2xl font-black text-orange-950 uppercase italic">No Menu Found</h3>
+          <p className="text-gray-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-2 mb-8 text-center">
+            Your digital menu hasn't been configured yet.
+          </p>
+          <button
+            onClick={() => setShowCreateSection(true)}
+            className="flex items-center gap-3 bg-orange-600 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-sm hover:bg-black transition-all shadow-2xl shadow-orange-600/20 active:scale-95"
+          >
+            <Plus size={20} strokeWidth={3} />
+            Create Your First Section
+          </button>
+        </div>
+      ) : (
       <div className="grid gap-8">
         {sections.map((section) => (
           <div
@@ -231,6 +241,7 @@ const MenuManagement = () => {
           </div>
         ))}
       </div>
+      )}
 
       {/* MODALS */}
       {(showCreateSection || editSection) && (

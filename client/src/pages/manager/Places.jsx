@@ -11,6 +11,7 @@ import {
 } from "../../redux/features/place/place.thunk";
 
 import CreatePlaceModal from "../../components/manager/CreatePlaceModal";
+import PageHeader from "../../components/common/PageHeader";
 
 const qrurl = import.meta.env.VITE_QR_BASE_URL;
 
@@ -71,32 +72,43 @@ const Places = () => {
   );
 
   return (
-    <div className="min-h-screen space-y-10">
+    <div className="space-y-10">
       {/* HEADER */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight">
-            Sitting<span className="text-orange-600"> Management</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 mt-1 uppercase tracking-widest">
-            Organize Tables & Floor Layouts
-          </p>
-        </div>
-        <button
-          onClick={() => setOpenModal(true)}
-          className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-black uppercase text-xs hover:bg-orange-600 transition-all shadow-lg active:scale-95"
-        >
-          <Plus size={18} /> Add New Place
-        </button>
-      </div>
+      {/* SHARED HEADER */}
+      <PageHeader 
+        title="Sitting"
+        highlight="Management"
+        subtitle="Organize Tables & Floor Layouts"
+        buttonText="Add New Place"
+        buttonIcon={Plus}
+        onButtonClick={() => setOpenModal(true)}
+      />
 
       {/* RENDER BY FLOOR */}
-      {Object.keys(groupedPlaces).length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-200">
-           <TableIcon size={48} className="mx-auto text-gray-300 mb-4" />
-           <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">No tables configured yet.</p>
-        </div>
-      ) : (
+{Object.keys(groupedPlaces).length === 0 ? (
+  <div className="flex flex-col items-center justify-center py-12 px-4 border-2 border-dashed border-orange-200 rounded-[3rem] bg-orange-50/30 animate-in fade-in zoom-in duration-500">
+    <div className="h-24 w-24 bg-white text-orange-600 rounded-[2rem] flex items-center justify-center mb-6 shadow-xl shadow-orange-950/5 border border-orange-100">
+      <TableIcon size={40} strokeWidth={1.5} />
+    </div>
+    
+    <div className="text-center space-y-2">
+      <h3 className="text-2xl font-black text-black uppercase italic tracking-tight">
+        Floor Map <span className="text-orange-600">Empty</span>
+      </h3>
+      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.3em] max-w-xs mx-auto">
+        You haven't configured any tables or seating areas yet.
+      </p>
+    </div>
+
+    <button
+      onClick={() => setOpenModal(true)}
+      className="mt-10 flex items-center gap-3 bg-black text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-2xl shadow-orange-950/20 active:scale-95"
+    >
+      <Plus size={20} strokeWidth={3} />
+      Initialize Floor Layout
+    </button>
+  </div>
+) : (
         Object.keys(groupedPlaces).sort().map((floor) => (
           <section key={floor} className="space-y-4">
             {/* Floor Divider */}

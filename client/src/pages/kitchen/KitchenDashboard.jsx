@@ -10,6 +10,7 @@ import {
   UtensilsCrossed,
   ArrowUpRight
 } from "lucide-react";
+import PageHeader from "../../components/common/PageHeader";
 
 const KitchenDashboard = () => {
   const kitchenStats = [
@@ -28,22 +29,15 @@ const KitchenDashboard = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black text-black uppercase tracking-tight">
-            Kitchen <span className="text-orange-600">Ops</span>
-          </h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">
-            Real-time Production Analytics
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-orange-600 transition-all shadow-xl shadow-orange-950/10">
-            <ChefHat size={16} />
-            View Live KDS
-          </button>
-        </div>
-      </div>
+      {/* SHARED HEADER IMPLEMENTATION */}
+      <PageHeader 
+        title="Kitchen"
+        highlight="Ops"
+        subtitle="Real-time Production Analytics"
+        buttonText="View Live KDS"
+        buttonIcon={ChefHat}
+        onButtonClick={() => {/* Navigate to KDS logic */}}
+      />
 
       {/* OPERATIONAL STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

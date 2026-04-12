@@ -199,6 +199,7 @@ exports.changeOrderStatus = async (req, res) => {
       restaurantId,
       branchId
     });
+    console.log("Order found for status change:", order); // Debug log
 
     if (!order) {
       return res.status(404).json({
@@ -227,6 +228,7 @@ exports.changeOrderStatus = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       message: "Server error while changing order status"
     });
