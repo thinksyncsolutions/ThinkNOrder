@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { loginThunk } from "../../redux/features/auth/auth.thunk";
 import { Eye, EyeOff, LogIn, Pizza, ShieldCheck, Zap, Lock } from "lucide-react";
 import toast from "react-hot-toast";
+import bgVideo from "../../assets/bgvideo.mp4";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const Login = () => {
         playsInline
         className="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-40"
       >
-        <source src="/src/assets/bgvideo.mp4" type="video/mp4" />
+        <source src={bgVideo} type="video/mp4" />
       </video>
 
       {/* OVERLAY */}
