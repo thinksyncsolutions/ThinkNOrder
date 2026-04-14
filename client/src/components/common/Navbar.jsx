@@ -4,6 +4,7 @@ import { Menu, X, LogOut, Building2, UtensilsCrossed, AlertCircle } from "lucide
 import { useDispatch } from "react-redux";
 import { logout, clearBranch } from "../../redux/features/auth/auth.slice";
 import { NavbarConfig } from "./NavbarConfig";
+import ConfirmModal from "./ConfirmModal";
 
 const Navbar = ({ role, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -31,17 +32,17 @@ const Navbar = ({ role, user }) => {
   <div className="flex flex-col leading-none">
     <div className="flex items-baseline gap-2">
       <span className="text-xl font-black tracking-tight uppercase">
-        Think<span className="text-orange-500">Naa</span>Order
+        Think<span className="text-orange-500">N</span>Order
       </span>
     </div>
     {/* This dynamic line shows the actual Restaurant Name */}
-    <span className="text-[11px] uppercase tracking-wider text-orange-400 font-black mt-1 bg-orange-900/30 px-2 py-0.5 rounded">
-      {user?.restaurantId?.name || "By ThinkSync"}
+    <span className="text-[11px] text-center uppercase tracking-wider text-orange-400 font-black mt-1 bg-orange-900/30 py-0.5 rounded">
+      {user?.restaurantName || "By ThinkSync"}
     </span>
   </div>
 </div>
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-0.5 md:flex">
             {links.map((link) => (
               <NavLink
                 key={link.to}
@@ -114,7 +115,7 @@ const Navbar = ({ role, user }) => {
                  onClick={() => { dispatch(clearBranch()); setMobileOpen(false); }} 
                  className="flex items-center gap-4 p-4 text-orange-400 font-bold uppercase tracking-wider text-sm hover:text-orange-200 transition-colors"
                >
-                 <Building2 size={20} /> Switch Branch
+                 <Building2 size={20} /> {user?.branchName || "Select Branch"}
                </button>
                <button 
                  onClick={() => setShowLogoutConfirm(true)} 
@@ -126,48 +127,18 @@ const Navbar = ({ role, user }) => {
           </div>
         )}
       </header>
-
-      {/* --- CUSTOM LOGOUT MODAL --- */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-            onClick={() => setShowLogoutConfirm(false)}
-          />
           
           {/* Modal Content */}
-          <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-orange-500/30 bg-orange-950 p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-500/10 text-orange-500">
-                <AlertCircle size={40} />
-              </div>
-              
-              <h3 className="mb-2 text-xl font-black uppercase tracking-tight text-white">
-                Leaving so soon?
-              </h3>
-              <p className="mb-8 text-sm font-medium text-orange-200/60">
-                Are you sure you want to log out of the Restaurant OS?
-              </p>
-              
-              <div className="flex w-full flex-col gap-3">
-                <button
-                  onClick={handleLogout}
-                  className="w-full rounded-xl bg-orange-600 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-orange-600/20 transition-all hover:bg-orange-500 active:scale-[0.98]"
-                >
-                  Yes, Log Me Out
-                </button>
-                <button
-                  onClick={() => setShowLogoutConfirm(false)}
-                  className="w-full rounded-xl bg-orange-900/40 py-4 text-sm font-bold uppercase tracking-widest text-orange-200 transition-all hover:bg-orange-900 active:scale-[0.98]"
-                >
-                  Stay Logged In
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+<ConfirmModal
+  open={showLogoutConfirm}
+  variant="warning"
+  title="Leaving so soon?"
+  message="Are you sure you want to log out of the Restaurant?"
+  confirmText="Yes, Log Me Out"
+  cancelText="Stay Logged In"
+  onConfirm={handleLogout}
+  onCancel={() => setShowLogoutConfirm(false)}
+/>
     </>
   );
 };
