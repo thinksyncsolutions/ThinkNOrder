@@ -12,6 +12,7 @@ import {
 
 import CreatePlaceModal from "../../components/manager/CreatePlaceModal";
 import PageHeader from "../../components/common/PageHeader";
+import Loader from "../../components/common/Loader";
 
 const qrurl = import.meta.env.VITE_QR_BASE_URL;
 
@@ -66,9 +67,7 @@ const Places = () => {
   };
 
   if (loading) return (
-    <div className="flex h-96 items-center justify-center text-orange-600 font-bold animate-pulse">
-      SYNCING FLOOR MAPS...
-    </div>
+    <Loader message="Loading Floor Data..." />
   );
 
   return (

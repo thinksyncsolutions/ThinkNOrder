@@ -13,7 +13,8 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { fetchDashboardSummary } from "../../redux/features/dashboard/dashboard.thunk";
 import PageHeader from "../../components/common/PageHeader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import Loader from "../../components/common/Loader";
 
 
 const ManagerDashboard = () => {
@@ -59,6 +60,12 @@ const ManagerDashboard = () => {
       color: "bg-orange-500",
     },
   ];
+
+  if(loading) {
+    return (
+      <Loader message="Loading Dashboard..." />
+    )
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -163,13 +170,14 @@ const ManagerDashboard = () => {
                 { label: "Staff Directory", path: "/manager/staff" },
                 { label: "Billing Reports", path: "/manager/orders" },
               ].map((link, i) => (
-                <button 
+                <Link
                   key={i}
+                  to={link.path}
                   className="w-full flex justify-between items-center group/btn bg-white/5 hover:bg-orange-600 p-4 rounded-2xl transition-all duration-300"
                 >
                   <span className="text-xs font-black uppercase tracking-widest">{link.label}</span>
                   <ArrowUpRight size={18} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                </button>
+                </Link>
               ))}
             </div>
           </div>

@@ -21,6 +21,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import PageHeader from "../../components/common/PageHeader";
+import Loader from "../../components/common/Loader";
 
 const MenuManagement = () => {
   const dispatch = useDispatch();
@@ -91,9 +92,7 @@ const MenuManagement = () => {
 
   if (loading && !sections.length)
     return (
-      <div className="flex h-96 items-center justify-center">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"></div>
-      </div>
+      <Loader message="Loading Menu..." />
     );
 
   return (

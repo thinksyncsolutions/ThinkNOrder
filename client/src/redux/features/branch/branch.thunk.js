@@ -7,7 +7,6 @@ export const createBranchThunk = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const res = await api.post("/auth/create-branch", payload);
-      consol
       return res.data;
     } catch (err) {
       console.error("Create Branch Error:", err); // Debug log

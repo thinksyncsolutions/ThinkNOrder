@@ -129,7 +129,7 @@ export const CreateStaffModal = ({ onClose, onCreate, editData }) => {
                       ? 'bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-600/20' 
                       : 'bg-white border-transparent text-gray-600 hover:border-orange-200'}`}
                 >
-                  <span className="text-xs font-bold uppercase tracking-tight">{b.name}</span>
+                  <span className="text-xs font-bold uppercase tracking-tight">{b.branchCode} - {b.address}</span>
                   {branchIds.includes(b._id) && <CheckCircle2 size={16} />}
                 </div>
               ))}

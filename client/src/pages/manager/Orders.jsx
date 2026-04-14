@@ -17,6 +17,7 @@ import {
   getRunningTablesThunk,
 } from "../../redux/features/place/place.thunk";
 import PageHeader from "../../components/common/PageHeader";
+import Loader from "../../components/common/Loader";
 
 const socketURL = import.meta.env.VITE_SOCKET_URL;
 const socket = io(socketURL);
@@ -107,10 +108,7 @@ const Orders = () => {
   // 4. Loading State
   if (loadingPlaces || loadingRunningTables) {
     return (
-      <div className="flex h-96 flex-col items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"></div>
-        <p className="mt-4 font-black uppercase tracking-widest text-[10px] text-orange-950">Scanning Floors...</p>
-      </div>
+      <Loader message="Loading Floor Data..." />
     );
   }
 

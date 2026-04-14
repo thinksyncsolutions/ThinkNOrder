@@ -35,13 +35,13 @@ const Navbar = ({ role, user }) => {
       </span>
     </div>
     {/* This dynamic line shows the actual Restaurant Name */}
-    <span className="text-[11px] uppercase tracking-wider text-orange-400 font-black mt-1 bg-orange-900/30 px-2 py-0.5 rounded">
+    <span className="text-[11px] text-center uppercase tracking-wider text-orange-400 font-black mt-1 bg-orange-900/30 py-0.5 rounded">
       {user?.restaurantName || "By ThinkSync"}
     </span>
   </div>
 </div>
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-0.5 md:flex">
             {links.map((link) => (
               <NavLink
                 key={link.to}

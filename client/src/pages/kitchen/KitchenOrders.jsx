@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import { CheckCircle2, Clock, UtensilsCrossed, ChefHat } from "lucide-react";
+import { CheckCircle2, Clock, UtensilsCrossed, ChefHat, Loader } from "lucide-react";
 import { fetchOrdersForKitchen, changeOrderStatus } from "../../redux/features/order/order.thunk";
 import PageHeader from "../../components/common/PageHeader";
 
@@ -79,10 +79,7 @@ export default function KitchenOrders() {
 
   if (loading && sortedOrders.length === 0) {
     return (
-      <div className="h-[80vh] flex flex-col justify-center items-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-orange-600 border-t-transparent"></div>
-        <p className="mt-4 font-black uppercase tracking-widest text-orange-950">Syncing Kitchen...</p>
-      </div>
+     <Loader message="Loading Kitchen Orders..." />
     );
   }
 
