@@ -18,6 +18,7 @@ import { addToCart, removeFromCart } from "../../utils/cartUtils";
 import { io } from "socket.io-client";
 import UserCart from "./UserCart";
 import UserOrderCard from "./UserOrderCard";
+import Loader from "../../components/common/Loader";
 
 const socketURL = import.meta.env.VITE_SOCKET_URL;
 
@@ -150,9 +151,7 @@ const UserPage = () => {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        Loading Menu...
-      </div>
+      <Loader message="Loading Menu..." />
     );
 
   return (
