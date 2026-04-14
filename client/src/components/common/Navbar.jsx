@@ -31,7 +31,7 @@ const Navbar = ({ role, user }) => {
   <div className="flex flex-col leading-none">
     <div className="flex items-baseline gap-2">
       <span className="text-xl font-black tracking-tight uppercase">
-        Think<span className="text-orange-500">N</span>Order
+        Think<span className="text-orange-500">Naa</span>Order
       </span>
     </div>
     {/* This dynamic line shows the actual Restaurant Name */}
