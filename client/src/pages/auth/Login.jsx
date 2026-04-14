@@ -77,7 +77,7 @@ const Login = () => {
           {/* <div className="bg-orange-600 p-3 rounded-2xl shadow-xl transform group-hover:rotate-12 transition-transform duration-500">
             <Pizza className="text-white" size={28} />
           </div> */}
-          <h1 className="mt-3 lg:text-5xl text-3xl font-black text-white tracking-tighter uppercase italic">
+          <h1 className="mt-3 lg:text-5xl text-4xl font-black text-white tracking-tighter uppercase italic">
             Think<span className="text-orange-600">N</span>Order
           </h1>
         </div>
