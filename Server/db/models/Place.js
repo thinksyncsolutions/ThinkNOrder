@@ -42,9 +42,9 @@ const placeSchema = new mongoose.Schema({
   },
 
   placeCode: String,
-  isActive: { type: Boolean, default: true }
+  isDeleted: { type: Boolean, default: false }
 }, { timestamps: true });
 
-placeSchema.index({ restaurantId: 1, branchId: 1, floor: 1, type: 1, number: 1 }, { unique: true });
+placeSchema.index({ restaurantId: 1, branchId: 1, floor: 1, type: 1, number: 1, isDeleted: 1 }, { unique: true });
 
 module.exports = mongoose.model("Place", placeSchema);

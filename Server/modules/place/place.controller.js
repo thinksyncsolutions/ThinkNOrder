@@ -16,6 +16,7 @@ exports.createPlace = async (req, res, next) => {
       type: type,
       floor: floor,
       number: number,
+      isDeleted: false,
     });
     if (existingPlace) {
       return res.status(400).json({
@@ -51,7 +52,7 @@ exports.getPlaces = async (req, res, next) => {
 
     const filter = {
       restaurantId: req.user.restaurantId,
-      isActive: true,
+      isDeleted: false,
     };
 
     if (branchId) filter.branchId = branchId;
@@ -111,7 +112,7 @@ exports.deletePlace = async (req, res, next) => {
     const { restaurantId, branchId } = req.user;
     await Place.findOneAndUpdate(
       { _id: req.params.id, restaurantId: restaurantId, branchId: branchId },
-      { isActive: false },
+      { isDeleted: true },
     );
 
     res.json({ success: true, message: "Place removed" });

@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import QRCodeStyling from "qr-code-styling";
 import { Layers, Plus, Trash2, Download, Table as TableIcon } from "lucide-react";
-
 import {
   getPlacesThunk,
   deletePlaceThunk,
   updatePlaceStatusThunk,
 } from "../../redux/features/place/place.thunk";
+import Loader from "../../components/common/Loader";
 
 import CreatePlaceModal from "../../components/manager/CreatePlaceModal";
 import PageHeader from "../../components/common/PageHeader";
-import Loader from "../../components/common/Loader";
+import ConfirmModal from "../../components/common/ConfirmModal";
 
 const qrurl = import.meta.env.VITE_QR_BASE_URL;
 
@@ -20,6 +20,7 @@ const Places = () => {
   const dispatch = useDispatch();
   const { places, loading, error } = useSelector((state) => state.place);
   const [openModal, setOpenModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   useEffect(() => {
     dispatch(getPlacesThunk());
@@ -60,10 +61,11 @@ const Places = () => {
     dispatch(updatePlaceStatusThunk({ id, status }));
   };
 
-  const deletePlace = (id) => {
-    if (window.confirm("Are you sure you want to delete this Place?")) {
-      dispatch(deletePlaceThunk(id));
-    }
+  // Handlers
+  const handleFinalDelete = () => {
+    if (!deleteId) return;
+    dispatch(deletePlaceThunk(deleteId));
+    setDeleteId(null);
   };
 
   if (loading) return (
@@ -184,7 +186,7 @@ const Places = () => {
                             <Download size={14} /> Get QR
                           </button>
                           <button
-                            onClick={() => deletePlace(place._id)}
+                            onClick={() => setDeleteId(place._id)}
                             className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
                             title="Delete Table"
                           >
@@ -214,6 +216,18 @@ const Places = () => {
           "Fourth Floor",
           "Fifth Floor",
         ]}
+      />
+
+      {/* --- REUSABLE DELETE CONFIRMATION --- */}
+      <ConfirmModal
+        open={!!deleteId} // Open if deleteId has a value
+        variant="danger"
+        title="Remove this unit?"
+        message="Deleting this table/room will remove it from the floor map permanently. This cannot be undone."
+        confirmText="Delete Permanently"
+        cancelText="Keep Unit"
+        onConfirm={handleFinalDelete}
+        onCancel={() => setDeleteId(null)}
       />
     </div>
   );

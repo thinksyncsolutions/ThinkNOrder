@@ -4,6 +4,7 @@ import { Menu, X, LogOut, Building2, UtensilsCrossed, AlertCircle } from "lucide
 import { useDispatch } from "react-redux";
 import { logout, clearBranch } from "../../redux/features/auth/auth.slice";
 import { NavbarConfig } from "./NavbarConfig";
+import ConfirmModal from "./ConfirmModal";
 
 const Navbar = ({ role, user }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -126,48 +127,18 @@ const Navbar = ({ role, user }) => {
           </div>
         )}
       </header>
-
-      {/* --- CUSTOM LOGOUT MODAL --- */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-in fade-in duration-300"
-            onClick={() => setShowLogoutConfirm(false)}
-          />
           
           {/* Modal Content */}
-          <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-orange-500/30 bg-orange-950 p-8 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-500/10 text-orange-500">
-                <AlertCircle size={40} />
-              </div>
-              
-              <h3 className="mb-2 text-xl font-black uppercase tracking-tight text-white">
-                Leaving so soon?
-              </h3>
-              <p className="mb-8 text-sm font-medium text-orange-200/60">
-                Are you sure you want to log out of the Restaurant OS?
-              </p>
-              
-              <div className="flex w-full flex-col gap-3">
-                <button
-                  onClick={handleLogout}
-                  className="w-full rounded-xl bg-orange-600 py-4 text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-orange-600/20 transition-all hover:bg-orange-500 active:scale-[0.98]"
-                >
-                  Yes, Log Me Out
-                </button>
-                <button
-                  onClick={() => setShowLogoutConfirm(false)}
-                  className="w-full rounded-xl bg-orange-900/40 py-4 text-sm font-bold uppercase tracking-widest text-orange-200 transition-all hover:bg-orange-900 active:scale-[0.98]"
-                >
-                  Stay Logged In
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+<ConfirmModal
+  open={showLogoutConfirm}
+  variant="warning"
+  title="Leaving so soon?"
+  message="Are you sure you want to log out of the Restaurant?"
+  confirmText="Yes, Log Me Out"
+  cancelText="Stay Logged In"
+  onConfirm={handleLogout}
+  onCancel={() => setShowLogoutConfirm(false)}
+/>
     </>
   );
 };

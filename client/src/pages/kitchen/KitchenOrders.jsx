@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import { CheckCircle2, Clock, UtensilsCrossed, ChefHat, Loader } from "lucide-react";
+import { CheckCircle2, Clock, UtensilsCrossed, ChefHat } from "lucide-react";
 import { fetchOrdersForKitchen, changeOrderStatus } from "../../redux/features/order/order.thunk";
 import PageHeader from "../../components/common/PageHeader";
+import Loader from "../../components/common/Loader";
+
 
 const socketURL = import.meta.env.VITE_SOCKET_URL;
 
