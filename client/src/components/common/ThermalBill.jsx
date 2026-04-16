@@ -2,6 +2,9 @@ import React from "react";
 
 const ThermalBill = ({ 
   tableOrders, 
+  placeDetails,
+  branchName,
+  restaurantName,
   tableId, 
   customerName, 
   customerPhone, 
@@ -50,10 +53,10 @@ const ThermalBill = ({
       `}</style>
 
       <div className="text-center" style={{ textTransform: "uppercase" }}>
-        <h2 style={{ fontSize: "16px", fontWeight: "900", margin: "0" }}>THINKNORDER</h2>
+        <h2 style={{ fontSize: "16px", fontWeight: "900", margin: "0" }}>{branchName}</h2>
         <p style={{ fontSize: "10px", margin: "2px 0" }}>Smart Dining Experience</p>
         <div className="dashed-border" />
-        <p style={{ fontSize: "11px", fontWeight: "bold" }}>TABLE: {tableOrders[0]?.table || tableId}</p>
+        <p style={{ fontSize: "11px", fontWeight: "bold" }}>{placeDetails?.floor} - {placeDetails?.type} {placeDetails?.number}</p>
         <p style={{ fontSize: "9px" }}>{new Date().toLocaleString()}</p>
       </div>
 
@@ -104,7 +107,7 @@ const ThermalBill = ({
 </p>
         <div className="dashed-border" />
         <p>THANKS FOR DINING WITH US!</p>
-        <p style={{ fontSize: "8px" }}>thinknorder.io</p>
+        <p style={{ fontSize: "8px" }}>Bill by www.thinknorder.in</p>
       </div>
     </div>
   );

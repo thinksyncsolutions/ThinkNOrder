@@ -36,6 +36,7 @@ const BillManagement = ({
   const dispatch = useDispatch();
 
   const { tableOrders, loading, sessionClosing, error } = useSelector((state) => state.order);
+  const {branchName, restaurantName} = useSelector((state) => state.auth.user);
   const [paymentMode, setPaymentMode] = useState("Cash");
   const [isCartOpen, setIsCartOpen] = useState(false);
   
@@ -58,9 +59,9 @@ const BillManagement = ({
     if (tableId) dispatch(fetchOrdersForTable(tableId));
   }, [tableId, dispatch]);
 
-  const grandTotal = tableOrders.reduce((acc, order) => acc + order.totalAmount, 0);
-  const taxRate = 0.18;
-  const subtotal = grandTotal / (1 + taxRate);
+  const subtotal = tableOrders.reduce((acc, order) => acc + order.totalAmount, 0);
+  const taxRate = import.meta.env.VITE_TAX_RATE || 0.18;
+  const grandTotal = subtotal * (1 + taxRate);
   const tax = grandTotal - subtotal;
 
   const paymentOptions = [
@@ -296,6 +297,9 @@ const handleSettleAndPrint = async () => {
       <div id="thermal-bill-print">
   <ThermalBill
   tableOrders={billSnapshot?.tableOrders || []}
+  placeDetails={placeDetails}
+  branchName={branchName}
+  restaurantName={restaurantName}
   tableId={billSnapshot?.tableId}
   customerName={billSnapshot?.customerName}
   customerPhone={billSnapshot?.customerPhone}
