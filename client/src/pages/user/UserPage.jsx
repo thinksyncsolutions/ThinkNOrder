@@ -14,7 +14,8 @@ import {
   UtensilsCrossed,
   Star,
   ChevronDown,
-  Utensils
+  Utensils,
+  MessageCircle,
 } from "lucide-react";
 import { fetchFullMenuForUser } from "../../redux/features/menu/menu.thunk";
 import { createOrder } from "../../redux/features/order/order.thunk";
@@ -150,7 +151,7 @@ const UserPage = () => {
         <button onClick={handleCallWaiter} className="whitespace-nowrap bg-white px-5 py-2.5 rounded-full text-sm font-bold border border-orange-100 text-orange-600 shadow-sm flex items-center gap-2 active:scale-95">
           <Utensils size={14} /> Call Waiter
         </button>
-        {["Pickup", "Under 30 min", "Price"].map((filter) => (
+        {["Pickup", "Under 30 min",].map((filter) => (
           <button key={filter} className="whitespace-nowrap bg-white px-5 py-2.5 rounded-full text-sm font-medium border border-slate-100 shadow-sm">
             {filter}
           </button>
@@ -163,7 +164,7 @@ const UserPage = () => {
           <div className="relative z-10 w-3/5">
             <h2 className="text-white text-2xl font-bold leading-tight mb-1">Free delivery for spaghetti</h2>
             <p className="text-slate-400 text-xs mb-4">Up to 3 times per day</p>
-            <button className="bg-[#FFB800] text-black px-6 py-2.5 rounded-full text-xs font-black shadow-lg">
+            <button className="bg-orange-600 text-white px-6 py-2.5 rounded-full text-xs font-black shadow-lg">
               Order now
             </button>
           </div>
@@ -221,7 +222,10 @@ const UserPage = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-1">
-                                    <Clock size={12} /> 24 min • 500Km
+                                    <MessageCircle size={12} /> {item.description}
+                                </div>
+                                <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-1">
+                                    <Clock size={12} /> {item.preparationTime} mins • 500Km
                                 </div>
                                 <div className="flex justify-between items-end mt-3">
                                     <span className="text-lg font-black">${item.prices[0].price}</span>
