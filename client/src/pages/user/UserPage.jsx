@@ -26,8 +26,9 @@ import UserCart from "./UserCart";
 import UserOrderCard from "./UserOrderCard";
 import Loader from "../../components/common/Loader";
 import VariantModal from "./VariantModal";
-import UserNavbar from "./UserNavbar";
-import UserHeader from "./UserHeader";
+import UserNavbar from "./UserFloatingBar";
+import UserHeader from "./UserNavbar";
+import BannerCarousel from "./Banners";
 
 const socketURL = import.meta.env.VITE_SOCKET_URL;
 
@@ -159,22 +160,7 @@ const UserPage = () => {
       </div>
 
       {/* 3. PROMO BANNER */}
-      <section className="px-6 py-4">
-        <div className="bg-[#212121] rounded-[2.5rem] p-8 relative overflow-hidden h-52 flex flex-col justify-center">
-          <div className="relative z-10 w-3/5">
-            <h2 className="text-white text-2xl font-bold leading-tight mb-1">Free delivery for spaghetti</h2>
-            <p className="text-slate-400 text-xs mb-4">Up to 3 times per day</p>
-            <button className="bg-orange-600 text-white px-6 py-2.5 rounded-full text-xs font-black shadow-lg">
-              Order now
-            </button>
-          </div>
-          <img 
-            src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=1000&auto=format&fit=crop" 
-            alt="promo" 
-            className="absolute -right-8 -bottom-8 w-60 h-60 object-cover rounded-full rotate-12"
-          />
-        </div>
-      </section>
+      <BannerCarousel />
 
       {/* 4. CIRCULAR CATEGORIES (RESTORED SCROLL LOGIC) */}
       <section className="px-6 py-6 overflow-x-auto no-scrollbar">

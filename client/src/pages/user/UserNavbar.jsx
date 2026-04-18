@@ -1,59 +1,63 @@
 import React from "react";
-import { Home, ShoppingBag, Search, UtensilsCrossed, User } from "lucide-react";
+import { Search, MapPin, ChevronDown, ShoppingCart } from "lucide-react";
 
-const UserNavbar = ({ activeTab, setActiveTab, setIsCartOpen, cartCount }) => {
+const UserNavbar = ({ place, cartCount, onOpenCart }) => {
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-50">
-      <nav className="bg-orange-600 rounded-full p-2 flex items-center justify-between shadow-2xl">
-        {/* Home Tab */}
-        <button
-          onClick={() => setActiveTab("home")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300 ${
-            activeTab === "home" ? "bg-black text-white shadow-lg" : "text-black"
-          }`}
-        >
-          <Home size={20} />
-          {activeTab === "home" && <span className="text-sm font-bold">Home</span>}
-        </button>
+    <header className="px-6 py-2 flex items-center justify-between sticky top-0 bg-[#F8F5F2]/80 backdrop-blur-md z-40">
+      {/* Search Trigger */}
+      
+      <div className="flex items-center gap-4">
+      <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-50 flex items-center justify-center shrink-0">
+              {place?.restaurantLogo ? (
+                   <img src={place.restaurantLogo} alt="logo" className="w-full h-full object-cover" />
+                 ) : (
+                   <span className="text-lg font-black text-slate-500">
+                     {place?.restaurantName?.charAt(0) || "R"}
+                   </span>
+                 )}
+               </div>
+               <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-50 active:scale-90 transition-transform">
+        <Search size={20} className="text-slate-400" />
+      </button>
+      </div>
 
-        <div className="flex flex-1 justify-around px-2">
-          {/* Cart Trigger */}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="p-2 text-white relative active:scale-90 transition-transform"
+      {/* Location / Branch Info */}
+      <div className="text-center px-2 min-w-0">
+        {/* <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold truncate">
+          Location
+        </p> */}
+        <div className="flex items-center gap-2 justify-center">
+          <MapPin size={16} className="text-orange-500 shrink-0" />
+          <span className="text-sm font-black text-orange-950 uppercase truncate max-w-[140px]">
+            {place?.branchName || "Unknown Branch"}
+          </span>
+          {/* online red dot and green dot for open and closed branches respectively */}
+          <span
+            className={`flex items-center gap-1 text-[9px] font-black px-2 py-[2px] rounded-full ${place?.isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
           >
-            <ShoppingBag size={22} />
-            {cartCount > 0 && (
-              <span className="absolute top-1 right-0 bg-black text-[#FFB800] text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-[#FFB800]">
-                {cartCount}
-              </span>
-            )}
-          </button>
-
-          {/* Search (Placeholder logic) */}
-          <button className="p-2 text-white active:scale-90 transition-transform">
-            <Search size={22} />
-          </button>
-
-          {/* Orders Tab */}
-          <button
-            onClick={() => setActiveTab("orders")}
-            className={`p-2 transition-all duration-300 active:scale-90 ${
-              activeTab === "orders" ? "text-black scale-110" : "text-white"
-            }`}
-          >
-            <UtensilsCrossed size={22} />
-          </button>
-
-          {/* Profile/User (Placeholder) */}
-          <button className="p-2 text-white active:scale-90 transition-transform">
-            <User size={22} />
-          </button>
+            <span
+              className={`w-2 h-2 rounded-full ${place?.isOpen ? "bg-green-500 animate-pulse" : "bg-red-500"}`}
+            />
+            {place?.isOpen ? "OPEN" : "CLOSED"}
+          </span>
+          {/* <ChevronDown size={14} className="text-slate-400" /> */}
         </div>
-      </nav>
-    </div>
+      </div>
+
+      {/* Shopping Cart Trigger */}
+      <button
+        onClick={onOpenCart}
+        className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100 relative active:scale-90 transition-transform"
+      >
+        <ShoppingCart size={20} className="text-slate-600" />
+        {cartCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-black text-[#FFB800] text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black border-2 border-[#F8F5F2]">
+            {cartCount}
+          </span>
+        )}
+      </button>
+    </header>
   );
 };
 
 export default UserNavbar;
-
