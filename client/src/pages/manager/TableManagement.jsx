@@ -13,8 +13,6 @@ const TableManagement = () => {
   const [tableCart, setTableCart] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true); // New state for full-screen toggle
 
-  console.log(placeDetails) 
-
  const handleAddToTableCart = (item) => {
   setTableCart((prev) =>
     addToCart(

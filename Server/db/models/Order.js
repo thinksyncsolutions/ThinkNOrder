@@ -49,11 +49,6 @@ const orderSchema = new mongoose.Schema({
       selectedSize: { type: String, required: true },
       quantity: { type: Number, required: true, min: 1 },
       price: { type: Number, required: true, min: 0 },
-//       status: {
-//  type: String,
-//  enum: ["Pending","Preparing","Ready","Served"],
-//  default: "Pending"
-// }
     }
   ],
 

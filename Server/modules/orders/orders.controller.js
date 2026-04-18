@@ -281,25 +281,16 @@ exports.getOrdersForTable = async (req, res) => {
 };
 
 exports.closeSession = async (req, res) => {
-  console.log("Close Session Request Body:", req.body); // Debug log
-  console.log(req.user);
   try {
     const { restaurantId, branchId } = req.user;
     const { placeId, paymentMode, customerName, customerPhone } = req.body;
 
-    if (!customerPhone) {
-      return res.status(400).json({
-        message: "Customer phone number is required"
-      });
+    // 1. Validation
+    if (!customerPhone || !/^[6-9]\d{9}$/.test(customerPhone)) {
+      return res.status(400).json({ message: "Valid 10-digit phone number is required" });
     }
 
-    if (!/^[6-9]\d{9}$/.test(customerPhone)) {
-      return res.status(400).json({
-        message: "Invalid phone number"
-      });
-    }
-
-
+    // 2. Find Active Session
     const session = await OrderSession.findOne({
       placeId,
       restaurantId,
@@ -311,6 +302,7 @@ exports.closeSession = async (req, res) => {
       return res.status(404).json({ message: "No open session found" });
     }
 
+    // 3. Get all Served orders
     const orders = await Order.find({
       orderSessionId: session._id,
       status: "Served",
@@ -318,66 +310,160 @@ exports.closeSession = async (req, res) => {
       branchId
     });
 
-    const billAmount = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+    // --- CALCULATION LOGIC (THE FIX) ---
+    const subtotal = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+    const taxRate = 0.18; // You can also fetch this from branch settings later
+    const tax = subtotal * taxRate;
+    const finalBillAmount = subtotal + tax;
+    // ------------------------------------
 
-    let customer = null;
+    // 4. Handle Customer Logic
+    let customer = await Customer.findOne({ restaurantId, branchId, phone: customerPhone });
 
-    // 🔹 Create or update customer
-    if (customerPhone) {
-      customer = await Customer.findOne({
+    if (!customer) {
+      customer = await Customer.create({
         restaurantId,
         branchId,
-        phone: customerPhone
+        phone: customerPhone,
+        name: customerName || null,
+        totalOrders: 1,
+        totalSpent: finalBillAmount,
       });
-
-      if (!customer) {
-        customer = await Customer.create({
-          restaurantId,
-          branchId,
-          phone: customerPhone,
-          name: customerName || null,
-          totalOrders: 1,
-          totalSpent: billAmount,
-        });
-      } else {
-        customer.totalOrders += 1;
-        customer.totalSpent += billAmount;
-        customer.lastVisit = new Date();
-
-        if (customerName && !customer.name) {
-          customer.name = customerName;
-        }
-
-        await customer.save();
-      }
-
-      // attach customer to session
-      session.customerId = customer._id;
+    } else {
+      customer.totalOrders += 1;
+      customer.totalSpent += finalBillAmount;
+      customer.lastVisit = new Date();
+      if (customerName && !customer.name) customer.name = customerName;
+      await customer.save();
     }
 
-    session.billAmount = billAmount;
+    // 5. Update Session with separate Subtotal, Tax, and BillAmount
+    session.customerId = customer._id;
+    session.subtotal = subtotal;   // Added
+    session.tax = tax;             // Added
+    session.billAmount = finalBillAmount; 
     session.isClosed = true;
     session.endedAt = new Date();
-    session.paid = true;
+    session.paid = paymentMode !== "Pay Later";
     session.paymentMode = paymentMode;
 
     await session.save();
 
-      await Place.findOneAndUpdate(
-    { _id: placeId, restaurantId, branchId },
-    { status: "AVAILABLE" }
-  );
+    // 6. Reset Table Status
+    await Place.findOneAndUpdate(
+      { _id: placeId, restaurantId, branchId },
+      { status: "AVAILABLE" }
+    );
 
     res.status(200).json({
-      message: "Session closed",
+      message: "Session closed successfully",
       session,
       customer
     });
 
   } catch (err) {
+    console.error("Close Session Error:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
+// exports.closeSession = async (req, res) => {
+//   console.log("Close Session Request Body:", req.body); // Debug log
+//   console.log(req.user);
+//   try {
+//     const { restaurantId, branchId } = req.user;
+//     const { placeId, paymentMode, customerName, customerPhone } = req.body;
+
+//     if (!customerPhone) {
+//       return res.status(400).json({
+//         message: "Customer phone number is required"
+//       });
+//     }
+
+//     if (!/^[6-9]\d{9}$/.test(customerPhone)) {
+//       return res.status(400).json({
+//         message: "Invalid phone number"
+//       });
+//     }
+
+//     const session = await OrderSession.findOne({
+//       placeId,
+//       restaurantId,
+//       branchId,
+//       isClosed: false
+//     });
+
+//     if (!session) {
+//       return res.status(404).json({ message: "No open session found" });
+//     }
+
+//     const orders = await Order.find({
+//       orderSessionId: session._id,
+//       status: "Served",
+//       restaurantId,
+//       branchId
+//     });
+
+//     const billAmount = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+
+//     let customer = null;
+
+//     // 🔹 Create or update customer
+//     if (customerPhone) {
+//       customer = await Customer.findOne({
+//         restaurantId,
+//         branchId,
+//         phone: customerPhone
+//       });
+
+//       if (!customer) {
+//         customer = await Customer.create({
+//           restaurantId,
+//           branchId,
+//           phone: customerPhone,
+//           name: customerName || null,
+//           totalOrders: 1,
+//           totalSpent: billAmount,
+//         });
+//       } else {
+//         customer.totalOrders += 1;
+//         customer.totalSpent += billAmount;
+//         customer.lastVisit = new Date();
+
+//         if (customerName && !customer.name) {
+//           customer.name = customerName;
+//         }
+
+//         await customer.save();
+//       }
+
+//       // attach customer to session
+//       session.customerId = customer._id;
+//     }
+
+//     session.billAmount = billAmount;
+//     session.isClosed = true;
+//     session.endedAt = new Date();
+//     session.paid = true;
+//     session.paymentMode = paymentMode;
+
+//     await session.save();
+
+//       await Place.findOneAndUpdate(
+//     { _id: placeId, restaurantId, branchId },
+//     { status: "AVAILABLE" }
+//   );
+
+//     res.status(200).json({
+//       message: "Session closed",
+//       session,
+//       customer
+//     });
+
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 
 // exports.closeSession = async (req, res) => {
 //   try {

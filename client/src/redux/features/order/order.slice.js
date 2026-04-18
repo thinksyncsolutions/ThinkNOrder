@@ -13,6 +13,7 @@ import {
 const initialState = {
   tableOrders: [],
   kitchenOrders: [],
+  lastSettledBill: null,
   loading: false,
   sessionClosing: false,
   error: null,
@@ -107,8 +108,9 @@ const handleCreateOrder = (state, action) => {
     .addCase(closeSession.pending, (state) => {
       state.sessionClosing = true;
     })
-    .addCase(closeSession.fulfilled, (state) => {
+    .addCase(closeSession.fulfilled, (state, action) => {
       state.sessionClosing = false;
+      state.lastSettledBill = action.payload.session;
       state.tableOrders = [];
     })
     .addCase(closeSession.rejected, (state, action) => {
@@ -133,91 +135,6 @@ const handleCreateOrder = (state, action) => {
       state.error = action.payload;
     });
 }
-//   extraReducers: (builder) => {
-//     // 🔥 FETCH TABLE ORDERS
-//     builder
-//       .addCase(fetchOrdersForTable.pending, (state) => {
-//         state.loading = true;
-//         state.error = null;
-//       })
-//       .addCase(fetchOrdersForTable.fulfilled, (state, action) => {
-//         state.loading = false;
-//         state.tableOrders = action.payload;
-//       })
-//       .addCase(fetchOrdersForTable.rejected, (state, action) => {
-//         state.loading = false;
-//         state.error = action.payload;
-//         state.tableOrders = [];
-//       });
-
-//     // 🔥 CREATE ORDER
-//     builder
-// .addCase(fetchOrdersForTable.pending, (state) => {
-//       state.loading = true;
-//       state.error = null;
-//     })
-//     .addCase(createOrder.fulfilled, (state, action) => {
-//       if (action.payload) {
-//         state.tableOrders.push(action.payload);
-//       }
-//     });
-
-//     // 🔥 CHANGE STATUS
-//     builder.addCase(changeOrderStatus.fulfilled, (state, action) => {
-//       const { orderId, newStatus } = action.payload;
-
-//       const order = state.tableOrders.find((o) => o._id === orderId);
-
-//       if (order) {
-//         order.status = newStatus;
-//       }
-//     });
-
-//     // create order by admin itself
-//     builder
-//     .addCase(createOrderByAdminItself.pending, (state) => {
-//       state.loading = true;
-//       state.error = null;
-//     })
-//     .addCase(createOrderByAdminItself.fulfilled, (state, action) => {
-//       if (action.payload) {
-//         state.tableOrders.push(action.payload);
-//       }
-//     })
-//     .addCase(createOrderByAdminItself.rejected, (state, action) => {
-//       state.loading = false;
-//       state.error = action.payload;
-//     });
-
-//     // 🔥 CLOSE SESSION
-//     builder
-//       .addCase(closeSession.pending, (state) => {
-//         state.sessionClosing = true;
-//       })
-//       .addCase(closeSession.fulfilled, (state) => {
-//         state.sessionClosing = false;
-//         state.tableOrders = []; // clear after settlement
-//       })
-//       .addCase(closeSession.rejected, (state, action) => {
-//         state.sessionClosing = false;
-//         state.error = action.payload;
-//       });
-//       // 🔥 FETCH KITCHEN ORDERS
-// builder
-//   .addCase(fetchOrdersForKitchen.pending, (state) => {
-//     state.loading = true;
-//     state.error = null;
-//   })
-//   .addCase(fetchOrdersForKitchen.fulfilled, (state, action) => {
-//     state.loading = false;
-//     state.kitchenOrders = action.payload;
-//   })
-//   .addCase(fetchOrdersForKitchen.rejected, (state, action) => {
-//     state.loading = false;
-//     state.error = action.payload;
-//   });
-      
-//   },
 });
 
 export const { clearTableOrders } = orderSlice.actions;
