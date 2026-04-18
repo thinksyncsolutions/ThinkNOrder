@@ -185,7 +185,7 @@ const UserPage = () => {
                 className="flex flex-col items-center gap-3 shrink-0 group"
             >
               <div className="w-16 h-16 bg-white rounded-full p-2 shadow-md border border-slate-50 flex items-center justify-center overflow-hidden group-active:scale-90 transition-transform">
-                <img src={section.image || "https://cdn-icons-png.flaticon.com/512/3075/3075977.png"} className="w-10 h-10 object-contain" alt={section.name} />
+                <img src={section.image || "https://cdn-icons-png.flaticon.com/512/3075/3075977.png"} className="w-10 h-10 object-contain rounded-full" alt={section.name} />
               </div>
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">{section.name}</span>
             </button>
@@ -210,7 +210,7 @@ const UserPage = () => {
                     return (
                         <div key={item._id} className="bg-white rounded-[2rem] p-4 flex items-center gap-4 shadow-sm border border-slate-50">
                             <div className="w-24 h-24 bg-[#F3F3F3] rounded-2xl overflow-hidden shrink-0">
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                <img src={item.image || "https://cdn-icons-png.flaticon.com/512/3075/3075977.png"} alt={item.name} className="w-full h-full object-cover" />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start">
