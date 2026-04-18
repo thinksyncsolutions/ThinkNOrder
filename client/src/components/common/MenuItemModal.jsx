@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Plus, Trash2, Utensils, IndianRupee, Clock, FileText, Leaf, Eye, EyeOff } from "lucide-react";
+import { X, Plus, Trash2, Utensils, IndianRupee, Clock, FileText, Leaf, Eye, EyeOff, Image as ImageIcon } from "lucide-react";
 
 const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
   const isEditing = !!initialData;
@@ -96,6 +96,29 @@ const MenuItemModal = ({ initialData, onClose, onSubmit }) => {
         {/* Scrollable Form Body */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto custom-scrollbar">
           
+          {/* 🔥 NEW: IMAGE URL & PREVIEW SECTION */}
+          <div className="space-y-3">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
+              <ImageIcon size={12} className="text-orange-600" /> Dish Display Image
+            </label>
+            <div className="flex gap-4 items-center">
+              <div className="w-14 h-14 rounded-2xl bg-orange-50 border-2 border-dashed border-orange-200 flex items-center justify-center overflow-hidden shrink-0">
+                {form.image ? (
+                  <img src={form.image} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon size={24} className="text-orange-200" />
+                )}
+              </div>
+              <input
+                name="image"
+                placeholder="Paste Image URL here..."
+                value={form.image}
+                onChange={handleChange}
+                className="flex-1 bg-orange-50/50 border-2 border-transparent focus:border-orange-600 rounded-2xl px-4 py-3 outline-none font-bold text-orange-950 transition-all text-sm"
+              />
+            </div>
+          </div>
+
           {/* Dish Name */}
           <div className="space-y-1.5">
             <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-2">
