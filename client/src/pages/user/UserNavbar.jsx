@@ -7,7 +7,7 @@ const UserNavbar = ({ place, cartCount, onOpenCart }) => {
       {/* Search Trigger */}
       
       <div className="flex items-center gap-4">
-      <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-50 flex items-center justify-center shrink-0">
+      {/* <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-50 flex items-center justify-center shrink-0">
               {place?.restaurantLogo ? (
                    <img src={place.restaurantLogo} alt="logo" className="w-full h-full object-cover" />
                  ) : (
@@ -15,7 +15,7 @@ const UserNavbar = ({ place, cartCount, onOpenCart }) => {
                      {place?.restaurantName?.charAt(0) || "R"}
                    </span>
                  )}
-               </div>
+               </div> */}
                <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-50 active:scale-90 transition-transform">
         <Search size={20} className="text-slate-400" />
       </button>
@@ -33,12 +33,12 @@ const UserNavbar = ({ place, cartCount, onOpenCart }) => {
           </span>
           {/* online red dot and green dot for open and closed branches respectively */}
           <span
-            className={`flex items-center gap-1 text-[9px] font-black px-2 py-[2px] rounded-full ${place?.isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
+            className={`flex items-center gap-1 text-[9px] font-black rounded-full ${place?.isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}
           >
             <span
               className={`w-2 h-2 rounded-full ${place?.isOpen ? "bg-green-500 animate-pulse" : "bg-red-500"}`}
             />
-            {place?.isOpen ? "OPEN" : "CLOSED"}
+            {/* {place?.isOpen ? "OPEN" : "CLOSED"} */}
           </span>
           {/* <ChevronDown size={14} className="text-slate-400" /> */}
         </div>

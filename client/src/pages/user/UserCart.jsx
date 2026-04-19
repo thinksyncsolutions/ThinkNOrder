@@ -27,11 +27,11 @@ const UserCart = ({
         {/* DRAG HANDLE */}
         <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6 shrink-0" />
 
-        {/* HEADER */}
+        {/* HEADER [#FFB800] */}
         <div className="flex justify-between items-start mb-8">
           <div>
             <h2 className="font-black text-3xl text-slate-900 tracking-tighter uppercase leading-none">
-              My <span className="text-[#FFB800]">Order</span>
+              My <span className="text-orange-600">Order</span>
             </h2>
             <div className="flex items-center gap-2 mt-2">
               <span className="bg-black text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest">
@@ -109,18 +109,18 @@ const UserCart = ({
                 <span className="text-3xl font-black text-slate-900 tracking-tighter italic">₹{cartTotal}</span>
             </div>
             <div className="text-right">
-                <span className="text-[10px] font-black text-[#FFB800] uppercase block">Free Delivery</span>
+                {/* <span className="text-[10px] font-black text-[#FFB800] uppercase block">Free Delivery</span> */}
                 <span className="text-[10px] text-slate-400 font-bold uppercase italic">Inc. all taxes</span>
             </div>
           </div>
           
           <button 
-            onClick={onSubmit} 
+            onClick={onSubmit}
             disabled={cartItems.length === 0}
             className={`w-full py-6 rounded-[2.5rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl transition-all active:scale-95 flex items-center justify-center gap-3 ${
                 cartItems.length === 0 
                 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
-                : 'bg-black text-white hover:bg-[#FFB800] hover:text-black'
+                : 'bg-black text-white hover:bg-orange-600 hover:text-white'
             }`}
           >
             Send to Kitchen <ChevronRight size={18} />
