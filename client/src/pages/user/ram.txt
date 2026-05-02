@@ -1,0 +1,84 @@
+import React from "react";
+
+export default function LandingPage() {
+  return (
+    <div className="min-h-screen bg-white text-gray-900">
+      {/* Hero Section */}
+      <section className="text-center py-20 px-6 bg-gradient-to-r from-orange-500 to-red-500 text-white">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">
+          Your Own Food Ordering System
+        </h1>
+        <p className="text-lg md:text-xl mb-6">
+          No Commission. No Middleman. More Profit.
+        </p>
+        <button className="bg-white text-orange-600 px-6 py-3 rounded-2xl font-semibold shadow-lg">
+          Get Started Free
+        </button>
+      </section>
+
+      {/* Problem Section */}
+      <section className="py-16 px-6 text-center">
+        <h2 className="text-3xl font-bold mb-6">Tired of Losing Profit?</h2>
+        <p className="max-w-2xl mx-auto text-gray-600">
+          Food apps take high commissions and control your customers. You work
+          hard, but they take a big cut of your earnings.
+        </p>
+      </section>
+
+      {/* USP Section */}
+      <section className="py-16 px-6 bg-gray-100">
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="p-6 bg-white rounded-2xl shadow">
+            <h3 className="text-xl font-semibold mb-2">Own Your Customers</h3>
+            <p className="text-gray-600">
+              Get your own website and QR system. Customers order directly from
+              you.
+            </p>
+          </div>
+          <div className="p-6 bg-white rounded-2xl shadow">
+            <h3 className="text-xl font-semibold mb-2">Zero Commission</h3>
+            <p className="text-gray-600">
+              Keep 100% of your earnings. No hidden charges.
+            </p>
+          </div>
+          <div className="p-6 bg-white rounded-2xl shadow">
+            <h3 className="text-xl font-semibold mb-2">Increase Repeat Orders</h3>
+            <p className="text-gray-600">
+              Smart offers and reminders bring customers back automatically.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 px-6 text-center">
+        <h2 className="text-3xl font-bold mb-10">Powerful Features</h2>
+        <div className="grid md:grid-cols-4 gap-6">
+          {[
+            "Pre-Order System",
+            "QR Table Ordering",
+            "Admin Dashboard",
+            "Customer Database",
+          ].map((feature, i) => (
+            <div key={i} className="p-4 border rounded-xl">
+              {feature}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-6 bg-orange-500 text-white text-center">
+        <h2 className="text-3xl font-bold mb-4">
+          Start Growing Your Restaurant Today
+        </h2>
+        <p className="mb-6">
+          Setup your own ordering system in just 1 day.
+        </p>
+        <button className="bg-white text-orange-600 px-6 py-3 rounded-2xl font-semibold">
+          Book Free Demo
+        </button>
+      </section>
+    </div>
+  );
+}

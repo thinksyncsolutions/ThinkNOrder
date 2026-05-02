@@ -1,2 +1,9 @@
 git config --global user.name "Raman Chauhan" 
 git config --global user.email "ramanchauhan13@gmail.com"
+
+"scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
